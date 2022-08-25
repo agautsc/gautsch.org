@@ -2,3 +2,5 @@ baseURL: "https://gautsch.org/"
 languageCode: "en-us"
 title: "gautsch.org"
 theme: "PaperMod"
+params:
+  ShowFullTextinRSS: "true"
