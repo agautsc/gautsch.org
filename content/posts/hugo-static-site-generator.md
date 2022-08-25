@@ -14,3 +14,5 @@ The most famous has to be [GitHub Pages](https://pages.github.com "We live in a 
 Recently, I wanted to see what else was out there and gave [Hugo](https://gohugo.io "Oh, oh Hugo") a shot. Hugo runs on a different tech stack than Jekyll, but you can also host it on GitHub pages.
 
 It's fast and fairly easy to pick up. If you're so inclined, give it a [go](https://go.dev/ "Code pun!").
+
+[Comment on LinkedIn](https://www.linkedin.com/posts/adamgautsch_gautschorg-activity-6968574104522162176-E95z?utm_source=share&utm_medium=member_desktop "Got to find a better flow for this.")
