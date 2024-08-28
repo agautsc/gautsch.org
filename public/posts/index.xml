@@ -1,19 +1,228 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Posts on My New Hugo Site</title>
-    <link>http://example.org/posts/</link>
-    <description>Recent content in Posts on My New Hugo Site</description>
+    <title>Posts on gautsch.org</title>
+    <link>http://localhost:1313/posts/</link>
+    <description>Recent content in Posts on gautsch.org</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 12 Jul 2022 11:17:11 -0400</lastBuildDate><atom:link href="http://example.org/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 01 May 2024 15:59:50 -0400</lastBuildDate><atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Test</title>
-      <link>http://example.org/posts/test/</link>
-      <pubDate>Tue, 12 Jul 2022 11:17:11 -0400</pubDate>
+      <title>An Ode to 2005</title>
+      <link>http://localhost:1313/posts/an-ode-to-2005/</link>
+      <pubDate>Fri, 26 Aug 2022 13:53:54 -0400</pubDate>
       
-      <guid>http://example.org/posts/test/</guid>
+      <guid>http://localhost:1313/posts/an-ode-to-2005/</guid>
+      <description>For reason that are unimportant, I was reading some old blog posts of mine from 2005.
+The number of websites that I linked to back then that are no longer around is crazy. Over 75% I&amp;rsquo;d say. Back then, I thought these sites would never die and they would be the new institutions. I was wrong. Things change and links rarely get redirected.
+Side note, I hated Apple with a real passion back then.</description>
+      <content:encoded><![CDATA[<p>For reason that are unimportant, I was reading some old blog posts of mine from 2005.</p>
+<p>The number of websites that I linked to back then that are no longer around is crazy. Over 75% I&rsquo;d say. Back then, I thought these sites would never die and they would be the new institutions. I was wrong. Things change and links rarely get redirected.</p>
+<p>Side note, I hated Apple with a real passion back then. That passion waned over the years. Melissa won a HomePod Mini at work last week. This stupid speaker doesn&rsquo;t work with Android or Spotify or Bluetooth. The hatred is back!</p>
+<p><a href="https://www.linkedin.com/posts/adamgautsch_for-reason-that-are-unimportant-i-was-reading-activity-6968987872406245377-OtDf?utm_source=share&amp;utm_medium=member_desktop" title="Getting the process of linking down better.">Comment on LinkedIn</a></p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>I create, I am a flame, a flame creator A static site generator</title>
+      <link>http://localhost:1313/posts/hugo-static-site-generator/</link>
+      <pubDate>Thu, 25 Aug 2022 10:03:49 -0400</pubDate>
+      
+      <guid>http://localhost:1313/posts/hugo-static-site-generator/</guid>
+      <description>WordPress and SquareSpace and other camel cased companies have eaten the bottom the web market. For the most part, it&amp;rsquo;s for the better. However, if you&amp;rsquo;re looking to play around with web tech and want to see how websites can be blazing fast when not weighed down with plugins and overwrought templates give a static site generator a try.
+The most famous has to be GitHub Pages powered by Jekyll. I spun up a couple of those sites over last couple years.</description>
+      <content:encoded><![CDATA[<p>WordPress and SquareSpace and other camel cased companies have eaten the bottom the web market. For the most part, it&rsquo;s for the better. However, if you&rsquo;re looking to play around with web tech and want to see how websites can be blazing fast when not weighed down with plugins and overwrought templates give a static site generator a try.</p>
+<p>The most famous has to be <a href="https://pages.github.com" title="We live in a world where even the GitHub pages site doesn't have a top navigation. Scroll. We all must scroll">GitHub Pages</a> powered by <a href="https://jekyllrb.com/" title="Delightfully old school design">Jekyll</a>. I spun up a <a href="https://dalemurphywasthegreatestbaseballplayerofthe1980s.com" title="Best domain name. Not the best website.">couple</a> <a href="https://bit.ly/atdc-slack" title="My favorite design.">of</a> <a href="https://argattheatdc.com/" title="I miss writing title tags for links.">those</a> sites over last couple years. It&rsquo;s easy and hosting is free.</p>
+<p>Recently, I wanted to see what else was out there and gave <a href="https://gohugo.io" title="Oh, oh Hugo">Hugo</a> a shot. Hugo runs on a different tech stack than Jekyll, but you can also host it on GitHub pages.</p>
+<p>It&rsquo;s fast and fairly easy to pick up. If you&rsquo;re so inclined, give it a <a href="https://go.dev/" title="Code pun!">go</a>.</p>
+<p><a href="https://www.linkedin.com/posts/adamgautsch_gautschorg-activity-6968574104522162176-E95z?utm_source=share&amp;utm_medium=member_desktop" title="Got to find a better flow for this.">Comment on LinkedIn</a></p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Plagiarism Versus Creativity</title>
+      <link>http://localhost:1313/posts/plagiarism-versus-creativity/</link>
+      <pubDate>Wed, 24 Aug 2022 10:56:52 -0400</pubDate>
+      
+      <guid>http://localhost:1313/posts/plagiarism-versus-creativity/</guid>
+      <description>Copying from a competitor is plagiarism. Copying from a different genre is creativity.
+I always slap my head when reading, say, an executive summary that&amp;rsquo;s being submitted to a competition and reads like every other executive summary.
+Why not stand out? Find inspiration NOT from other executive summaries, but from a short-story or a great recipe or a movie.
+You can still copy, err be inspired, by others work. Just not your competitors.</description>
+      <content:encoded><![CDATA[<p>Copying from a competitor is plagiarism. Copying from a different genre is creativity.</p>
+<p>I always slap my head when reading, say, an executive summary that&rsquo;s being submitted to a competition and reads like every other executive summary.</p>
+<p>Why not stand out? Find inspiration NOT from other executive summaries, but from a short-story or a great recipe or a movie.</p>
+<p>You can still copy, err be inspired, by others work. Just not your competitors.</p>
+<p><a href="https://www.linkedin.com/posts/adamgautsch_copying-from-a-competitor-is-plagiarism-activity-6968219384095936513-dx7j?utm_source=share&amp;utm_medium=member_desktop" title="Feel free to copy this post for your next cookbook.">Comment on LinkedIn</a></p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Write 1000 Words a Day</title>
+      <link>http://localhost:1313/posts/write-1000-words-a-day/</link>
+      <pubDate>Tue, 23 Aug 2022 16:13:05 -0400</pubDate>
+      
+      <guid>http://localhost:1313/posts/write-1000-words-a-day/</guid>
+      <description>Write 1,000 words a day.
+Giving growth and marketing advice to the earliest stage startups is tough. So many things need to be done that it&amp;rsquo;s almost impossible to focus. Lack of team, time, and money overwhelms the mind quickly.
+I&amp;rsquo;ve noodled on what a good, simple, and achievable heuristic could be. The best I&amp;rsquo;ve got is to write 1,000 words a day.
+That&amp;rsquo;s not internal emails or Slack message words.</description>
+      <content:encoded><![CDATA[<p>Write 1,000 words a day.</p>
+<p>Giving growth and marketing advice to the earliest stage startups is tough. So many things need to be done that it&rsquo;s almost impossible to focus. Lack of team, time, and money overwhelms the mind quickly.</p>
+<p>I&rsquo;ve noodled on what a good, simple, and achievable heuristic could be. The best I&rsquo;ve got is to write 1,000 words a day.</p>
+<p>That&rsquo;s not internal emails or Slack message words. That&rsquo;s 1,000 public-facing words. Blog posts, LinkedIn comments, introductory emails, scripts for videos you produce, etc. If you can get to five digits of words a day I think you&rsquo;re doing something.</p>
+<p>Is this a good idea? Is it achievable?</p>
+<p><a href="https://www.linkedin.com/feed/update/urn:li:activity:6967936669442338816/" title="I mean, Stephen King writes 2,000 words. He's only the most prolific author of all-time. The least you can do is write half that many words.">Comment on LinkedIn</a></p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Time Travel Inspiration</title>
+      <link>http://localhost:1313/posts/time-travel-inspiration/</link>
+      <pubDate>Mon, 22 Aug 2022 13:33:23 -0400</pubDate>
+      
+      <guid>http://localhost:1313/posts/time-travel-inspiration/</guid>
+      <description>Not in the first week, but probably the first year. If I had a time machine that allowed me to go back in time I would stop by id Software during the making of Quake and ILM from the beginning until the opening of Star Wars.
+The creativity and ingenuity of those two culture changing companies is inspiring.
+Since a time machine that goes backwards is almost certainly impossible the best I can do is listen to a five hour podcast with John Carmack and watch a six hour documentary about ILM.</description>
+      <content:encoded><![CDATA[<p>Not in the first week, but probably the first year. If I had a time machine that allowed me to go back in time I would stop by id Software during the making of Quake and ILM from the beginning until the opening of Star Wars.</p>
+<p>The creativity and ingenuity of those two culture changing companies is inspiring.</p>
+<p>Since a time machine that goes backwards is almost certainly impossible the best I can do is listen to a five hour podcast with <a href="https://lexfridman.com/john-carmack/" title="Link to Lex Fridman website">John Carmack</a> and watch a six hour documentary about <a href="https://www.disneyplus.com/series/light-magic/3OtlwhtW6Z7E" title="Link to Light &amp; Magic website on Disney plus">ILM</a>.</p>
+<p>I can recommend both.
+<a href="https://www.linkedin.com/posts/adamgautsch_309-john-carmack-doom-quake-vr-agi-activity-6967507217134620672-5jpP?utm_source=linkedin_share&amp;utm_medium=member_desktop_web" title="Adam's specific LinkedIn post">Comment over at LinkedIn</a></p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Good SEO Is Raising My Kid</title>
+      <link>http://localhost:1313/posts/good-seo-is-raising-my-kid/</link>
+      <pubDate>Fri, 19 Aug 2022 13:40:25 -0400</pubDate>
+      
+      <guid>http://localhost:1313/posts/good-seo-is-raising-my-kid/</guid>
+      <description>Is he old enough to eat popcorn? Let me look it up.
+How can we speed up his potty training? Let me look it up.
+We all trust top search results more than we should. But I talk to founders every week who have no SEO strategy.
+If I trust the top search result to raise my kid, then I&amp;rsquo;m pretty sure I&amp;rsquo;m buying from a top search result too.</description>
+      <content:encoded><![CDATA[<p>Is he old enough to eat popcorn? Let me look it up.</p>
+<p>How can we speed up his potty training? Let me look it up.</p>
+<p>We all trust top search results more than we should. But I talk to founders every week who have no SEO strategy.</p>
+<p>If I trust the top search result to raise my kid, then I&rsquo;m pretty sure I&rsquo;m buying from a top search result too.</p>
+<p><a href="https://www.linkedin.com/posts/adamgautsch_good-seo-is-raising-my-kid-is-he-old-enough-activity-6966417232650280960-YbTy?utm_source=linkedin_share&amp;utm_medium=member_desktop_web" title="Link to Adam's LinkedIn post">Comment on LinkedIn</a></p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Is the Point to Make Money?</title>
+      <link>http://localhost:1313/posts/is-the-point-to-make-money/</link>
+      <pubDate>Mon, 15 Aug 2022 13:57:26 -0400</pubDate>
+      
+      <guid>http://localhost:1313/posts/is-the-point-to-make-money/</guid>
+      <description>&amp;ldquo;Well, the main point is to make money.&amp;rdquo;
+It was a response I got some genius thing I said yesterday.
+I nodded and we went along with our conversation. Upon further reflection I think this what I wish I would have said.
+&amp;ldquo;Then get a job at &amp;lsquo;big company x in your industry&amp;rsquo; or, heaven forbid, Wall Street. If there isn&amp;rsquo;t a passion beyond money I don&amp;rsquo;t know why you&amp;rsquo;d work for an early stage startup.</description>
+      <content:encoded><![CDATA[<p>&ldquo;Well, the main point is to make money.&rdquo;</p>
+<p>It was a response I got some genius thing I said yesterday.</p>
+<p>I nodded and we went along with our conversation. Upon further reflection I think this what I wish I would have said.</p>
+<p>&ldquo;Then get a job at &lsquo;big company x in your industry&rsquo; or, heaven forbid, Wall Street. If there isn&rsquo;t a passion beyond money I don&rsquo;t know why you&rsquo;d work for an early stage startup. It&rsquo;s too hard and the chances for a big win are too low. Working to solve a hard problem and provide real and new value to people is a motivating factor that will keep you going.&rdquo;</p>
+<p><a href="https://www.linkedin.com/posts/adamgautsch_well-the-main-point-is-to-make-money-activity-6963150814970331136-v61A?utm_source=linkedin_share&amp;utm_medium=member_desktop_web" title="A couple folks got things to say about this comment on LinkedIn">Comment on LinkedIn</a></p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Linkedin Versus Youtube Video</title>
+      <link>http://localhost:1313/posts/linkedin-versus-youtube-video/</link>
+      <pubDate>Mon, 01 Aug 2022 14:10:18 -0400</pubDate>
+      
+      <guid>http://localhost:1313/posts/linkedin-versus-youtube-video/</guid>
+      <description>In our content marketing group meetup yesterday we were talking the good ol&amp;rsquo; LinkedIn algorithm. I brought up a strange data point and wonder if it&amp;rsquo;s just me.
+I get more views to video posts that are YouTube links than I do to videos that are natively uploaded to LinkedIn.
+Am I the only one? Comment on LinkedIn</description>
+      <content:encoded><![CDATA[<p>In our content marketing group meetup yesterday we were talking the good ol&rsquo; LinkedIn algorithm. I brought up a strange data point and wonder if it&rsquo;s just me.</p>
+<p>I get more views to video posts that are YouTube links than I do to videos that are natively uploaded to LinkedIn.</p>
+<p>Am I the only one?
+<a href="https://www.linkedin.com/posts/adamgautsch_in-our-content-marketing-group-meetup-yesterday-activity-6958775303678685184-GpDm?utm_source=linkedin_share&amp;utm_medium=member_desktop_web" title="Keep on commenting on LinkedIn">Comment on LinkedIn</a></p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>The Whole Direction</title>
+      <link>http://localhost:1313/posts/the-whole-direction/</link>
+      <pubDate>Fri, 22 Jul 2022 14:33:08 -0400</pubDate>
+      
+      <guid>http://localhost:1313/posts/the-whole-direction/</guid>
+      <description>&amp;ldquo;Take a right instead of a left.&amp;rdquo;
+The useless directions I provided to Melissa this weekend.
+There were seven turns before this turn. I counted. In my mind, I already moved through those obvious turns and was already at the only turn in question.
+I find myself giving similar directions when talking about strategy. After thinking about something deeply, I find myself providing answers only to the problems in question. This doesn&amp;rsquo;t help people who aren&amp;rsquo;t in the room.</description>
+      <content:encoded><![CDATA[<p>&ldquo;Take a right instead of a left.&rdquo;</p>
+<p>The useless directions I provided to Melissa this weekend.</p>
+<p>There were seven turns before this turn. I counted. In my mind, I already moved through those obvious turns and was already at the only turn in question.</p>
+<p>I find myself giving similar directions when talking about strategy. After thinking about something deeply, I find myself providing answers only to the problems in question. This doesn&rsquo;t help people who aren&rsquo;t in the room. Taking people on the complete journey might take a little extra time upfront, but it saves hours or years of confusion down the road.</p>
+<p><a href="https://www.linkedin.com/posts/adamgautsch_take-a-right-instead-of-a-left-the-useless-activity-6957342000018833408-sZq6?utm_source=linkedin_share&amp;utm_medium=member_desktop_web" title="LinkedIn post">Comment on LinkedIn</a></p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>You Cant Negotiate Up</title>
+      <link>http://localhost:1313/posts/you-cant-negotiate-up/</link>
+      <pubDate>Wed, 20 Jul 2022 14:36:09 -0400</pubDate>
+      
+      <guid>http://localhost:1313/posts/you-cant-negotiate-up/</guid>
+      <description>I saw my friend David Carpenter last week. Years ago, he gave me a simple piece of sales advice that I share once a week with someone.
+I figured I share it here.
+I had a Jeep with a fried electrical system. It needed real work. Someone was interested in buying it and I asked Dave if $750 was a good price.
+His answer, &amp;ldquo;well, you can&amp;rsquo;t negotiate up.&amp;rdquo;
+Comment on LinkedIn</description>
+      <content:encoded><![CDATA[<p>I saw my friend David Carpenter last week. Years ago, he gave me a simple piece of sales advice that I share once a week with someone.</p>
+<p>I figured I share it here.</p>
+<p>I had a Jeep with a fried electrical system. It needed real work. Someone was interested in buying it and I asked Dave if $750 was a good price.</p>
+<p>His answer, &ldquo;well, you can&rsquo;t negotiate up.&rdquo;</p>
+<p><a href="https://www.linkedin.com/posts/adamgautsch_i-saw-my-friend-david-carpenter-last-week-activity-6953033799534329856-_Lab?utm_source=linkedin_share&amp;utm_medium=member_desktop_web" title="Chatting on LinkedIn">Comment on LinkedIn</a></p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>A Passion Forged In Fire</title>
+      <link>http://localhost:1313/posts/test/</link>
+      <pubDate>Mon, 11 Jul 2022 11:17:11 -0400</pubDate>
+      
+      <guid>http://localhost:1313/posts/test/</guid>
+      <description>2008, that&amp;rsquo;s at least how long I&amp;rsquo;ve known Brian and Nicole Cendrowski. Nicole was the lead gnome at PR firm Big Gnome (RIP) and Brian was beer blogging at Untamed Beer (RIP-ish?).
+I&amp;rsquo;m not 100% sure starting a brewery was their goal back then. It wasn&amp;rsquo;t as obvious a path as it is now. But their passion was beer and bringing friends together. We were invited to countless brew days at their house.</description>
+      <content:encoded><![CDATA[<p>2008, that&rsquo;s at least how long I&rsquo;ve known Brian and Nicole Cendrowski. Nicole was the lead gnome at PR firm Big Gnome (RIP) and Brian was beer blogging at <a href="https://untamedbeer.com/" title="Blogging is back and maybe Brian will bring back UntamedBeer blog">Untamed Beer</a> (RIP-ish?).</p>
+<p>I&rsquo;m not 100% sure starting a brewery was their goal back then. It wasn&rsquo;t as obvious a path as it is now. But their passion was beer and bringing friends together. We were invited to countless brew days at their house. They were home brewing. We were BBQing or just sampling past home brews.</p>
+<p>Over the years, they kept hammering on their passion while finding ways to make money. Brian cleaned kegs at Thomas Creek for a while. They both learned to sell the Sandler way. Something worth trying, but only if it makes sense for you.</p>
+<p>Over the July 4th week, I spent real-time at <a href="https://www.fireforge.beer/" title="Fine looking website to boot!">Fireforge Crafted Beer</a>. The physical result of over a decade of passion shared with the world. The beer is untamed. The experience is big gnomed. The hospitality is Brian and Nicole.</p>
+<p>I love to see passion pursued. Congrats guys!</p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>1320 Words</title>
+      <link>http://localhost:1313/posts/1320_words/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/1320_words/</guid>
+      <description>If the Declaration of Independence was a Power Point the United States would still be a British colony.
+I know both startups and big corporates run on slide decks. I don&amp;rsquo;t understand. The Declaration of Independence is 1,320 words. In 1,320 words the inspiration and the case for starting a new country was made.
+Folks can&amp;rsquo;t spend the time to write or read 1,320 words to make the case for a startup or a new project inside of a company?</description>
+      <content:encoded><![CDATA[<p>If the Declaration of Independence was a Power Point the United States would still be a British colony.</p>
+<p>I know both startups and big corporates run on slide decks. I don&rsquo;t understand. The Declaration of Independence is 1,320 words. In 1,320 words the inspiration and the case for starting a new country was made.</p>
+<p>Folks can&rsquo;t spend the time to write or read 1,320 words to make the case for a startup or a new project inside of a company? You&rsquo;re that busy?</p>
+<p>You&rsquo;ll read 1,320 words in one scroll through LinkedIn. I say give it a shot. For fun, see if you can write a Declaration of your business in 1,320 words.</p>
+<p><a href="https://www.linkedin.com/posts/adamgautsch_if-the-declaration-of-independence-was-a-activity-6948269789857398784-A1iD?utm_source=linkedin_share&amp;utm_medium=member_desktop_web" title="LinkedIn post">Comment on LinkedIn</a></p>
+]]></content:encoded>
+    </item>
+    
+    <item>
+      <title>Do You Have a Favorite Pen and Why Is It Pilot G 2 07 Blue?</title>
+      <link>http://localhost:1313/posts/do-you-have-a-favorite-pen-and-why-is-it-pilot-g-2-07-blue/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/posts/do-you-have-a-favorite-pen-and-why-is-it-pilot-g-2-07-blue/</guid>
       <description></description>
+      <content:encoded><![CDATA[]]></content:encoded>
     </item>
     
   </channel>

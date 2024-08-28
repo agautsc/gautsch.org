@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>gautsch.org</title>
-    <link>http://localhost:1313/</link>
-    <description>Recent content on gautsch.org</description>
+    <title>LinkedIn on gautsch.org</title>
+    <link>http://localhost:1313/tags/linkedin/</link>
+    <description>Recent content in LinkedIn on gautsch.org</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 01 May 2024 15:59:50 -0400</lastBuildDate><atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 26 Aug 2022 13:53:54 -0400</lastBuildDate><atom:link href="http://localhost:1313/tags/linkedin/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>An Ode to 2005</title>
       <link>http://localhost:1313/posts/an-ode-to-2005/</link>
