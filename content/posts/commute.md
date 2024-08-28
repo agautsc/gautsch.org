@@ -14,3 +14,4 @@ With school being within walking distance I get an extra hour (at least) not stu
 * Frame art more
 * Hit post more
 * Ring around the neighborhood
+* Every day reader
