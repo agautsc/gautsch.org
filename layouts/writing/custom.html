@@ -1,0 +1,15 @@
+{{ define "main" }}
+<article class="writing-custom">
+  {{ with .Resources.GetMatch "style.css" }}
+  <style>{{ .Content | safeCSS }}</style>
+  {{ end }}
+  <header class="wc-header">
+    <p class="wc-kicker">{{ .Date.Format "January 2, 2006" }}</p>
+    <h1 class="wc-title">{{ .Title }}</h1>
+    {{ with .Params.deck }}<p class="wc-deck">{{ . }}</p>{{ end }}
+  </header>
+  <div class="wc-body">
+    {{ .Content }}
+  </div>
+</article>
+{{ end }}

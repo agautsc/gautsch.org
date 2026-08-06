@@ -1,6 +1,26 @@
 baseURL: "https://gautsch.org/"
-languageCode: "en-us"
+locale: "en-US"
 title: "gautsch.org"
 theme: "PaperMod"
 params:
   ShowFullTextinRSS: "true"
+  render_html: true
+  mainSections:
+    - writing
+    - posts
+  assets:
+    favicon: "/favicon.svg"
+menu:
+  main:
+    - identifier: writing
+      name: Writing
+      url: /writing/
+      weight: 10
+    - identifier: archive
+      name: Archive
+      url: /archive/
+      weight: 20
+markup:
+  goldmark:
+    renderer:
+      unsafe: true

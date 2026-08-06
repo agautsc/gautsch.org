@@ -1,0 +1,22 @@
+/* Custom design for this week's post. Start from the editorial base and make it yours. */
+
+.wc-header {
+  text-align: center;
+  margin: 3rem 0 3.5rem;
+}
+
+.wc-title {
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+  line-height: 1.1;
+  margin: 0 0 1.25rem;
+}
+
+.wc-deck {
+  font-style: italic;
+  color: var(--secondary);
+}
+
+.wc-body {
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
