@@ -1,0 +1,82 @@
+/* Site-wide three-block footer. Loaded automatically — PaperMod concatenates
+   assets/css/extended/*.css after its own stylesheet. Colors come from the
+   theme's CSS variables so light/dark tracks the toggle for free. */
+
+.site-footer {
+  max-width: calc(var(--main-width) + var(--gap) * 2);
+  margin: calc(var(--gap) * 3) auto 0;
+  padding: 0 var(--gap);
+  border-top: 1px solid var(--border);
+  color: var(--secondary);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.site-footer-inner {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(var(--gap) * 1.5);
+  padding: calc(var(--gap) * 1.5) 0;
+}
+
+.sf-block p {
+  margin: 0 0 0.75em;
+}
+
+.sf-heading {
+  margin: 0 0 0.6em;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.site-footer a {
+  color: var(--primary);
+  box-shadow: 0 1px 0 var(--border);
+}
+
+.site-footer a:hover {
+  box-shadow: 0 1px 0 var(--primary);
+}
+
+.sf-heading a {
+  box-shadow: none;
+}
+
+.sf-more {
+  white-space: nowrap;
+}
+
+.sf-links {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sf-links li {
+  margin-bottom: 0.4em;
+}
+
+.site-footer-colophon {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5em calc(var(--gap) * 1.5);
+  padding: var(--gap) 0;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+}
+
+/* Stack the blocks rather than squeezing three columns onto a phone. */
+@media screen and (max-width: 768px) {
+  .site-footer-inner {
+    grid-template-columns: 1fr;
+    gap: calc(var(--gap) * 1.25);
+  }
+
+  .site-footer-colophon {
+    justify-content: flex-start;
+  }
+}

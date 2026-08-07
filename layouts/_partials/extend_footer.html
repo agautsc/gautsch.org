@@ -1,0 +1,40 @@
+{{- /* The site footer, on every page. PaperMod's own footer is suppressed via
+       params.hideFooter in config.yml — this partial renders outside that guard,
+       so we own the whole thing without forking the theme's footer template. */ -}}
+<footer class="site-footer">
+  <div class="site-footer-inner">
+
+    <section class="sf-block">
+      <h2 class="sf-heading"><a href="/projects/">Experiments in AI</a></h2>
+      <p>A list of all my current projects — the ones that shipped, the ones that
+        run on a server in my house, and the ones still being poked at.</p>
+      <p><a class="sf-more" href="/projects/">See what I've been building &rarr;</a></p>
+    </section>
+
+    <section class="sf-block">
+      <h2 class="sf-heading">Adam Gautsch</h2>
+      <p>Adam Gautsch coaches tech startups at the
+        <a href="https://atdc.org/" rel="noopener">ATDC</a> at Georgia Tech.
+        This is a place for some of his personal thoughts on tech and the robots.</p>
+    </section>
+
+    <section class="sf-block">
+      <h2 class="sf-heading">Elsewhere</h2>
+      <ul class="sf-links">
+        <li><a href="https://mondaiycoffee.com/" rel="noopener">Mond(ai)y Coffee</a></li>
+        <li><a href="https://argattheatdc.com/" rel="noopener">ARG at the ATDC</a></li>
+        <li><a href="https://www.linkedin.com/in/adamgautsch/" rel="me noopener">LinkedIn</a></li>
+        <li><a href="https://x.com/agautsc" rel="me noopener">Twitter / X</a></li>
+      </ul>
+    </section>
+
+  </div>
+
+  <div class="site-footer-colophon">
+    <span>&copy; {{ now.Year }} <a href="{{ "" | absLangURL }}">{{ site.Title }}</a></span>
+    <span>Powered by
+      <a href="https://gohugo.io/?utm_source=papermod" rel="noopener" target="_blank">Hugo</a> &amp;
+      <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+  </div>
+</footer>

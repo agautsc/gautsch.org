@@ -1,0 +1,18 @@
+{{ define "main" }}
+{{- /* The homepage IS the most recent essay, rendered in full. The essay also keeps
+       its own permanent URL at /writing/<slug>/ — this is a window onto it, not a
+       replacement, so the permalink is surfaced at the end of the piece. */ -}}
+{{- with first 1 (where site.RegularPages "Type" "writing") }}
+  {{- range . }}
+  {{ partial "writing-article.html" (dict "page" . "showPermalink" true) }}
+  {{- end }}
+{{- else }}
+  {{- /* No published essay yet. Never leave the homepage blank. */ -}}
+  <article class="writing-custom">
+    <header class="wc-header">
+      <h1 class="wc-title">{{ site.Title }}</h1>
+      <p class="wc-deck">No essay published yet. <a href="/archive/">The archive</a> has the older writing.</p>
+    </header>
+  </article>
+{{- end }}
+{{ end }}

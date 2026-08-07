@@ -1,0 +1,22 @@
+{{- /* The essay shell, shared by the post permalink (writing/custom.html) and the
+       homepage (index.html), so the two can never drift apart.
+       Params: page (required), showPermalink (bool). */ -}}
+{{- $page := .page }}
+<article class="writing-custom">
+  {{- with $page.Resources.GetMatch "style.css" }}
+  <style>{{ .Content | safeCSS }}</style>
+  {{- end }}
+  <header class="wc-header">
+    <p class="wc-kicker">{{ $page.Date.Format "January 2, 2006" }}</p>
+    <h1 class="wc-title">{{ $page.Title }}</h1>
+    {{- /* .Params.summary, not .Summary — the latter auto-generates a full
+           paragraph when unset. This is the same line the projects/list pages use. */}}
+    {{- with $page.Params.summary }}<p class="wc-deck">{{ . }}</p>{{ end }}
+  </header>
+  <div class="wc-body">
+    {{ $page.Content }}
+  </div>
+  {{- if .showPermalink }}
+  <p class="wc-permalink"><a href="{{ $page.RelPermalink }}">Permalink</a></p>
+  {{- end }}
+</article>

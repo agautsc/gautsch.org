@@ -1,0 +1,4 @@
+# Hugo build output — CI rebuilds from source on every push to main.
+public/
+resources/_gen/
+.hugo_build.lock

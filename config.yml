@@ -4,7 +4,10 @@ title: "gautsch.org"
 theme: "PaperMod"
 params:
   ShowFullTextinRSS: "true"
-  render_html: true
+  # PaperMod's own footer is replaced by layouts/_partials/extend_footer.html,
+  # which renders outside this guard. Turning it off here avoids forking the
+  # theme's footer template (and the scripts that live in it).
+  hideFooter: true
   mainSections:
     - writing
     - posts

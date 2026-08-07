@@ -1,9 +1,9 @@
 ---
 title: "Machines of Freeing Creativity"
-date: 2026-07-15T09:00:00-04:00
-draft: true
+date: 2026-08-06T09:00:00-04:00
+draft: false
 layout: custom
-deck: "What happens when an idea no longer needs a business model to justify existing."
+summary: "What happens when an idea no longer needs a business model to justify existing."
 ---
 
 The machines will not replace us. The machines will not befriend us. The machines will free our creativity.
@@ -20,4 +20,4 @@ Some were more complicated: "I live in a neighborhood with a lot of cul-de-sacs.
 
 I understand (I guess) the desire of the big foundation model godheads to talk about the grand transformational nature of it all. Work won't be the same! The machines have escaped! They'll be our friends! GPUs aren't free, and big investment requires big talk.
 
-But if you have ideas that have been stuck in your brain like grains of sand for years, I'd encourage you to just build them. Those little grains turn into pearls at a speed and quality that will amaze you. Don't let the big talk — or the uninspiring autocomplete-in-your-IDE experience — stop you from freeing your own creativity.
+But if you have ideas that have been stuck in your brain like grains of sand for years, I'd encourage you to just build them. Those little grains turn into pearls at a speed and quality that will amaze you. Don't let the big talk stop you from freeing your own creativity.

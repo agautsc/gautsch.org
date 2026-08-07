@@ -1,7 +1,7 @@
 ---
 title: "A Genuine Forgery"
 date: 2025-07-21T10:50:41-04:00
-draft: false
+draft: true
 ---
 
 <img src="public/assets/img/Piet-Mondrian-Broadway-Boogie-Woogie.jpg" />
