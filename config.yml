@@ -8,6 +8,8 @@ params:
   # which renders outside this guard. Turning it off here avoids forking the
   # theme's footer template (and the scripts that live in it).
   hideFooter: true
+  # Notes are deliberately absent here: the homepage is the newest essay, and 228
+  # imported link posts would swamp the main feed if they joined it.
   mainSections:
     - writing
     - posts
@@ -19,10 +21,16 @@ menu:
       name: Writing
       url: /writing/
       weight: 10
+    - identifier: notes
+      name: Notes
+      url: /notes/
+      weight: 15
     - identifier: archive
       name: Archive
       url: /archive/
       weight: 20
+permalinks:
+  notes: /notes/:year/:month/:slug/
 markup:
   goldmark:
     renderer:

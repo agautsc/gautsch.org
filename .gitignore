@@ -2,3 +2,10 @@
 public/
 resources/_gen/
 .hugo_build.lock
+
+# LinkedIn export media that is not published. Both are local backups of the
+# 2026-08-08 download, kept out of the repo on purpose:
+#   _linkedin-video   — 17 native videos (187 MB), queued for YouTube upload
+#   _linkedin-orphans — media whose post is absent from the Shares export
+_linkedin-video/
+_linkedin-orphans/

@@ -1,0 +1,176 @@
+/* Notes: short posts imported from LinkedIn. Quieter than the essays on purpose —
+   these are asides, and should not compete with a piece that got its own design.
+   PaperMod vars only, and :root[data-theme] alongside prefers-color-scheme, or the
+   manual theme toggle leaves the treatment stranded. */
+
+/* ---------------------------------------------------------------- index page */
+
+.notes-index {
+  max-width: var(--main-width);
+  margin: 0 auto;
+  padding: var(--gap);
+}
+
+.notes-header h1 {
+  margin-bottom: calc(var(--gap) / 2);
+}
+
+.notes-deck {
+  color: var(--secondary);
+  margin-bottom: calc(var(--gap) / 3);
+}
+
+.notes-count {
+  font-size: 0.8rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+.notes-year {
+  margin: calc(var(--gap) * 1.8) 0 calc(var(--gap) / 2);
+  padding-bottom: calc(var(--gap) / 4);
+  border-bottom: 1px solid var(--border);
+  font-size: 1.1rem;
+  letter-spacing: 0.18em;
+  color: var(--secondary);
+}
+
+.notes-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Row, not inline flow: the anchor is a long title and the badge has to stay on the
+   same line beside it rather than being pushed underneath. */
+.notes-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  line-height: 1.5;
+}
+
+.notes-item a {
+  display: flex;
+  gap: 0.9rem;
+  align-items: baseline;
+  min-width: 0;
+}
+
+.notes-item time {
+  flex: 0 0 3.6rem;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.82rem;
+  color: var(--secondary);
+}
+
+.notes-item-title {
+  box-shadow: 0 1px 0 var(--border);
+}
+
+.notes-item a:hover .notes-item-title {
+  box-shadow: 0 1px 0 var(--primary);
+}
+
+/* Pinned right rather than trailing the title, so the badges form one column
+   instead of landing wherever each title happens to end. */
+.notes-badge {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--secondary);
+  vertical-align: 0.1em;
+}
+
+/* -------------------------------------------------------------- single note */
+
+.note {
+  max-width: var(--main-width);
+  margin: 0 auto;
+  padding: var(--gap);
+}
+
+.note-kicker {
+  font-size: 0.78rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--secondary);
+  margin-bottom: 0.4rem;
+}
+
+.note-title {
+  font-size: 1.7rem;
+  line-height: 1.25;
+  margin-bottom: calc(var(--gap) * 1.2);
+}
+
+.note-body p {
+  margin-bottom: 1.1rem;
+}
+
+.note-photos {
+  margin: calc(var(--gap) * 1.2) 0;
+}
+
+.note-photos img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+/* Multi-photo posts were carousels on LinkedIn; a simple grid reads better than
+   rebuilding a slider for the handful of posts that need one. */
+.note-photos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: calc(var(--gap) / 2);
+}
+
+.note-video {
+  position: relative;
+  margin: calc(var(--gap) * 1.2) 0;
+  padding-bottom: 56.25%;
+  height: 0;
+}
+
+.note-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 4px;
+}
+
+.note-footer {
+  margin-top: calc(var(--gap) * 1.5);
+  padding-top: var(--gap);
+  border-top: 1px solid var(--border);
+  font-size: 0.82rem;
+  color: var(--secondary);
+}
+
+.note-footer p {
+  margin-bottom: 0.35rem;
+}
+
+.note-footer a {
+  color: var(--secondary);
+  box-shadow: 0 1px 0 var(--border);
+}
+
+.note-footer a:hover {
+  color: var(--primary);
+  box-shadow: 0 1px 0 var(--primary);
+}
+
+.note-link {
+  overflow-wrap: anywhere;
+}

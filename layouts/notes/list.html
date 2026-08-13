@@ -1,0 +1,31 @@
+{{ define "main" }}
+{{- /* One page, every note, grouped by year. Deliberately not paginated: the whole
+       point of the archive is being able to scan fourteen years at once, and it is
+       a text list — 228 rows is cheaper than the essays it sits next to. */ -}}
+<section class="notes-index">
+  <header class="notes-header">
+    <h1>{{ .Title }}</h1>
+    {{- with .Description }}<p class="notes-deck">{{ . }}</p>{{ end }}
+    {{- $byDate := .Pages.ByDate }}
+    {{- with $byDate }}
+    <p class="notes-count">{{ len . }} notes, {{ (index . 0).Date.Format "2006" }}–{{ (index . (sub (len .) 1)).Date.Format "2006" }}.</p>
+    {{- end }}
+  </header>
+
+  {{- range .Pages.GroupByDate "2006" }}
+  <h2 class="notes-year" id="y{{ .Key }}">{{ .Key }}</h2>
+  <ul class="notes-list">
+    {{- range .Pages }}
+    <li class="notes-item">
+      <a href="{{ .RelPermalink }}">
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2" }}</time>
+        <span class="notes-item-title">{{ .Title }}</span>
+      </a>
+      {{- if .Params.photos }}<span class="notes-badge" title="has photos">photo</span>{{ end }}
+      {{- if isset .Params "youtube" }}<span class="notes-badge" title="has video">video</span>{{ end }}
+    </li>
+    {{- end }}
+  </ul>
+  {{- end }}
+</section>
+{{ end }}
