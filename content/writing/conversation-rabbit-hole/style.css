@@ -1,0 +1,99 @@
+/* A Conversation Rabbit Hole — annotation layer over a full transcript */
+
+.writing-custom:has(.rabbit-intro) {
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.writing-custom:has(.rabbit-intro) .wc-header {
+  max-width: 48rem;
+  margin: 3rem auto 2.25rem;
+}
+
+.writing-custom:has(.rabbit-intro) .wc-title {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: clamp(2.1rem, 6vw, 4rem);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+}
+
+.writing-custom:has(.rabbit-intro) .wc-deck {
+  max-width: 43ch;
+  font-style: normal;
+}
+
+.rabbit-intro {
+  border-left: 4px solid var(--primary);
+  margin: 0 auto 3.5rem;
+  max-width: 46rem;
+  padding: 0.25rem 0 0.25rem 1.25rem;
+}
+
+.rabbit-intro p { margin: 0 0 1rem; }
+.rabbit-label, .rabbit-number {
+  color: var(--secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.rabbit-credit { color: var(--secondary); font-size: 0.9rem; }
+
+.writing-custom:has(.rabbit-intro) .wc-body > h2 {
+  border-top: 1px solid var(--border);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  margin: 3.5rem 0 1.5rem;
+  padding-top: 1rem;
+  text-transform: uppercase;
+}
+
+.rabbit-grid {
+  display: grid;
+  gap: 1px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.rabbit-card {
+  background: var(--theme);
+  padding: 1.4rem;
+}
+.rabbit-card h3 { font-size: 1.25rem; line-height: 1.2; margin: 0.25rem 0 0.8rem; }
+.rabbit-card p { font-size: 1rem; line-height: 1.55; margin: 0 0 0.85rem; }
+.rabbit-card p:last-child { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.79rem; line-height: 1.6; margin-bottom: 0; }
+.rabbit-number { margin-bottom: 0; }
+
+.rabbit-source-link {
+  background: var(--code-bg);
+  border-radius: 0.35rem;
+  font-size: 0.95rem;
+  padding: 1rem 1.1rem;
+}
+
+.rabbit-transcript {
+  font-size: 1.08rem;
+  line-height: 1.78;
+}
+.rabbit-transcript h2 {
+  font-size: 1.45rem;
+  line-height: 1.25;
+  margin: 3.5rem 0 1.25rem;
+}
+.rabbit-transcript p { margin: 0 0 1.35rem; }
+.rabbit-transcript strong { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.84em; letter-spacing: 0.02em; }
+.rabbit-transcript pre {
+  color: var(--secondary);
+  font-family: inherit;
+  font-size: 0.85rem;
+  margin-top: 2.5rem;
+  white-space: pre-wrap;
+}
+
+@media (max-width: 620px) {
+  .rabbit-grid { grid-template-columns: 1fr; }
+  .rabbit-intro { padding-left: 1rem; }
+  .rabbit-transcript { font-size: 1rem; }
+}

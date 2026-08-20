@@ -1,0 +1,12 @@
+{{- $url := "https://conversationswithtyler.com/episodes/daron-acemoglu-2/" -}}
+{{- $source := resources.GetRemote $url -}}
+{{- if not $source -}}
+  {{- errorf "Could not retrieve transcript from %s" $url -}}
+{{- end -}}
+{{- $matches := findRE `(?s)<p><strong>TYLER COWEN:\s*</strong>.*?<pre>Image credit: Bryce Vickmark</pre>` $source.Content 1 -}}
+{{- if eq (len $matches) 0 -}}
+  {{- errorf "Could not isolate the transcript in %s" $url -}}
+{{- end -}}
+<div class="rabbit-transcript">
+  {{ index $matches 0 | safeHTML }}
+</div>
