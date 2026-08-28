@@ -74,3 +74,67 @@ p[id^="a"]:target, a.rh-mark:target {
 }
 .rh-footer a { text-decoration: none; border-bottom: 1px solid var(--border); }
 .rh-footer a:hover { border-bottom-color: currentColor; }
+
+/* ---------- Cut 2: the popover ----------
+   The short version travels inline with the mark, so the desktop hover works
+   with no JavaScript at all. JS is only needed for the touch gesture, where
+   tap-for-popover and tap-to-open-the-page would otherwise collide. */
+.rh-anno { position: relative; }
+
+.rh-pop {
+  position: absolute; z-index: 40; left: 50%; bottom: calc(100% + .55rem);
+  transform: translateX(-50%) translateY(.25rem);
+  width: min(23rem, calc(100vw - 2.5rem));
+  display: flex; flex-direction: column; gap: .5rem;
+  padding: .85rem .95rem;
+  background: var(--entry); color: var(--content);
+  border: 1px solid var(--border); border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.18);
+  font-size: .92rem; line-height: 1.5; text-align: left;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .14s ease, transform .14s ease, visibility .14s;
+}
+.rh-pop-title { font-weight: 700; font-size: .8rem; letter-spacing: .04em; text-transform: uppercase; color: var(--secondary); }
+.rh-pop-short { font-weight: 400; }
+.rh-pop-more { align-self: flex-start; font-size: .88rem; font-weight: 600; text-decoration: none;
+  border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+
+/* Flip below the line when the passage sits near the top of the viewport. */
+.rh-anno.rh-below .rh-pop { bottom: auto; top: calc(100% + .55rem); }
+
+@media (hover: hover) and (pointer: fine) {
+  .rh-anno:hover .rh-pop,
+  .rh-anno:focus-within .rh-pop { opacity: 1; visibility: visible; pointer-events: auto;
+    transform: translateX(-50%) translateY(0); }
+}
+/* Touch: the first tap opens this, a second tap on "Read more" navigates. */
+.rh-anno.is-open .rh-pop { opacity: 1; visibility: visible; pointer-events: auto;
+  transform: translateX(-50%) translateY(0); }
+
+@media (prefers-reduced-motion: reduce) { .rh-pop { transition: none; } }
+
+/* ---------- Cut 2: footnotes, reading, working notes ---------- */
+.rh-body .footnotes { margin-top: 2.5rem; padding-top: 1.2rem; border-top: 1px solid var(--border);
+  font-size: .92rem; color: var(--secondary); }
+.rh-body .footnotes ol { padding-left: 1.2rem; }
+.rh-body .footnotes li { margin: .5rem 0; }
+.rh-body .footnotes li:target { background: color-mix(in srgb, var(--primary) 15%, transparent);
+  border-radius: 4px; scroll-margin-top: 5rem; }
+.rh-body sup[id^="fnref"]:target { background: color-mix(in srgb, var(--primary) 22%, transparent);
+  scroll-margin-top: 5rem; }
+/* Goldmark emits a bare "↩︎"; the spec asks for a "(back)" link. The element and
+   its role="doc-backlink" are untouched, only the visible label changes. */
+.rh-body .footnote-backref { text-decoration: none; margin-left: .4rem; font-size: 0; }
+.rh-body .footnote-backref::after { content: "(back)"; font-size: .82rem;
+  border-bottom: 1px solid var(--border); }
+.rh-body .footnote-backref:hover::after { border-bottom-color: currentColor; }
+
+.rh-reading { margin-top: 2.4rem; padding: 1rem 1.2rem; border: 1px solid var(--border);
+  border-radius: 8px; }
+.rh-reading > summary { cursor: pointer; font-size: .8rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--secondary); font-weight: 700; }
+.rh-notes { margin-top: 1.2rem; padding: 1rem 1.2rem; border: 1px dashed var(--border);
+  border-radius: 8px; background: color-mix(in srgb, var(--secondary) 5%, transparent); }
+.rh-notes > summary { cursor: pointer; font-size: .8rem; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--secondary); font-weight: 700; }
+.rh-notes[open] > summary, .rh-reading[open] > summary { margin-bottom: .8rem; }

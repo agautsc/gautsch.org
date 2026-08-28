@@ -123,12 +123,20 @@ def parse_transcript(vault, pages):
         used = []                      # a paragraph can hold two highlights; the id
         def wrap(m):                   # belongs to the first, or it is duplicated
             inner = inline(m.group(1))
-            if target:
-                idattr = "" if used else f' id="{aid}"'
-                used.append(1)
-                return (f'<a class="rh-mark"{idattr} href="/research/{target["slug"]}/"'
-                        f' data-page="{html.escape(target["title"], quote=True)}">{inner}</a>')
-            return f'<mark class="rh-hl">{inner}</mark>'
+            if not target:
+                return f'<mark class="rh-hl">{inner}</mark>'
+            idattr = "" if used else f' id="{aid}"'
+            used.append(1)
+            href = f'/research/{target["slug"]}/'
+            link = (f'<a class="rh-mark"{idattr} href="{href}"'
+                    f' aria-describedby="pop-{target["slug"]}">{inner}</a>')
+            short = inline(target["short"]) if target.get("short") else ""
+            pop = (f'<span class="rh-pop" id="pop-{target["slug"]}" role="tooltip">'
+                   f'<span class="rh-pop-title">{html.escape(target["title"])}</span>'
+                   f'<span class="rh-pop-short">{short}</span>'
+                   f'<a class="rh-pop-more" href="{href}">Read more &rarr;</a>'
+                   f'</span>')
+            return f'<span class="rh-anno">{link}{pop}</span>'
         out.append({"i": i, "line": r["line"], "html": render_para(md, wrap, aid),
                     "anchor": aid, "pages": [m["page"] for m in mine],
                     "highlighted": "==" in md})

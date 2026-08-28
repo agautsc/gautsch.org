@@ -33,4 +33,40 @@
 
   {{ .Content }}
 </div>
+
+{{- /* Cut 2. Desktop hover is pure CSS; this script exists only for the touch
+       gesture, where tap-for-popover and tap-to-open-the-page collide. On a
+       touch device the first tap opens the popover and the "Read more" button
+       inside it is the second gesture. Also flips the popover below the line
+       when the passage is too near the top of the viewport to show it above. */ -}}
+<script>
+(function () {
+  var coarse = window.matchMedia("(hover: none)");
+  var open = null;
+  function close() { if (open) { open.classList.remove("is-open"); open = null; } }
+  function place(anno) {
+    var r = anno.getBoundingClientRect();
+    anno.classList.toggle("rh-below", r.top < 220);
+  }
+  document.querySelectorAll(".rh-anno").forEach(function (anno) {
+    var mark = anno.querySelector(".rh-mark");
+    if (!mark) return;
+    anno.addEventListener("mouseenter", function () { place(anno); });
+    mark.addEventListener("focus", function () { place(anno); });
+    mark.addEventListener("click", function (e) {
+      if (!coarse.matches) return;          // desktop: let the link do its job
+      if (anno.classList.contains("is-open")) return;
+      e.preventDefault();
+      close();
+      place(anno);
+      anno.classList.add("is-open");
+      open = anno;
+    });
+  });
+  document.addEventListener("click", function (e) {
+    if (open && !open.contains(e.target)) close();
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+})();
+</script>
 {{ end }}

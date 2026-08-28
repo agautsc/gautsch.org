@@ -19,7 +19,25 @@
   <p class="rh-asked">Adam asked: &ldquo;{{ . }}&rdquo;</p>
   {{- end }}
 
-  <div class="rh-body">{{ .Content }}</div>
+  {{- /* "Reading" and "Working notes" are the seams of the draft: what is
+         unverified, what is inference, what draft 2 still needs. They stay on
+         the page -- that is the point of the two-layer format -- but folded, so
+         they do not compete with the answer. Rewritten from the rendered HTML
+         because Goldmark will not parse markdown inside a raw <details> block. */ -}}
+  {{- $c := .Content }}
+  {{- $hasReading := strings.Contains $c "<h2 id=\"reading\">" }}
+  {{- $hasNotes := strings.Contains $c "<h2 id=\"working-notes\">" }}
+  {{- if $hasReading }}
+    {{- $c = replaceRE `<h2 id="reading">\s*Reading\s*</h2>` `<details class="rh-reading"><summary>Reading</summary>` $c }}
+  {{- end }}
+  {{- if $hasNotes }}
+    {{- $close := cond $hasReading "</details>" "" }}
+    {{- $c = replaceRE `<h2 id="working-notes">\s*Working notes\s*</h2>` (printf `%s<details class="rh-notes"><summary>Working notes — what is unverified</summary>` $close) $c }}
+    {{- $c = printf "%s</details>" $c }}
+  {{- else if $hasReading }}
+    {{- $c = printf "%s</details>" $c }}
+  {{- end }}
+  <div class="rh-body">{{ $c | safeHTML }}</div>
 
   {{- /* Eight of these pages carry mermaid diagrams, which Obsidian draws natively
          and Hugo emits as a plain code block. Load the renderer only where there is
