@@ -13,3 +13,7 @@ _linkedin-orphans/
 # The episode audio is NOT committed: the published page plays Mercatus's own
 # file (decided 2026-08-28). This local copy is the build/alignment copy only.
 static/research/*.mp3
+
+# Python bytecode from scripts/
+__pycache__/
+*.pyc
