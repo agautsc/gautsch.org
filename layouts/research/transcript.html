@@ -1,0 +1,36 @@
+{{ define "main" }}
+{{- /* The transcript IS the index for /research/ -- decided 2026-08-27. The old
+       separate index page does not survive. Highlighted passages that have a page
+       behind them are plain links: the browser's back button then returns the
+       reader to the exact spot, which is why v1 needs no return machinery. */ -}}
+{{- with resources.Get "css/research.css" }}<style>{{ .Content | safeCSS }}</style>{{ end }}
+<div class="rh-wrap">
+  <header class="rh-header">
+    <p class="rh-kicker">A reader's edition</p>
+    <h1 class="rh-title">{{ .Title }}</h1>
+    {{- with .Params.description }}<p class="rh-deck">{{ . }}</p>{{ end }}
+    <p class="rh-credit">
+      Original conversation:
+      <a href="{{ .Params.source_url }}" rel="nofollow">Tyler Cowen and Daron Acemoglu,
+      <em>Conversations with Tyler</em>, Ep.&nbsp;286</a>. Recorded July&nbsp;15,&nbsp;2026.
+      Reproduced with attribution and a link, following
+      <a href="https://x.com/tylercowen/status/2090483143736492125" rel="nofollow">Tyler Cowen's
+      stated reuse guidance</a>. Annotations by Adam Gautsch.
+    </p>
+  </header>
+
+  {{- $pages := where site.RegularPages "Section" "research" }}
+  {{- with $pages }}
+  <nav class="rh-list" aria-label="The rabbit holes">
+    <h2>{{ len . }} rabbit holes</h2>
+    <ol>
+      {{- range sort . "Title" }}
+      <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+      {{- end }}
+    </ol>
+  </nav>
+  {{- end }}
+
+  {{ .Content }}
+</div>
+{{ end }}

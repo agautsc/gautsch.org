@@ -1,0 +1,113 @@
+---
+title: "The Printing Press - How Long Was the Adjustment"
+short_version: |
+  Adam read the exchange correctly: Acemoglu concedes the printing press had a violent adjustment period and argues it is over. The uncomfortable number is how long it took. Depending on where you put the endpoint, **130 to 250 years**, and the middle of it contains the two deadliest religious conflicts in European history. Social media is roughly **20 years old**. If the printing press is the right analogy, we are not near the end of anything. And there is a second finding hiding in the timeline: the adjustment was not people getting used to it. It was *institutions being built* — censorship regimes first, then copyright, libel law, and a professionalized press. That matters a lot for Acemoglu's argument, because it means "we adjusted" is not an argument against regulating; the adjustment largely *was* regulation.
+asked: "I'd love a rabbit hole giving me a timeline around the printing press adoption and how long it took to normalize the technology… How long do we believe that to have been before the adjustment was over? Do we believe that adjustment is going to be faster or slower for social media? Was the printing press adjustment more or less negative than social media?"
+transcript_anchor: "a14"
+models: ["Claude"]
+draft: false
+---
+
+**Adam asked:** *"I'd love a rabbit hole giving me a timeline around the printing press adoption and how long it took to normalize the technology… How long do we believe that to have been before the adjustment was over? Do we believe that adjustment is going to be faster or slower for social media? Was the printing press adjustment more or less negative than social media?"*
+
+---
+
+## The timeline
+
+```mermaid
+timeline
+    title From Mainz to a settled press
+    1450 : Gutenberg's press at Mainz : Movable type in Europe
+    1455 : The Gutenberg Bible
+    1450-1500 : The incunabula period : Book prices fall by two-thirds : Presses spread across Europe
+    1517 : Luther's 95 Theses : Presses in 200+ European cities. The first viral text
+    1524-1525 : German Peasants' War : ~100,000 dead
+    1545-1563 : Council of Trent : The institutional counter-move
+    1559 : Index Librorum Prohibitorum : Formal Catholic censorship
+    1562-1598 : French Wars of Religion : 2-4 million dead
+    1572 : St. Bartholomew's Day Massacre
+    1618-1648 : Thirty Years' War : 4.5-8 million dead : German lands lose 20-35% of population
+    1648 : Peace of Westphalia : Confessional settlement
+    1662 : English Licensing Act : State pre-publication control
+    1695 : Licensing Act lapses : England ends pre-publication censorship
+    1710 : Statute of Anne : Copyright as we know it
+    1791 : First Amendment
+```
+
+## So how long?
+
+There are three defensible endpoints, and the choice of endpoint *is* the argument:
+
+| Endpoint | Reasoning | Elapsed from 1450 |
+|---|---|---|
+| **1648** — Peace of Westphalia | The religious wars the press amplified are over | **~200 years** |
+| **1695** — English Licensing Act lapses | The state gives up pre-publication control; free press becomes normal | **~245 years** |
+| **1648, dated from Luther** | Most generous reading: the adjustment starts when the technology first goes political, not when it's invented | **~130 years** |
+
+Even the friendliest number is **over a century**. Acemoglu's own framing — "think of American society or European society or even India or Latin America in the 1980s… human community was very well adjusted" — puts the settled state at roughly *five hundred* years after Gutenberg.
+
+## Was it worse than social media? Almost certainly, yes — and that's Cowen's point
+
+The body count is not close. The Thirty Years' War killed somewhere between 4.5 and 8 million people and depopulated parts of Germany by a fifth to a third. The French Wars of Religion killed millions more. No serious estimate puts social media's direct harms in that range.
+
+Cowen presses the case harder than the religious wars, and this is the strongest thing he says in the exchange:
+
+> *"Say book markets and the printing press, they weaponized Marx and Lenin for many decades. That's an algorithm in the very broad sense that led to terrible consequences, much worse than whatever you might think current social media have done, and yet we believe in free speech for the printing press."*
+
+That is a serious argument. The 20th century's totalitarian catastrophes were print-borne. If your standard for restricting a communication technology is "it has been used to cause mass death," print fails the test far worse than TikTok.
+
+**Acemoglu's answer is not "print was fine."** He grants all of it — *"I don't know what my reaction to that would have been"* if he'd lived through the religious wars. His answer is that **algorithms are categorically different**, and the difference is targeting:
+
+> *"Once algorithms can see, 'Tyler has a weakness for this specific thing, I can fan the flames,' I think that's a completely new world."*
+
+A book is broadcast: it says the same thing to everyone, and you have to go get it. An algorithmic feed is personalized and adversarial: it selects, for you specifically, the content most likely to capture you. His proposed remedy follows exactly from that distinction — not banning speech, but requiring chronological, non-algorithmic feeds. *"That's like the Myspace kind of model."*
+
+Whether that distinction holds is the crux. Two ways to attack it: propaganda has always been targeted at susceptible populations (print runs aimed at particular regions, languages, classes), so the difference may be one of degree; and conversely, personalization at individual scale with real-time feedback may be a genuine phase change that has no print analogue.
+
+## Faster or slower this time? — arguments both ways
+
+**Faster:**
+- We have institutions now — regulators, courts, a body of media law — that took centuries to invent the first time. The adjustment does not start from zero.
+- Adoption itself was near-instant, so the reaction cycle compresses too.
+- We can see what is happening. Nobody in 1520 had a research literature on the effects of pamphlets.
+
+**Slower, or never:**
+- The technology keeps changing. The printing press was largely static for centuries; recommender systems are re-engineered continuously, and each change resets the adaptation.
+- The adaptation is adversarial. Print did not optimize against your resistance; a feed does.
+- The print settlement required the *state* to give up control (1695). The current analogue would require a handful of firms to give up optimization, and nothing forces them to.
+
+**My honest read:** the printing press analogy is better at establishing that adjustments are long and violent than at predicting this one. It mostly refutes the complacent reading of itself — "we adjusted to books, we'll adjust to this" is true only if you are prepared to accept a 150-year timeline with wars in the middle.
+
+## The finding worth taking away
+
+Reading the timeline as a whole, the adjustment to print was not primarily people developing better habits. It was, in order:
+
+1. **Censorship** (Index 1559, licensing regimes) — crude, state-run, largely failed
+2. **Political settlement** (Westphalia 1648) — the wars ended by treaty, not by adaptation
+3. **Property and liability law** (Statute of Anne 1710, libel doctrine) — who owns and who is answerable
+4. **Professional norms** (much later — editors, mastheads, the idea of journalism)
+5. **Constitutional protection** (1791) — *last*, and only once the rest existed
+
+**Acemoglu is proposing step 3 and Cowen is defending step 5.** They are arguing about different points on a sequence that historically took two centuries to traverse — and the historical order runs against Cowen's implicit assumption that free speech came first and worked.
+
+## Reading
+
+- Dittmar, ["Information Technology and Economic Change: The Impact of the Printing Press"](https://people.bu.edu/chamley/764-23/Dittmar.pdf), *QJE* 2011 — cities adopting print grew ~21 pp faster 1500–1600
+- Rubin, ["Printing and Protestants"](https://digitalcommons.chapman.edu/cgi/viewcontent.cgi?article=1099&context=economics_articles) — towns with a press by 1500 were **52 pp** more likely to adopt the Reformation by 1530
+- Eisenstein, *The Printing Press as an Agent of Change* (1979) — the canonical account
+- Pettegree, *The Book in the Renaissance* (2010) — the commercial reality, a useful corrective to Eisenstein
+- Wikipedia, [Propaganda during the Reformation](https://en.wikipedia.org/wiki/Propaganda_during_the_Reformation) — orientation
+
+---
+
+## Working notes
+
+**Numbers.** Death tolls for the Thirty Years' War and the French Wars of Religion are genuinely contested — the ranges given are the conventional spans, not precise figures, and the German population loss figure varies enormously by region and by whether you count plague and famine as war deaths (most historians do). The Dittmar and Rubin coefficients are from their published abstracts and are solid.
+
+**A weakness in my own framing.** I've treated "adjustment over" as a single event, which is too clean. Print censorship in France persisted past 1695; the Index was not abolished until 1966. If you use the Index as the endpoint, the adjustment took **five centuries**. I picked endpoints that seemed defensible, but the choice is contestable and I'd rather you saw the seam than have it hidden.
+
+**Confounding worth stating plainly:** the printing press did not *cause* the religious wars in a simple sense. The Reformation had causes of its own, and print amplified and accelerated it. Any comparison to social media inherits the same problem — it is very hard to separate the technology from what it carried.
+
+**Draft 2 could add:** a side-by-side adoption-curve comparison (share of European cities with a press, 1450–1600, vs. share of adults on social platforms, 2004–2026). The print side is available from the incunabula short-title catalogue. That would answer the "faster or slower" question with a picture instead of an argument.
+
+**Related:** [[Social Contract Theory and Its Critics]] — the free-speech-absolutism question runs on the same tension between a floor of rights and a community's room to regulate.

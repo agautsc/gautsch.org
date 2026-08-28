@@ -1,0 +1,56 @@
+{{ define "main" }}
+{{- /* One rabbit hole. The short version comes from front matter (lifted by
+       scripts/import_research.py from the vault page's "The short version"
+       block) so the same sentence can feed the popover in Cut 2 without being
+       written twice. Model credit is page-level and honest: it names only who
+       actually worked on the page. */ -}}
+{{- with resources.Get "css/research.css" }}<style>{{ .Content | safeCSS }}</style>{{ end }}
+<article class="rh-page">
+  <header class="rh-header">
+    <p class="rh-kicker">A rabbit hole</p>
+    <h1 class="rh-title">{{ .Title }}</h1>
+  </header>
+
+  {{- with .Params.short_version }}
+  <div class="rh-short">{{ . | markdownify }}</div>
+  {{- end }}
+
+  {{- with .Params.asked }}
+  <p class="rh-asked">Adam asked: &ldquo;{{ . }}&rdquo;</p>
+  {{- end }}
+
+  <div class="rh-body">{{ .Content }}</div>
+
+  {{- /* Eight of these pages carry mermaid diagrams, which Obsidian draws natively
+         and Hugo emits as a plain code block. Load the renderer only where there is
+         something to render. NOTE: mermaid is ~1MB; before this is published the
+         right answer is pre-rendering these to SVG at build time, not shipping the
+         library. Fine for a draft, not for the page-weight budget. */ -}}
+  {{- if in .RawContent "```mermaid" }}
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    const dark = document.body.classList.contains("dark");
+    mermaid.initialize({ startOnLoad: false, theme: dark ? "dark" : "default" });
+    document.querySelectorAll("pre > code.language-mermaid").forEach((c) => {
+      const pre = document.createElement("pre");
+      pre.className = "mermaid";
+      pre.textContent = c.textContent;
+      c.parentElement.replaceWith(pre);
+    });
+    mermaid.run();
+  </script>
+  {{- end }}
+
+  <footer class="rh-footer">
+    <span>
+      {{- with .Params.models }}Built in conversation with
+        {{- range $i, $m := . }}{{ if $i }} and {{ else }} {{ end }}{{ $m }}{{ end }}.
+      {{- end }}
+    </span>
+    <span>
+      <a href="/research/{{ with .Params.transcript_anchor }}#{{ . }}{{ end }}">&larr;
+      Back to the transcript</a>
+    </span>
+  </footer>
+</article>
+{{ end }}

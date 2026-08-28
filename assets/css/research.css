@@ -1,0 +1,76 @@
+/* /research/ — the annotated-transcript artifact.
+   Colours come from PaperMod's own custom properties so light/dark follow the
+   site toggle without this file knowing which mode is active. */
+
+.rh-wrap { max-width: 46rem; margin: 0 auto; }
+
+.rh-header { margin: 0 0 2.5rem; }
+.rh-kicker {
+  font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--secondary); margin: 0 0 .6rem;
+}
+.rh-title { font-size: clamp(1.9rem, 5vw, 2.7rem); line-height: 1.1; margin: 0 0 .8rem; }
+.rh-deck { font-size: 1.12rem; line-height: 1.6; color: var(--secondary); margin: 0 0 1.2rem; }
+.rh-credit { font-size: .85rem; line-height: 1.6; color: var(--secondary); margin: 0; }
+
+/* the index of rabbit holes, kept above the transcript so the artifact is
+   navigable before you have scrolled an hour of talk */
+.rh-list { margin: 2rem 0 3rem; padding: 1.2rem 1.4rem; border: 1px solid var(--border); border-radius: 8px; }
+.rh-list h2 { font-size: .8rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--secondary); margin: 0 0 .9rem; }
+.rh-list ol { margin: 0; padding-left: 1.2rem; }
+.rh-list li { margin: .35rem 0; line-height: 1.45; }
+.rh-list a { text-decoration: none; border-bottom: 1px solid var(--border); }
+.rh-list a:hover { border-bottom-color: currentColor; }
+
+.rh-transcript { font-size: 1.03rem; line-height: 1.75; }
+.rh-transcript p { margin: 0 0 1.15rem; }
+.rh-speaker {
+  font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--secondary); margin-right: .3rem; white-space: nowrap;
+}
+
+/* A highlight Adam marked but that has no page behind it yet. */
+mark.rh-hl { background: color-mix(in srgb, var(--primary) 12%, transparent); color: inherit;
+  padding: .08em .1em; border-radius: 2px; }
+
+/* A highlight that opens a page. Cut 1: a plain link, so the browser's own back
+   button returns the reader to this spot -- no custom return machinery. */
+a.rh-mark {
+  background: color-mix(in srgb, var(--primary) 14%, transparent);
+  color: inherit; text-decoration: none;
+  border-bottom: 2px solid color-mix(in srgb, var(--primary) 45%, transparent);
+  padding: .08em .1em; border-radius: 2px;
+}
+a.rh-mark:hover { background: color-mix(in srgb, var(--primary) 26%, transparent);
+  border-bottom-color: var(--primary); }
+a.rh-mark:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+/* A paragraph anchored by a page that has no highlight of its own. */
+p[id^="a"]:target, a.rh-mark:target {
+  background: color-mix(in srgb, var(--primary) 22%, transparent);
+  scroll-margin-top: 5rem;
+}
+
+/* ---------- a single rabbit-hole page ---------- */
+.rh-page { max-width: 44rem; margin: 0 auto; }
+.rh-short {
+  font-size: 1.1rem; line-height: 1.65; margin: 0 0 1.6rem; padding: 1rem 1.2rem;
+  border-left: 3px solid var(--primary);
+  background: color-mix(in srgb, var(--primary) 6%, transparent);
+  border-radius: 0 6px 6px 0;
+}
+.rh-asked { font-size: .95rem; color: var(--secondary); font-style: italic; margin: 0 0 2rem; }
+.rh-body { line-height: 1.7; }
+.rh-body h2 { margin-top: 2.2rem; font-size: 1.25rem; }
+.rh-body h3 { margin-top: 1.6rem; font-size: 1.05rem; }
+.rh-body table { display: block; overflow-x: auto; max-width: 100%; border-collapse: collapse; }
+.rh-body td, .rh-body th { border: 1px solid var(--border); padding: .4rem .6rem; text-align: left; }
+.rh-body pre { overflow-x: auto; }
+.rh-footer {
+  margin-top: 3rem; padding-top: 1.2rem; border-top: 1px solid var(--border);
+  font-size: .87rem; color: var(--secondary); display: flex; flex-wrap: wrap;
+  gap: .6rem 1.4rem; justify-content: space-between;
+}
+.rh-footer a { text-decoration: none; border-bottom: 1px solid var(--border); }
+.rh-footer a:hover { border-bottom-color: currentColor; }
