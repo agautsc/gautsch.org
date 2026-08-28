@@ -9,3 +9,7 @@ resources/_gen/
 #   _linkedin-orphans — media whose post is absent from the Shares export
 _linkedin-video/
 _linkedin-orphans/
+
+# The episode audio is NOT committed: the published page plays Mercatus's own
+# file (decided 2026-08-28). This local copy is the build/alignment copy only.
+static/research/*.mp3

@@ -138,3 +138,37 @@ p[id^="a"]:target, a.rh-mark:target {
 .rh-notes > summary { cursor: pointer; font-size: .8rem; letter-spacing: .1em;
   text-transform: uppercase; color: var(--secondary); font-weight: 700; }
 .rh-notes[open] > summary, .rh-reading[open] > summary { margin-bottom: .8rem; }
+
+/* ---------- Cut 3: the player and play-while-highlighting ---------- */
+.rh-chapter { margin: 2.6rem 0 1.2rem; font-size: 1.15rem; letter-spacing: .02em;
+  padding-top: 1rem; border-top: 1px solid var(--border); scroll-margin-top: 5rem; }
+
+.rh-player {
+  position: sticky; bottom: 0; z-index: 50; margin: 2rem -1rem 0;
+  display: flex; align-items: center; gap: .9rem; flex-wrap: wrap;
+  padding: .7rem 1rem; background: var(--entry); border-top: 1px solid var(--border);
+  border-radius: 10px 10px 0 0; box-shadow: 0 -4px 20px rgba(0,0,0,.10);
+  font-size: .9rem;
+}
+.rh-play { cursor: pointer; font: inherit; font-weight: 600; padding: .4rem 1.1rem;
+  border-radius: 999px; border: 1px solid var(--border); background: var(--theme);
+  color: var(--primary); min-width: 5.2rem; }
+.rh-play:hover { border-color: var(--primary); }
+.rh-time { color: var(--secondary); font-variant-numeric: tabular-nums; }
+.rh-follow { color: var(--secondary); display: inline-flex; align-items: center; gap: .35rem;
+  cursor: pointer; margin-left: auto; }
+
+/* The paragraph being spoken. Deliberately a different treatment from a
+   highlight -- one means "Adam marked this", the other means "this is playing". */
+.rh-transcript .rh-now {
+  background: color-mix(in srgb, var(--primary) 9%, transparent);
+  box-shadow: -0.75rem 0 0 color-mix(in srgb, var(--primary) 9%, transparent),
+               0.75rem 0 0 color-mix(in srgb, var(--primary) 9%, transparent);
+  border-radius: 2px; transition: background .25s ease;
+}
+.rh-seekable { cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { .rh-transcript .rh-now { transition: none; } }
+@media (max-width: 640px) {
+  .rh-player { margin: 1.5rem -.5rem 0; gap: .6rem; }
+  .rh-follow { margin-left: 0; }
+}

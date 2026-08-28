@@ -162,6 +162,12 @@ def render_para(md, wrap, aid=None):
         else:
             buf.append(wrap(re.match(r"(.*)", t, re.S)))
     s = "".join(buf)
+    # the transcript carries "## On automation"-style section headings that match
+    # the episode's own chapter markers; they are headings, not prose
+    h = re.match(r"##\s+(.+?)\s*$", md.strip(), re.S)
+    if h:
+        anchor = f' id="{aid}"' if aid else ""
+        return f'<h2 class="rh-chapter"{anchor}>{inline(h.group(1))}</h2>'
     carries_id = aid and 'id="' not in s
     idattr = f' id="{aid}"' if carries_id else ""
     m = re.match(r"<strong>([A-Z][A-Z\s.]+:)</strong>\s*(.*)$", s, re.S)
@@ -201,6 +207,10 @@ def main():
     idx.write('description: "Tyler Cowen and Daron Acemoglu, annotated. The highlighted passages open the places I stopped to learn more."\n')
     idx.write("layout: transcript\n")
     idx.write(f'source_url: "{EPISODE_URL}"\n')
+    # The published page should play Mercatus's own file (decided 2026-08-28) --
+    # nothing is rehosted. This local path is the draft copy and is gitignored;
+    # swap in the Mercatus URL before publish.
+    idx.write('audio_url: "/research/episode.mp3"\n')
     idx.write("draft: false\n")
     idx.write("---\n\n")
     idx.write('<div class="rh-transcript">\n' + tbody + "\n</div>\n")
