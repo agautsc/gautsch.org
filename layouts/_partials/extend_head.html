@@ -1,0 +1,18 @@
+{{- /* Overrides the theme's (empty) extend_head. Only /research pulls webfonts:
+       the notebook skin is scoped to that section, and the rest of the site keeps
+       its system stack. Newsreader is the body serif; Caveat carries the
+       handwritten register (Adam's questions, margin notes, corrections) and is
+       never used for body copy — see Decisions.md, 2026-09-04.
+
+       ⚠ MEASURED 2026-09-04. Requesting Newsreader's `opsz` axis costs 345 KB of
+       latin webfont; dropping it costs 128 KB for the same three files, because
+       Google then serves the wght-only variable cut (roman 56.7 / italic 23.8 /
+       Caveat 47.7). The optical-size axis is not worth 217 KB here. 128 KB is
+       still over the 60 KB the budget allocates to fonts — self-hosting these as
+       latin-subsetted woff2 in assets/ is the fix, and is Adam's call, not a
+       number to quietly raise. Weights 400/600/700 resolve to ONE roman file. */ -}}
+{{- if eq .Section "research" }}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400&family=Newsreader:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+{{- end }}

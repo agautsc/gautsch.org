@@ -25,6 +25,14 @@
          they do not compete with the answer. Rewritten from the rendered HTML
          because Goldmark will not parse markdown inside a raw <details> block. */ -}}
   {{- $c := .Content }}
+  {{- /* The body repeats the question that front matter already renders as
+         .rh-asked, followed by a rule. Both were being shown all along -- invisible
+         while they were set in the same type, obvious once one of them is
+         handwritten. Strip the body's copy and keep the front-matter one, which is
+         the field the popover reads too. Only when .Params.asked actually rendered. */ -}}
+  {{- with .Params.asked }}
+    {{- $c = replaceRE `(?s)\A\s*<p><strong>Adam asked:</strong>.*?</p>\s*(?:<hr\s*/?>)?\s*` "" $c }}
+  {{- end }}
   {{- $hasReading := strings.Contains $c "<h2 id=\"reading\">" }}
   {{- $hasNotes := strings.Contains $c "<h2 id=\"working-notes\">" }}
   {{- if $hasReading }}

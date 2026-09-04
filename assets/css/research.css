@@ -1,174 +1,366 @@
-/* /research/ — the annotated-transcript artifact.
-   Colours come from PaperMod's own custom properties so light/dark follow the
-   site toggle without this file knowing which mode is active. */
+/* /research/ — the annotated-transcript artifact, skinned as Adam's notebook.
+   Art direction settled 2026-09-04 (Decisions.md). One rule governs everything:
 
-.rh-wrap { max-width: 46rem; margin: 0 auto; }
+       PRINTED IS THE SOURCE. HANDWRITTEN IS ADAM.
 
-.rh-header { margin: 0 0 2.5rem; }
+   Anything that came from the Mercatus transcript is set in type. Anything Adam
+   added — highlights, questions, margin notes, corrections — is in the
+   ink-and-marker register. The reader learns that code in about ten seconds and
+   never needs a legend.
+
+   This file is loaded ONLY by layouts/research/*.html, so `body` selectors here
+   are section-scoped in practice. It deliberately no longer *consumes* PaperMod's
+   custom properties — it overrides them, so the surrounding chrome (nav, footer)
+   sits on the same paper instead of fighting it. /research is light-only by
+   decision, so .dark is neutralised rather than themed. */
+
+/* ---------- tokens ---------- */
+
+body,
+body.dark {
+  /* The notebook, measured off Adam's own photographs: white-balanced against the
+     desk in frame, then brightness-normalised out of shade. Derived values, not
+     eyedropped — see Knowledge/AI/Sample-The-Object-Not-The-Description.md */
+  --rh-page:        #F6F0E2;  /* the ivory page */
+  --rh-stock:       #FBF7EC;  /* insets: the short version, the contents block */
+  --rh-pop:         #FDFBF4;  /* a slip of paper laid on top */
+  --rh-dot:         #CBC6B2;  /* the dot grid */
+  --rh-rule:        #DED5BE;
+  --rh-rule-soft:   #C6BCA2;
+
+  --rh-text:        #241F1B;  /* warm near-black, never #000 */
+  --rh-text-2:      #3A332B;
+  --rh-muted:       #6E6455;  /* the only secondary tone: 5.1:1 on the page */
+
+  --rh-ink:         #33415C;  /* the G2 as it actually reads on that paper */
+  --rh-ink-deep:    #1F2942;
+
+  /* Pumpkin is a FILL colour: at #CC6B2C it is only 3.2:1 on ivory, so anything
+     set as text uses the darkened cut (5.1:1). Two tokens, one decision. */
+  --rh-accent:      #CC6B2C;
+  --rh-accent-ink:  #9B5121;
+
+  --rh-marker:      rgba(242, 193, 78, .58);
+  --rh-marker-hi:   rgba(242, 193, 78, .78);
+
+  --rh-serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --rh-hand:  "Caveat", "Bradley Hand", "Segoe Script", cursive;
+
+  /* PaperMod's own variables, repointed so the site chrome joins the page. */
+  --theme:     var(--rh-page);
+  --entry:     var(--rh-stock);
+  --primary:   var(--rh-text);
+  --secondary: var(--rh-muted);
+  --tertiary:  var(--rh-rule);
+  --content:   var(--rh-text);
+  --border:    var(--rh-rule);
+  --code-bg:   var(--rh-stock);
+}
+
+body {
+  background-color: var(--rh-page);
+  /* the dotted page, as a gradient: zero bytes, and it tiles for free */
+  background-image: radial-gradient(var(--rh-dot) 1.1px, transparent 1.2px);
+  background-size: 23px 23px;
+  font-family: var(--rh-serif);
+  color: var(--rh-text);
+}
+
+/* Light-only by decision. The toggle is hidden rather than left inert, so nobody
+   clicks a control that does nothing. */
+body #theme-toggle { display: none; }
+
+.rh-wrap, .rh-page { max-width: 42rem; margin: 0 auto; }
+
+/* ---------- the masthead ---------- */
+
+.rh-header { margin: 0 0 2.6rem; }
+
 .rh-kicker {
-  font-size: .78rem; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--secondary); margin: 0 0 .6rem;
+  font-size: .74rem; letter-spacing: .13em; text-transform: uppercase;
+  font-weight: 600; color: var(--rh-accent-ink); margin: 0 0 .7rem;
 }
-.rh-title { font-size: clamp(1.9rem, 5vw, 2.7rem); line-height: 1.1; margin: 0 0 .8rem; }
-.rh-deck { font-size: 1.12rem; line-height: 1.6; color: var(--secondary); margin: 0 0 1.2rem; }
-.rh-credit { font-size: .85rem; line-height: 1.6; color: var(--secondary); margin: 0; }
 
-/* the index of rabbit holes, kept above the transcript so the artifact is
-   navigable before you have scrolled an hour of talk */
-.rh-list { margin: 2rem 0 3rem; padding: 1.2rem 1.4rem; border: 1px solid var(--border); border-radius: 8px; }
-.rh-list h2 { font-size: .8rem; letter-spacing: .12em; text-transform: uppercase;
-  color: var(--secondary); margin: 0 0 .9rem; }
-.rh-list ol { margin: 0; padding-left: 1.2rem; }
-.rh-list li { margin: .35rem 0; line-height: 1.45; }
-.rh-list a { text-decoration: none; border-bottom: 1px solid var(--border); }
-.rh-list a:hover { border-bottom-color: currentColor; }
+.rh-title {
+  font-size: clamp(2.1rem, 5.4vw, 3.1rem); line-height: 1.05; font-weight: 500;
+  letter-spacing: -.015em; margin: 0 0 .7rem; color: var(--rh-text);
+  text-wrap: pretty;
+}
 
-.rh-transcript { font-size: 1.03rem; line-height: 1.75; }
-.rh-transcript p { margin: 0 0 1.15rem; }
+/* The deck is Adam talking about his own artifact, so it is in his hand. */
+.rh-deck {
+  font-family: var(--rh-hand); font-size: 1.6rem; line-height: 1.32;
+  color: var(--rh-ink); margin: .2rem 0 1.1rem; max-width: 30ch;
+}
+
+.rh-credit { font-size: .92rem; line-height: 1.62; color: var(--rh-muted); margin: 0; max-width: 58ch; }
+
+/* ---------- the contents block: the notebook's own index page ---------- */
+
+.rh-list {
+  margin: 2.2rem 0 3rem; padding: 1.4rem 1.6rem 1.3rem;
+  background: var(--rh-stock); border: 1px solid var(--rh-rule);
+  box-shadow: 2px 3px 0 rgba(36, 31, 27, .05);
+}
+.rh-list h2 {
+  font-size: .74rem; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--rh-muted); margin: 0 0 .9rem; font-weight: 600;
+}
+.rh-list ol {
+  margin: 0; padding: 0; list-style: none; counter-reset: rh-hole;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem 2rem;
+}
+@media (max-width: 46rem) { .rh-list ol { grid-template-columns: 1fr; } }
+.rh-list li { counter-increment: rh-hole; margin: 0; line-height: 1.4; }
+.rh-list a {
+  display: flex; align-items: baseline; gap: .5rem;
+  text-decoration: none; color: var(--rh-text); border: 0;
+}
+/* Leuchtturm numbers its pages; so does this. The number is written, not printed. */
+.rh-list a::after {
+  content: counter(rh-hole, decimal-leading-zero);
+  margin-left: auto; font-family: var(--rh-hand); font-size: 1.05rem;
+  color: var(--rh-ink); flex-shrink: 0;
+}
+.rh-list a:hover { color: var(--rh-ink-deep); text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- the transcript ---------- */
+
+.rh-transcript { font-size: 1.24rem; line-height: 1.72; }
+.rh-transcript p { margin: 0 0 1.25rem; }
+
 .rh-speaker {
-  font-size: .74rem; letter-spacing: .08em; text-transform: uppercase;
-  color: var(--secondary); margin-right: .3rem; white-space: nowrap;
+  font-family: var(--rh-serif);
+  font-size: .74rem; letter-spacing: .13em; text-transform: uppercase;
+  font-weight: 600; color: var(--rh-muted); margin-right: .4rem; white-space: nowrap;
 }
 
-/* A highlight Adam marked but that has no page behind it yet. */
-mark.rh-hl { background: color-mix(in srgb, var(--primary) 12%, transparent); color: inherit;
-  padding: .08em .1em; border-radius: 2px; }
-
-/* A highlight that opens a page. Cut 1: a plain link, so the browser's own back
-   button returns the reader to this spot -- no custom return machinery. */
+/* A highlight Adam marked but that has no page behind it yet: marker only. The
+   uneven gradient stops are what stop it reading as a rectangular <mark>. */
+mark.rh-hl,
 a.rh-mark {
-  background: color-mix(in srgb, var(--primary) 14%, transparent);
-  color: inherit; text-decoration: none;
-  border-bottom: 2px solid color-mix(in srgb, var(--primary) 45%, transparent);
-  padding: .08em .1em; border-radius: 2px;
+  background-color: transparent;
+  background-image: linear-gradient(101deg,
+    rgba(242, 193, 78, 0) .4%, var(--rh-marker) 1.2%,
+    var(--rh-marker) 96.5%, rgba(242, 193, 78, 0) 98%);
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+  color: inherit; padding: .06em .12em; border-radius: 0;
 }
-a.rh-mark:hover { background: color-mix(in srgb, var(--primary) 26%, transparent);
-  border-bottom-color: var(--primary); }
-a.rh-mark:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+/* A highlight that opens a page: marker PLUS an ink underline. Still a plain
+   link, so the browser's back button remains the return machinery. */
+a.rh-mark {
+  text-decoration: none;
+  border-bottom: 1.5px solid rgba(51, 65, 92, .55);
+}
+a.rh-mark:hover {
+  background-image: linear-gradient(101deg,
+    rgba(242, 193, 78, 0) .4%, var(--rh-marker-hi) 1.2%,
+    var(--rh-marker-hi) 96.5%, rgba(242, 193, 78, 0) 98%);
+  border-bottom-color: var(--rh-ink);
+}
+a.rh-mark:focus-visible { outline: 2px solid var(--rh-ink); outline-offset: 2px; }
 
 /* A paragraph anchored by a page that has no highlight of its own. */
 p[id^="a"]:target, a.rh-mark:target {
-  background: color-mix(in srgb, var(--primary) 22%, transparent);
+  background-color: var(--rh-marker-hi);
   scroll-margin-top: 5rem;
 }
 
-/* ---------- a single rabbit-hole page ---------- */
-.rh-page { max-width: 44rem; margin: 0 auto; }
+/* ---------- a single rabbit hole ---------- */
+
 .rh-short {
-  font-size: 1.1rem; line-height: 1.65; margin: 0 0 1.6rem; padding: 1rem 1.2rem;
-  border-left: 3px solid var(--primary);
-  background: color-mix(in srgb, var(--primary) 6%, transparent);
-  border-radius: 0 6px 6px 0;
+  font-size: 1.2rem; line-height: 1.62; margin: 0 0 1.8rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--rh-stock); border: 1px solid var(--rh-rule);
+  box-shadow: 2px 3px 0 rgba(36, 31, 27, .05);
+  color: var(--rh-text);
 }
-.rh-asked { font-size: .95rem; color: var(--secondary); font-style: italic; margin: 0 0 2rem; }
-.rh-body { line-height: 1.7; }
-.rh-body h2 { margin-top: 2.2rem; font-size: 1.25rem; }
-.rh-body h3 { margin-top: 1.6rem; font-size: 1.05rem; }
+
+/* Adam's own question, in Adam's own hand. */
+.rh-asked {
+  font-family: var(--rh-hand); font-style: normal;
+  font-size: 1.5rem; line-height: 1.32; color: var(--rh-ink);
+  margin: 0 0 2.2rem;
+}
+
+.rh-body { line-height: 1.74; font-size: 1.16rem; }
+/* PaperMod's reset zeroes p/ul/ol margins globally, and .rh-body sits outside
+   .post-content so none of the theme's prose spacing reaches it. Set it here or
+   every paragraph on a rabbit-hole page runs into the next one. */
+.rh-body p { margin: 0 0 1.15rem; }
+.rh-body ul, .rh-body ol { margin: 0 0 1.15rem; padding-left: 1.4rem; }
+.rh-body li { margin: .3rem 0; }
+.rh-body li > ul, .rh-body li > ol { margin: .3rem 0 .3rem; }
+.rh-body hr { border: 0; border-top: 1px solid var(--rh-rule); margin: 2rem 0; }
+.rh-body h2 { margin: 2.4rem 0 .9rem; font-size: 1.5rem; font-weight: 600; }
+.rh-body h3 { margin: 1.7rem 0 .7rem; font-size: 1.18rem; font-weight: 600; }
+.rh-body blockquote {
+  margin: 1.9rem 0; padding-left: 1.4rem;
+  border-left: 3px solid var(--rh-accent);
+  font-style: italic; color: var(--rh-text-2);
+}
 .rh-body table { display: block; overflow-x: auto; max-width: 100%; border-collapse: collapse; }
-.rh-body td, .rh-body th { border: 1px solid var(--border); padding: .4rem .6rem; text-align: left; }
-.rh-body pre { overflow-x: auto; }
+.rh-body td, .rh-body th { border: 1px solid var(--rh-rule); padding: .4rem .6rem; text-align: left; }
+.rh-body pre { overflow-x: auto; background: var(--rh-stock); border: 1px solid var(--rh-rule); }
+
+/* A correction: the wrong reading struck through, the fix written over it in ink.
+   Approved 2026-09-04 as a first-class device — it is how a page shows that draft 1
+   was wrong and what replaced it, which is what the working-notes layer is for.
+   Markup: <s>old reading</s> <ins>the fix</ins> */
+.rh-body s, .rh-notes s {
+  text-decoration: line-through;
+  text-decoration-color: var(--rh-ink);
+  text-decoration-thickness: 2px;
+  color: var(--rh-muted);
+}
+.rh-body ins, .rh-notes ins {
+  text-decoration: none;
+  font-family: var(--rh-hand); font-size: 1.22em; line-height: 1;
+  color: var(--rh-ink);
+}
+
 .rh-footer {
-  margin-top: 3rem; padding-top: 1.2rem; border-top: 1px solid var(--border);
-  font-size: .87rem; color: var(--secondary); display: flex; flex-wrap: wrap;
+  margin-top: 3rem; padding-top: 1.2rem; border-top: 1px solid var(--rh-rule);
+  font-size: .95rem; color: var(--rh-muted); display: flex; flex-wrap: wrap;
   gap: .6rem 1.4rem; justify-content: space-between;
 }
-.rh-footer a { text-decoration: none; border-bottom: 1px solid var(--border); }
+.rh-footer a { color: var(--rh-ink); text-decoration: none; border-bottom: 1px solid var(--rh-rule); }
 .rh-footer a:hover { border-bottom-color: currentColor; }
 
-/* ---------- Cut 2: the popover ----------
-   The short version travels inline with the mark, so the desktop hover works
-   with no JavaScript at all. JS is only needed for the touch gesture, where
-   tap-for-popover and tap-to-open-the-page would otherwise collide. */
+/* ---------- the popover ----------
+   Behaviour is unchanged: the short version travels inline with the mark, so the
+   desktop hover needs no JavaScript at all. Only the skin is new — a slip of
+   paper laid on the page rather than a UI card. The single column stays; the
+   margin rebuild was explicitly deferred 2026-09-04. */
+
 .rh-anno { position: relative; }
 
 .rh-pop {
-  position: absolute; z-index: 40; left: 50%; bottom: calc(100% + .55rem);
+  position: absolute; z-index: 40; left: 50%; bottom: calc(100% + .6rem);
   transform: translateX(-50%) translateY(.25rem);
   width: min(23rem, calc(100vw - 2.5rem));
-  display: flex; flex-direction: column; gap: .5rem;
-  padding: .85rem .95rem;
-  background: var(--entry); color: var(--content);
-  border: 1px solid var(--border); border-radius: 8px;
-  box-shadow: 0 8px 28px rgba(0,0,0,.18);
-  font-size: .92rem; line-height: 1.5; text-align: left;
+  display: flex; flex-direction: column; gap: .55rem;
+  padding: .95rem 1.05rem;
+  background: var(--rh-pop); color: var(--rh-text);
+  border: 1px solid var(--rh-rule-soft); border-radius: 0;
+  box-shadow: 3px 4px 0 rgba(36, 31, 27, .07), 0 10px 26px rgba(36, 31, 27, .10);
+  font-size: 1rem; line-height: 1.55; text-align: left;
   opacity: 0; visibility: hidden; pointer-events: none;
   transition: opacity .14s ease, transform .14s ease, visibility .14s;
 }
-.rh-pop-title { font-weight: 700; font-size: .8rem; letter-spacing: .04em; text-transform: uppercase; color: var(--secondary); }
-.rh-pop-short { font-weight: 400; }
-.rh-pop-more { align-self: flex-start; font-size: .88rem; font-weight: 600; text-decoration: none;
-  border-bottom: 1px solid currentColor; padding-bottom: 1px; }
+.rh-pop-title {
+  font-weight: 600; font-size: .74rem; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--rh-accent-ink);
+}
+.rh-pop-short { font-weight: 400; color: var(--rh-text-2); }
+.rh-pop-more {
+  align-self: flex-start; font-size: .95rem; font-weight: 600;
+  color: var(--rh-ink); text-decoration: none;
+  border-bottom: 1px solid currentColor; padding-bottom: 1px;
+}
 
-/* Flip below the line when the passage sits near the top of the viewport. */
-.rh-anno.rh-below .rh-pop { bottom: auto; top: calc(100% + .55rem); }
+.rh-anno.rh-below .rh-pop { bottom: auto; top: calc(100% + .6rem); }
 
 @media (hover: hover) and (pointer: fine) {
   .rh-anno:hover .rh-pop,
   .rh-anno:focus-within .rh-pop { opacity: 1; visibility: visible; pointer-events: auto;
     transform: translateX(-50%) translateY(0); }
 }
-/* Touch: the first tap opens this, a second tap on "Read more" navigates. */
 .rh-anno.is-open .rh-pop { opacity: 1; visibility: visible; pointer-events: auto;
   transform: translateX(-50%) translateY(0); }
 
 @media (prefers-reduced-motion: reduce) { .rh-pop { transition: none; } }
 
-/* ---------- Cut 2: footnotes, reading, working notes ---------- */
-.rh-body .footnotes { margin-top: 2.5rem; padding-top: 1.2rem; border-top: 1px solid var(--border);
-  font-size: .92rem; color: var(--secondary); }
+/* ---------- footnotes, reading, working notes ---------- */
+
+.rh-body .footnotes { margin-top: 2.6rem; padding-top: 1.2rem; border-top: 1px solid var(--rh-rule);
+  font-size: 1rem; color: var(--rh-muted); }
 .rh-body .footnotes ol { padding-left: 1.2rem; }
 .rh-body .footnotes li { margin: .5rem 0; }
-.rh-body .footnotes li:target { background: color-mix(in srgb, var(--primary) 15%, transparent);
-  border-radius: 4px; scroll-margin-top: 5rem; }
-.rh-body sup[id^="fnref"]:target { background: color-mix(in srgb, var(--primary) 22%, transparent);
-  scroll-margin-top: 5rem; }
+.rh-body .footnotes li:target,
+.rh-body sup[id^="fnref"]:target { background: var(--rh-marker-hi); scroll-margin-top: 5rem; }
+
 /* Goldmark emits a bare "↩︎"; the spec asks for a "(back)" link. The element and
    its role="doc-backlink" are untouched, only the visible label changes. */
 .rh-body .footnote-backref { text-decoration: none; margin-left: .4rem; font-size: 0; }
-.rh-body .footnote-backref::after { content: "(back)"; font-size: .82rem;
-  border-bottom: 1px solid var(--border); }
+.rh-body .footnote-backref::after { content: "(back)"; font-size: .88rem;
+  border-bottom: 1px solid var(--rh-rule); }
 .rh-body .footnote-backref:hover::after { border-bottom-color: currentColor; }
 
-.rh-reading { margin-top: 2.4rem; padding: 1rem 1.2rem; border: 1px solid var(--border);
-  border-radius: 8px; }
-.rh-reading > summary { cursor: pointer; font-size: .8rem; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--secondary); font-weight: 700; }
-.rh-notes { margin-top: 1.2rem; padding: 1rem 1.2rem; border: 1px dashed var(--border);
-  border-radius: 8px; background: color-mix(in srgb, var(--secondary) 5%, transparent); }
-.rh-notes > summary { cursor: pointer; font-size: .8rem; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--secondary); font-weight: 700; }
-.rh-notes[open] > summary, .rh-reading[open] > summary { margin-bottom: .8rem; }
+.rh-reading {
+  margin-top: 2.4rem; padding: 1.1rem 1.3rem;
+  background: var(--rh-stock); border: 1px solid var(--rh-rule);
+}
+/* The working notes are the back of the page: pencil, not ink, and dashed so it
+   never reads as finished prose. */
+.rh-notes {
+  margin-top: 1.3rem; padding: 1.1rem 1.3rem;
+  border: 1px dashed var(--rh-rule-soft);
+  background: rgba(251, 247, 236, .55);
+}
+.rh-reading > summary, .rh-notes > summary {
+  cursor: pointer; font-size: .74rem; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--rh-muted); font-weight: 700;
+}
+.rh-notes[open] > summary, .rh-reading[open] > summary { margin-bottom: .9rem; }
+.rh-notes p, .rh-reading p { color: var(--rh-muted); }
 
-/* ---------- Cut 3: the player and play-while-highlighting ---------- */
-.rh-chapter { margin: 2.6rem 0 1.2rem; font-size: 1.15rem; letter-spacing: .02em;
-  padding-top: 1rem; border-top: 1px solid var(--border); scroll-margin-top: 5rem; }
+/* ---------- the player, and play-while-highlighting ---------- */
+
+/* Chapter dividers come from the mp3's own ID3 markers — the notebook's tabs. */
+.rh-chapter {
+  margin: 3rem 0 1.4rem; padding-top: 1.1rem;
+  font-size: .78rem; letter-spacing: .13em; text-transform: uppercase; font-weight: 600;
+  color: var(--rh-accent-ink);
+  border-top: 0;
+  /* a drawn rule rather than a border: one wobbling stroke, ~250 bytes inline */
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='9' preserveAspectRatio='none' fill='none'%3E%3Cpath d='M1 5.2c40-1.8 78 1.4 120-.6 52-2.5 96 2.2 150 .2 44-1.6 82 1.1 128-.9' stroke='%23CC6B2C' stroke-width='1.6' stroke-linecap='round' opacity='.75'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: left top; background-size: 100% 9px;
+  scroll-margin-top: 5rem;
+}
 
 .rh-player {
-  position: sticky; bottom: 0; z-index: 50; margin: 2rem -1rem 0;
-  display: flex; align-items: center; gap: .9rem; flex-wrap: wrap;
-  padding: .7rem 1rem; background: var(--entry); border-top: 1px solid var(--border);
-  border-radius: 10px 10px 0 0; box-shadow: 0 -4px 20px rgba(0,0,0,.10);
-  font-size: .9rem;
+  position: sticky; bottom: 0; z-index: 50; margin: 2.2rem -1rem 0;
+  display: flex; align-items: center; gap: .95rem; flex-wrap: wrap;
+  padding: .75rem 1.1rem;
+  background: var(--rh-stock);
+  border-top: 2px solid var(--rh-accent);
+  box-shadow: 0 -3px 14px rgba(36, 31, 27, .07);
+  font-size: .98rem;
 }
-.rh-play { cursor: pointer; font: inherit; font-weight: 600; padding: .4rem 1.1rem;
-  border-radius: 999px; border: 1px solid var(--border); background: var(--theme);
-  color: var(--primary); min-width: 5.2rem; }
-.rh-play:hover { border-color: var(--primary); }
-.rh-time { color: var(--secondary); font-variant-numeric: tabular-nums; }
-.rh-follow { color: var(--secondary); display: inline-flex; align-items: center; gap: .35rem;
-  cursor: pointer; margin-left: auto; }
+.rh-play {
+  cursor: pointer; font: inherit; font-family: var(--rh-serif); font-weight: 600;
+  padding: .45rem 1.35rem; border-radius: 999px;
+  border: 1px solid transparent;
+  background: var(--rh-accent-ink); color: var(--rh-stock);
+  min-width: 5.4rem;
+}
+.rh-play:hover { background: var(--rh-ink); }
+.rh-play:focus-visible { outline: 2px solid var(--rh-ink); outline-offset: 2px; }
+.rh-time { color: var(--rh-muted); font-variant-numeric: tabular-nums; }
+.rh-follow {
+  color: var(--rh-muted); display: inline-flex; align-items: center; gap: .4rem;
+  cursor: pointer; margin-left: auto;
+}
+.rh-follow input { accent-color: var(--rh-accent-ink); }
 
-/* The paragraph being spoken. Deliberately a different treatment from a
-   highlight -- one means "Adam marked this", the other means "this is playing". */
+/* The paragraph being spoken. Deliberately a different treatment from a highlight:
+   one means "Adam marked this", the other means "this is playing". In the notebook
+   idiom that is a rule down the margin, not another fill competing with the marker. */
 .rh-transcript .rh-now {
-  background: color-mix(in srgb, var(--primary) 9%, transparent);
-  box-shadow: -0.75rem 0 0 color-mix(in srgb, var(--primary) 9%, transparent),
-               0.75rem 0 0 color-mix(in srgb, var(--primary) 9%, transparent);
-  border-radius: 2px; transition: background .25s ease;
+  position: relative;
+  background: transparent;
+}
+.rh-transcript .rh-now::before {
+  content: ""; position: absolute; left: -1rem; top: .25em; bottom: .25em;
+  width: 3px; border-radius: 2px; background: var(--rh-accent);
 }
 .rh-seekable { cursor: pointer; }
-@media (prefers-reduced-motion: reduce) { .rh-transcript .rh-now { transition: none; } }
+
 @media (max-width: 640px) {
   .rh-player { margin: 1.5rem -.5rem 0; gap: .6rem; }
   .rh-follow { margin-left: 0; }
+  .rh-transcript { font-size: 1.14rem; }
+  .rh-transcript .rh-now::before { left: -.6rem; }
 }
