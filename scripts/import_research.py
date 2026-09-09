@@ -14,6 +14,7 @@ TRANSCRIPT = "Daron Acemoglu on Liberalism, Automation, and the Educated Elite (
 PAGES_DIR  = "Rabbit Holes"
 INDEX_PAGE = "Acemoglu Ep 286 - Rabbit Hole Index"
 EPISODE_URL = "https://conversationswithtyler.com/episodes/daron-acemoglu-2/"
+AUDIO_URL   = "https://traffic.libsyn.com/secure/cowenconvos/CWT-292-DaronAcemoglu-Podcast-v2.mp3?dest-id=850607"
 
 def slugify(s):
     s = unicodedata.normalize("NFKD", s).encode("ascii", "ignore").decode()
@@ -29,6 +30,9 @@ def inline(t):
     t = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", r'<a href="\2" rel="nofollow">\1</a>', t)
     t = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", t, flags=re.S)
     t = re.sub(r"(?<!\w)_(.+?)_(?!\w)", r"<em>\1</em>", t, flags=re.S)
+    # bold is already <strong> above, so a surviving single * is emphasis.
+    # Without this the popovers rendered literal asterisks (found 2026-09-08).
+    t = re.sub(r"(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)", r"<em>\1</em>", t, flags=re.S)
     return t
 
 def load_pages(vault):
@@ -207,10 +211,10 @@ def main():
     idx.write('description: "Tyler Cowen and Daron Acemoglu, annotated. The highlighted passages open the places I stopped to learn more."\n')
     idx.write("layout: transcript\n")
     idx.write(f'source_url: "{EPISODE_URL}"\n')
-    # The published page should play Mercatus's own file (decided 2026-08-28) --
-    # nothing is rehosted. This local path is the draft copy and is gitignored;
-    # swap in the Mercatus URL before publish.
-    idx.write('audio_url: "/research/episode.mp3"\n')
+    # Mercatus's own file, from the show's published feed at
+    # https://cowenconvos.libsyn.com/rss (found 2026-09-08). Nothing is rehosted.
+    # 49,358,097 bytes, Accept-Ranges: bytes, CORS *, so seeking and follow-along work.
+    idx.write(f'audio_url: "{AUDIO_URL}"\n')
     idx.write("draft: false\n")
     idx.write("---\n\n")
     idx.write('<div class="rh-transcript">\n' + tbody + "\n</div>\n")
