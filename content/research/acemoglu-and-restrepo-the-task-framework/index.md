@@ -50,7 +50,7 @@ flowchart TD
 | 2020 | ["Robots and Jobs: Evidence from US Labor Markets"](https://www.journals.uchicago.edu/doi/abs/10.1086/705716) (*JPE* 128:6) | The empirical anchor. See numbers below. |
 | 2022 | ["Tasks, Automation, and the Rise in US Wage Inequality"](https://economics.mit.edu/sites/default/files/2022-10/Tasks%20Automation%20and%20the%20Rise%20in%20US%20Wage%20Inequality.pdf) (*Econometrica* 90:5) | Attributes 50–70% of the change in US wage structure 1980–2016 to task displacement |
 | 2022 | ["Demographics and Automation"](https://www.nber.org/papers/w24421) (*ReStud*) | The flip side: aging *causes* automation, and that's fine |
-| 2024 | ["The Simple Macroeconomics of AI"](https://www.nber.org/papers/w32487) | Applies the framework to AI → see [[AI Growth Forecasts - Whose Timeline]] |
+| 2024 | ["The Simple Macroeconomics of AI"](https://www.nber.org/papers/w32487) | Applies the framework to AI → see [AI Growth Forecasts - Whose Timeline](/research/ai-growth-forecasts-whose-timeline/) |
 | 2026 | Acemoglu, Autor, Beirne & Scott, ["Baby Busts and Growth Booms"](https://www.nber.org/papers/w35401) | The optimistic turn Cowen presses him on |
 
 ### The robots number
@@ -73,7 +73,7 @@ That is why he can say "I am not, 100 percent not, against automation" without c
 
 ## Where Cowen attacks
 
-Cowen's move in this conversation is to grant the micro and deny the macro: fine at the firm and sector level, but the aggregate labor share barely moved — "62 to 60" adjusting for equity compensation — and automation since the Industrial Revolution has plainly made workers richer. Acemoglu's reply is that the macro series is not a test of automation because it bundles automation with everything else, including new task creation, which he estimates accounts for **40–50%** of what the US labor market currently supports. Full treatment in [[Automation and the Labor Share]].
+Cowen's move in this conversation is to grant the micro and deny the macro: fine at the firm and sector level, but the aggregate labor share barely moved — "62 to 60" adjusting for equity compensation — and automation since the Industrial Revolution has plainly made workers richer. Acemoglu's reply is that the macro series is not a test of automation because it bundles automation with everything else, including new task creation, which he estimates accounts for **40–50%** of what the US labor market currently supports. Full treatment in [Automation and the Labor Share](/research/automation-and-the-labor-share/).
 
 
 ## From the book
@@ -116,10 +116,10 @@ The core of it holds, and is stronger than the interview version because the com
 
 **The most useful unasked question — now answered.** Draft 1 said the Japanese/Korean/German carmaker example was doing enormous work in his argument, was unverified, and would be the strongest empirical support for the "choice" claim if it held up. **It holds up**, in Chapter 6, with three corrections: no Korea, German manufacturing rather than carmakers, and retraining under Industry 4.0 rather than job redesign around robots. Written up above. It is still worth its own page in draft 2 — more so now, because the within-Germany establishment-level variation is a cleaner identification than the cross-country comparison the interview offers.
 
-The same claim appears on [[Working-Class Liberalism and Community Elbow Room]] with the same corrections applied.
+The same claim appears on [Working-Class Liberalism and Community Elbow Room](/research/working-class-liberalism-and-community-elbow-room/) with the same corrections applied.
 
 **Still unverified after the book check:** the 40–50% new-tasks figure (not in the book) and the Barany–Patel–Siegel paper above (not in the book either — it postdates it, and Acemoglu says on air he hasn't read it).
 
 **Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter and quotations are transcribed speech. Numbers transcribed by machine deserve particular suspicion — the robot-density and employment figures above should be confirmed against print before republication.
 
-**Related:** [[Automation and the Labor Share]] · [[AI Growth Forecasts - Whose Timeline]] · [[Induced Innovation and the Habakkuk Thesis]] · [[King and Plosser - Real Business Cycles]]
+**Related:** [Automation and the Labor Share](/research/automation-and-the-labor-share/) · [AI Growth Forecasts - Whose Timeline](/research/ai-growth-forecasts-whose-timeline/) · [Induced Innovation and the Habakkuk Thesis](/research/induced-innovation-and-the-habakkuk-thesis/) · [King and Plosser - Real Business Cycles](/research/king-and-plosser-real-business-cycles/)

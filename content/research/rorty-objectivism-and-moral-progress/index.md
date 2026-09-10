@@ -106,4 +106,4 @@ Whether that dissolves Cowen's question or relocates it is the live issue. Nothi
 
 **Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter and quotations are transcribed speech. This page leans harder than the others on an *absence* — no Rorty, no Sidgwick, no section on moral realism — which a machine transcript establishes less firmly than a printed index would, particularly for a proper noun a transcriber could mangle. What is not in doubt is the positive finding: where a grounding argument would sit, the book puts fallibilism and an instrumental justification of rights.
 
-**Related:** [[Social Contract Theory and Its Critics]] · [[The Book Problem]] · [[Henry Sidgwick]]
+**Related:** [Social Contract Theory and Its Critics](/research/social-contract-theory-and-its-critics/) · [The Book Problem](/research/the-book-problem/) · [Henry Sidgwick](/research/henry-sidgwick/)

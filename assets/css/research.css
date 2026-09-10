@@ -204,6 +204,30 @@ p[id^="a"]:target, a.rh-mark:target {
 .rh-body td, .rh-body th { border: 1px solid var(--rh-rule); padding: .4rem .6rem; text-align: left; }
 .rh-body pre { overflow-x: auto; background: var(--rh-stock); border: 1px solid var(--rh-rule); }
 
+/* A cross-link to another rabbit hole. PRINTED IS THE SOURCE, HANDWRITTEN IS ADAM:
+   these connections are Adam's, not the transcript's, so they read in the ink
+   register rather than as generic web links. Deliberately distinct from the
+   outbound links in the Reading lists -- following one of those leaves the
+   artifact, following one of these does not.
+
+   Selected on href rather than a class because these are plain markdown links
+   (scripts/import_research.py rewrites the vault's Obsidian wikilinks into them),
+   and markdown cannot carry a class. Scoped to .rh-body/.rh-notes so the footer's
+   "back to the transcript" link keeps its own treatment. */
+.rh-body a[href^="/research/"],
+.rh-notes a[href^="/research/"] {
+  color: var(--rh-ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rh-rule-soft);
+}
+.rh-body a[href^="/research/"]:hover,
+.rh-notes a[href^="/research/"]:hover {
+  color: var(--rh-ink-deep);
+  border-bottom-color: currentColor;
+}
+/* .rh-notes sets its paragraphs muted; the link has to win that or it vanishes. */
+.rh-notes p a[href^="/research/"] { color: var(--rh-ink); }
+
 /* A correction: the wrong reading struck through, the fix written over it in ink.
    Approved 2026-09-04 as a first-class device — it is how a page shows that draft 1
    was wrong and what replaced it, which is what the working-notes layer is for.

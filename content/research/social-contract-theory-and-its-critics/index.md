@@ -52,7 +52,7 @@ From the transcript, his positive view has two layers:
 - **A floor:** meaningful individual freedom, which he treats as the one non-negotiable, because "any kind of improvement in the human condition requires individual initiative."
 - **Above the floor:** genuine consensus-building, with "enough elbow room to people to form their own community-level agreements."
 
-He is explicit that this is *not* grounded in an external standard. Cowen presses him on it three times and he answers "I don't have one." That is a real philosophical cost and he pays it deliberately — see [[Rorty, Objectivism, and Moral Progress]] and [[The Book Problem]].
+He is explicit that this is *not* grounded in an external standard. Cowen presses him on it three times and he answers "I don't have one." That is a real philosophical cost and he pays it deliberately — see [Rorty, Objectivism, and Moral Progress](/research/rorty-objectivism-and-moral-progress/) and [The Book Problem](/research/the-book-problem/).
 
 ## The strongest objections to his objection
 
@@ -84,7 +84,7 @@ By the chapter's end, philosophy is demoted to an input and the deliberation is 
 
 **And he shows his work.** The chapter's two worked examples of consensus actually happening are the **2018 Irish abortion referendum**, preceded by the Citizens' Assembly, and the **US path to the Respect for Marriage Act (2022)** via the 2012 Maine, Maryland and Washington referenda. Both are cases where a genuinely contested value question was settled by argument among real people over time rather than by a principle derived in advance. That is what "real consensus among real people" means in his framework, and the interview never supplies it.
 
-**The floor is in Chapter 10, not here.** The interview's "elbow room" phrasing makes the floor sound undefined. It isn't — Chapter 10 names it: freedom of expression, freedom to acquire education, equality before the law, and the right to exit the community. See [[Working-Class Liberalism and Community Elbow Room]].
+**The floor is in Chapter 10, not here.** The interview's "elbow room" phrasing makes the floor sound undefined. It isn't — Chapter 10 names it: freedom of expression, freedom to acquire education, equality before the law, and the right to exit the community. See [Working-Class Liberalism and Community Elbow Room](/research/working-class-liberalism-and-community-elbow-room/).
 
 ## Reading
 
@@ -103,12 +103,12 @@ By the chapter's end, philosophy is demoted to an input and the deliberation is 
 
 **What I'm confident about:** the lineage, the general-will/will-of-all distinction, the "forced to be free" passage, and that step-1 framing determines the output. Standard material.
 
-**Checked against the book, and the guess was wrong.** Draft 1 said "someone should read *What Happened to Liberal Democracy?* and check whether he names lexical priority." Someone has. **He never does** — the word does not appear, and the priority ordering is never discussed as an ordering. His target is contractarianism generally, exactly as the fallback reading had it, and specifically the presumed-consent move rather than any principle derived from it. The **From the book** section replaces this. [[John Rawls]] carries the detail.
+**Checked against the book, and the guess was wrong.** Draft 1 said "someone should read *What Happened to Liberal Democracy?* and check whether he names lexical priority." Someone has. **He never does** — the word does not appear, and the priority ordering is never discussed as an ordering. His target is contractarianism generally, exactly as the fallback reading had it, and specifically the presumed-consent move rather than any principle derived from it. The **From the book** section replaces this. [John Rawls](/research/john-rawls/) carries the detail.
 
-The consequence for this page is that it and [[The Book Problem]] do **not** merge into one argument. They were only going to merge if lexical priority turned out to be the target; it isn't.
+The consequence for this page is that it and [The Book Problem](/research/the-book-problem/) do **not** merge into one argument. They were only going to merge if lexical priority turned out to be the target; it isn't.
 
 **Where I think he's weakest — still stands, and the book sharpens it.** He objects to a rulebook, then names a floor that outranks everything else. Chapter 10 makes that floor explicit and four items long (expression, education, equality before the law, exit), which is more than the one line the interview implies, and it is asserted rather than deliberated. A four-item book is still a book. What the book adds in his defence is that the floor is justified *instrumentally* throughout — Chapter 2 argues rights are warranted because they enable experimentation and collective knowledge, "not because of a notion of natural rights."
 
-**Draft 2 should add:** what "community-level agreements" concretely means in his framework. This is now answered from Chapter 10 rather than constructed — see [[Working-Class Liberalism and Community Elbow Room]].
+**Draft 2 should add:** what "community-level agreements" concretely means in his framework. This is now answered from Chapter 10 rather than constructed — see [Working-Class Liberalism and Community Elbow Room](/research/working-class-liberalism-and-community-elbow-room/).
 
 **Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter and quotations are transcribed speech. Re-check wording against print before quoting as exact.

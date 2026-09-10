@@ -7,7 +7,7 @@ models: ["Claude"]
 draft: false
 ---
 
-**Adam asked:** implicitly, via *"Who?"* and the request to explain the paragraph — see [[King and Plosser - Real Business Cycles]]
+**Adam asked:** implicitly, via *"Who?"* and the request to explain the paragraph — see [King and Plosser - Real Business Cycles](/research/king-and-plosser-real-business-cycles/)
 
 ---
 
@@ -55,7 +55,7 @@ and, on choice:
 
 > *"In both papers, you also see the element of choice. You have to do the technology, and not every society does that technology in the same way. We could get that wrong."*
 
-**This is the load-bearing connection to the rest of his work.** Induced innovation is a tendency, not a law. Automation that responds to genuine scarcity is good; the same automation deployed where labor is abundant is the displacement story of [[Automation and the Labor Share]]. Same mechanism, opposite welfare consequence, depending on conditions.
+**This is the load-bearing connection to the rest of his work.** Induced innovation is a tendency, not a law. Automation that responds to genuine scarcity is good; the same automation deployed where labor is abundant is the displacement story of [Automation and the Labor Share](/research/automation-and-the-labor-share/). Same mechanism, opposite welfare consequence, depending on conditions.
 
 It is also why the Habakkuk framing is a better fit for him than the RBC framing Cowen offered. RBC says the economy self-corrects. Habakkuk-via-Acemoglu says the economy *responds to incentives*, and whether the response is good depends on what the incentives are — which leaves plenty of room for policy and for getting it wrong.
 
@@ -74,4 +74,4 @@ It is also why the Habakkuk framing is a better fit for him than the RBC framing
 
 Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed; references are by chapter.
 
-**Related:** [[King and Plosser - Real Business Cycles]] · [[The Lucas Critique]] · [[Acemoglu and Restrepo - The Task Framework]] · [[Automation and the Labor Share]]
+**Related:** [King and Plosser - Real Business Cycles](/research/king-and-plosser-real-business-cycles/) · [The Lucas Critique](/research/the-lucas-critique/) · [Acemoglu and Restrepo - The Task Framework](/research/acemoglu-and-restrepo-the-task-framework/) · [Automation and the Labor Share](/research/automation-and-the-labor-share/)

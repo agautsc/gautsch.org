@@ -128,4 +128,4 @@ So the honest placement of this page is that it answers **Adam's question and Co
 
 **Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter and quotations are transcribed speech. The claim that the press appears only once rests on that transcript and is the weakest kind of finding it can support; the positive readings from Chapters 2, 8 and 9 are solid.
 
-**Related:** [[Social Contract Theory and Its Critics]] — the free-speech-absolutism question runs on the same tension between a floor of rights and a community's room to regulate.
+**Related:** [Social Contract Theory and Its Critics](/research/social-contract-theory-and-its-critics/) — the free-speech-absolutism question runs on the same tension between a floor of rights and a community's room to regulate.

@@ -86,4 +86,4 @@ The interesting essay here is not "what did Hayek say" but **the appropriation i
 
 **Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter and quotations are transcribed speech — including the Hayek quotations, which are quotations inside a transcription and should be verified against Hayek's own text before republication.
 
-**Related:** [[AI Growth Forecasts - Whose Timeline]] · [[Pro-Worker AI]] · [[Social Contract Theory and Its Critics]]
+**Related:** [AI Growth Forecasts - Whose Timeline](/research/ai-growth-forecasts-whose-timeline/) · [Pro-Worker AI](/research/pro-worker-ai/) · [Social Contract Theory and Its Critics](/research/social-contract-theory-and-its-critics/)

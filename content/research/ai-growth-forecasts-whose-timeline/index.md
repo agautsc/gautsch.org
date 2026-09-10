@@ -125,4 +125,4 @@ He then closes the obvious escape hatch — broad AI ownership, or universal bas
 
 **Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter and quotations are transcribed speech. Confirmed by the check: the book carries no growth or TFP figures for AI at all, so nothing in the table above needs re-sourcing to it.
 
-**Related:** [[Acemoglu and Restrepo - The Task Framework]] · [[Automation and the Labor Share]] · [[Pro-Worker AI]]
+**Related:** [Acemoglu and Restrepo - The Task Framework](/research/acemoglu-and-restrepo-the-task-framework/) · [Automation and the Labor Share](/research/automation-and-the-labor-share/) · [Pro-Worker AI](/research/pro-worker-ai/)

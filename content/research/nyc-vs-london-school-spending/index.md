@@ -100,4 +100,4 @@ The book supplies no international comparison of school spending, so nothing abo
 
 **Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter. The $6,500 / $17,000 figures are machine-transcribed numbers and the transcript garbles the base-year phrase; confirm both against print before publication.
 
-**Related:** [[Education Quality and Economic Performance - The Outliers]]
+**Related:** [Education Quality and Economic Performance - The Outliers](/research/education-quality-and-economic-performance-the-outliers/)

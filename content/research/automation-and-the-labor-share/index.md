@@ -87,7 +87,7 @@ The measurement fight above has an obvious tie-breaker that draft 1 did not reac
 **58 → 52, on national income, from 1980.** Six points, not the nine the BLS nonfarm series implies over its longer window, and not the two Cowen offers. Three things follow:
 
 - **Cowen's "62 to 60" is not a straw man of Acemoglu's position, but it is not Acemoglu's number either.** The gap between them is 6 points against 2 — a real disagreement about magnitude, on top of the disagreement about which question the aggregate answers.
-- **The start date is doing work.** Acemoglu begins at 1980, not 1947, which excludes the flat postwar stretch and starts the clock at the moment his own account says the industrial compact broke. That is a defensible choice and it is also an argumentative one — the same kind of endpoint choice flagged on [[The Printing Press - How Long Was the Adjustment]].
+- **The start date is doing work.** Acemoglu begins at 1980, not 1947, which excludes the flat postwar stretch and starts the clock at the moment his own account says the industrial compact broke. That is a defensible choice and it is also an argumentative one — the same kind of endpoint choice flagged on [The Printing Press - How Long Was the Adjustment](/research/the-printing-press-how-long-was-the-adjustment/).
 - **National income, not nonfarm business.** A different denominator again, which is exactly why the table above needs its caveat.
 
 **The number he actually leans on is sectoral, and it is much larger:**
@@ -124,4 +124,4 @@ The table above is the honest first draft: numbers with provenance, and the reas
 
 **Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter and the figures above are machine-transcribed numbers. **Confirm 74/46/58/52 against print before publication** — a transcript is exactly the wrong place to source a number to the percentage point, and these four are now load-bearing on this page.
 
-**Related:** [[Acemoglu and Restrepo - The Task Framework]] · [[AI Growth Forecasts - Whose Timeline]]
+**Related:** [Acemoglu and Restrepo - The Task Framework](/research/acemoglu-and-restrepo-the-task-framework/) · [AI Growth Forecasts - Whose Timeline](/research/ai-growth-forecasts-whose-timeline/)

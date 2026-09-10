@@ -56,7 +56,7 @@ So the jab is: **the market-failure economist has ended up at a self-correcting-
 Three moves, and they're worth separating:
 
 1. **He doesn't recognize the framing.** *"I never thought of King and Plosser about induced innovation."* Honest — he came to this through the growth-theory literature, not the macro one.
-2. **He supplies his own ancestor instead:** *"Habakkuk was the first one who was about this."* See [[Induced Innovation and the Habakkuk Thesis]]. This is him saying: my lineage is 19th-century economic history, not 1980s Minnesota macro.
+2. **He supplies his own ancestor instead:** *"Habakkuk was the first one who was about this."* See [Induced Innovation and the Habakkuk Thesis](/research/induced-innovation-and-the-habakkuk-thesis/). This is him saying: my lineage is 19th-century economic history, not 1980s Minnesota macro.
 3. **He half-accepts the charge:** *"I never saw myself as a traditional Keynesian… and I never understood the new Keynesian models very well."* But he keeps a demand channel — *"there are episodes in which aggregate demand shortages create problems"* — and argues the fertility decline is too slow-acting to produce one.
 
 **The honest bit:** *"I'm also finding these results surprising. We've checked them so many times, and that's why we've done them so many different ways, but it seems to be there in the data."* He is reporting a result he didn't want.
@@ -70,10 +70,10 @@ Three moves, and they're worth separating:
 ---
 
 ## Working notes
-Cowen's "you're like Long and Plosser" is a compliment and a needle at the same time, which is characteristic. The substantive question underneath — **is induced innovation a self-correcting mechanism strong enough to make demographic decline harmless?** — is genuinely open, and [[The Lucas Critique]] is the strongest reason to doubt it.
+Cowen's "you're like Long and Plosser" is a compliment and a needle at the same time, which is characteristic. The substantive question underneath — **is induced innovation a self-correcting mechanism strong enough to make demographic decline harmless?** — is genuinely open, and [The Lucas Critique](/research/the-lucas-critique/) is the strongest reason to doubt it.
 
-**Checked against the book: not there.** No real-business-cycle literature, no Long and Plosser, and no treatment of demographic decline as a growth question. The *Baby Busts* result Cowen presses him on is a working paper, not book material. What the book does supply, in Chapter 6, is the empirical half of the induced-innovation argument underneath this exchange — German firms adopting robots faster than American ones and reallocating rather than shedding workers, which is automation responding to institutions rather than to scarcity. See [[Acemoglu and Restrepo - The Task Framework]]. The open question below — whether induced innovation is self-correcting enough to make demographic decline harmless — gets no help from the book either way.
+**Checked against the book: not there.** No real-business-cycle literature, no Long and Plosser, and no treatment of demographic decline as a growth question. The *Baby Busts* result Cowen presses him on is a working paper, not book material. What the book does supply, in Chapter 6, is the empirical half of the induced-innovation argument underneath this exchange — German firms adopting robots faster than American ones and reallocating rather than shedding workers, which is automation responding to institutions rather than to scarcity. See [Acemoglu and Restrepo - The Task Framework](/research/acemoglu-and-restrepo-the-task-framework/). The open question below — whether induced innovation is self-correcting enough to make demographic decline harmless — gets no help from the book either way.
 
 Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed; references are by chapter.
 
-**Related:** [[Induced Innovation and the Habakkuk Thesis]] · [[The Lucas Critique]] · [[Acemoglu and Restrepo - The Task Framework]]
+**Related:** [Induced Innovation and the Habakkuk Thesis](/research/induced-innovation-and-the-habakkuk-thesis/) · [The Lucas Critique](/research/the-lucas-critique/) · [Acemoglu and Restrepo - The Task Framework](/research/acemoglu-and-restrepo-the-task-framework/)

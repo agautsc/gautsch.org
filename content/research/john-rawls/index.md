@@ -67,8 +67,8 @@ By the end of the chapter this has become his positive proposal: political philo
 ## Working notes
 **Resolved against the book, and my reading was wrong.** Draft 1 guessed that "goes into that direction" meant Rawls's *lexical priority* rule, and called checking it the single highest-value verification on the whole rabbit-hole list. It was — and it came back negative. The words *lexical* and *lexicographic* do not occur anywhere in the book, the priority ordering is never discussed as an ordering, and the objection Chapter 3 actually makes is the looser one I listed as the alternative: that contractarian reasoning derives principles philosophically instead of democratically, so nobody is ever actually asked. The **From the book** section above replaces the guess.
 
-That resolution propagates. [[Social Contract Theory and Its Critics]] and [[The Book Problem]] were both waiting on this answer, and both were leaning on the same wrong reading.
+That resolution propagates. [Social Contract Theory and Its Critics](/research/social-contract-theory-and-its-critics/) and [The Book Problem](/research/the-book-problem/) were both waiting on this answer, and both were leaning on the same wrong reading.
 
 **Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter rather than page. Quotations are transcribed speech and may differ from the printed text in punctuation; they should be re-checked against print before being quoted as exact. A negative result — "the book never says *lexical*" — is weaker evidence from a transcript than from a printed index, though a rule that is never discussed in twelve hours of text is not a rule he is arguing against.
 
-**Related:** [[Social Contract Theory and Its Critics]] · [[The Book Problem]] · [[Henry Sidgwick]]
+**Related:** [Social Contract Theory and Its Critics](/research/social-contract-theory-and-its-critics/) · [The Book Problem](/research/the-book-problem/) · [Henry Sidgwick](/research/henry-sidgwick/)

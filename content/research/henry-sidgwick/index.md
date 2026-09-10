@@ -22,9 +22,9 @@ draft: false
 
 This is the decisive question of the segment. Acemoglu has said nondomination and noninterference can conflict and that he has no metric to resolve it. Sidgwick's utilitarianism offers one: a single currency, welfare, into which all values convert. Cost-benefit analysis is that idea in working clothes, and it is how most policy actually gets made.
 
-**Acemoglu's answer** is that the conversion itself needs a rulebook — *"Who decides how to compare, how to turn things into utils?"* — so utilitarianism doesn't escape the problem, it relocates it. See [[The Book Problem]].
+**Acemoglu's answer** is that the conversion itself needs a rulebook — *"Who decides how to compare, how to turn things into utils?"* — so utilitarianism doesn't escape the problem, it relocates it. See [The Book Problem](/research/the-book-problem/).
 
-**Worth knowing:** Sidgwick is also the origin of the "government house utilitarianism" charge — that a utilitarian elite might rationally conclude the public should be taught a simpler morality than the true one. That connects directly to [[The Straussian View]], which Cowen raises a few minutes earlier. **The same worry appears twice in this conversation under two names.**
+**Worth knowing:** Sidgwick is also the origin of the "government house utilitarianism" charge — that a utilitarian elite might rationally conclude the public should be taught a simpler morality than the true one. That connects directly to [The Straussian View](/research/the-straussian-view/), which Cowen raises a few minutes earlier. **The same worry appears twice in this conversation under two names.**
 
 ## Reading
 - Sidgwick, *[The Methods of Ethics](https://www.gutenberg.org/ebooks/46743)* (1874) — Book IV is the utilitarian core
@@ -36,8 +36,8 @@ This is the decisive question of the segment. Acemoglu has said nondomination an
 ## Working notes
 Short by design — Adam asked "who is." The genuinely interesting thread is the Sidgwick→Strauss link on esoteric morality, which I've flagged above and would develop if it interests you.
 
-**Checked against the book: Sidgwick is not in it.** Neither is the dualism of practical reason, nor any sustained treatment of utilitarianism — *utilitarian* does not occur anywhere in *What Happened to Liberal Democracy?*, and Bentham and Mill appear only as classical liberals criticized for defining liberty as non-interference. So this page and the utils exchange in [[The Book Problem]] rest entirely on the conversation. Cowen supplied Sidgwick; Acemoglu answered live. Worth knowing before the Sidgwick→Strauss thread gets developed — it would be building on the interview, not on the book.
+**Checked against the book: Sidgwick is not in it.** Neither is the dualism of practical reason, nor any sustained treatment of utilitarianism — *utilitarian* does not occur anywhere in *What Happened to Liberal Democracy?*, and Bentham and Mill appear only as classical liberals criticized for defining liberty as non-interference. So this page and the utils exchange in [The Book Problem](/research/the-book-problem/) rest entirely on the conversation. Cowen supplied Sidgwick; Acemoglu answered live. Worth knowing before the Sidgwick→Strauss thread gets developed — it would be building on the interview, not on the book.
 
 Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed; a proper noun a machine transcriber could mangle is the weakest kind of negative finding, but no passage discusses his argument under any spelling.
 
-**Related:** [[John Rawls]] · [[The Book Problem]] · [[Rorty, Objectivism, and Moral Progress]]
+**Related:** [John Rawls](/research/john-rawls/) · [The Book Problem](/research/the-book-problem/) · [Rorty, Objectivism, and Moral Progress](/research/rorty-objectivism-and-moral-progress/)

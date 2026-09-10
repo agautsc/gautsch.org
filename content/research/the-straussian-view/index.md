@@ -47,7 +47,7 @@ That distinction is his real position, and it is not anti-expertise. He is a Nob
 
 ## The connection Cowen doesn't make
 
-The Straussian worry appears **twice** in this interview under different names. Here, and earlier as [[Henry Sidgwick]] — whose utilitarianism generated the charge of "government house utilitarianism," the idea that an enlightened elite might rationally teach the public a simpler morality than the true one. Same structure, different century, different vocabulary. Acemoglu declines it both times.
+The Straussian worry appears **twice** in this interview under different names. Here, and earlier as [Henry Sidgwick](/research/henry-sidgwick/) — whose utilitarianism generated the charge of "government house utilitarianism," the idea that an enlightened elite might rationally teach the public a simpler morality than the true one. Same structure, different century, different vocabulary. Acemoglu declines it both times.
 
 ## Reading
 - Strauss, *Persecution and the Art of Writing* (1952)
@@ -66,4 +66,4 @@ The Straussian worry appears **twice** in this interview under different names. 
 
 Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed; references are by chapter.
 
-**Related:** [[Working-Class Liberalism and Community Elbow Room]] · [[Henry Sidgwick]]
+**Related:** [Working-Class Liberalism and Community Elbow Room](/research/working-class-liberalism-and-community-elbow-room/) · [Henry Sidgwick](/research/henry-sidgwick/)

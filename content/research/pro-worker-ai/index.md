@@ -13,14 +13,14 @@ draft: false
 
 ## The definition
 
-Two categories, from the same underlying framework as [[Acemoglu and Restrepo - The Task Framework]]:
+Two categories, from the same underlying framework as [Acemoglu and Restrepo - The Task Framework](/research/acemoglu-and-restrepo-the-task-framework/):
 
 | | Does what | Effect on the worker |
 |---|---|---|
 | **Automation** | Performs a task the worker used to perform | Displacement — the task leaves |
 | **Pro-worker AI** | Supplies information and capability so the worker performs *new* tasks | Reinstatement — the task set expands |
 
-His own examples: *"nurses now can do much more, journalists can do much more, electricians can do much more."* Note that all three are non-elite skilled occupations. That is not incidental — it's the working-class-liberalism argument in technological form. See [[Working-Class Liberalism and Community Elbow Room]].
+His own examples: *"nurses now can do much more, journalists can do much more, electricians can do much more."* Note that all three are non-elite skilled occupations. That is not incidental — it's the working-class-liberalism argument in technological form. See [Working-Class Liberalism and Community Elbow Room](/research/working-class-liberalism-and-community-elbow-room/).
 
 And the exclusion is explicit: *"Automation, again, narrowly construed, isn't pro-worker AI."*
 
@@ -78,7 +78,7 @@ Chapter 10 goes further and names the instrument: after arguing for cutting *ex-
 ---
 
 ## Working notes
-This page exists because [[AI Growth Forecasts - Whose Timeline]] and [[Working-Class Liberalism and Community Elbow Room]] both needed to point at it — you highlighted the passage but didn't ask a question about it. **If it isn't useful, say so and I'll fold it into the task-framework page.**
+This page exists because [AI Growth Forecasts - Whose Timeline](/research/ai-growth-forecasts-whose-timeline/) and [Working-Class Liberalism and Community Elbow Room](/research/working-class-liberalism-and-community-elbow-room/) both needed to point at it — you highlighted the passage but didn't ask a question about it. **If it isn't useful, say so and I'll fold it into the task-framework page.**
 
 The strongest unexamined thread: Acemoglu says he has been talking about pro-worker AI *"like a broken record… for 10 years."* If the narrative-change strategy is the plan and it has had a decade, it would be worth asking what evidence there is that it works. Nobody asks. **The book check weakens this question without dissolving it** — narrative change is not the whole plan in print, so a decade of it failing is less damning than it looks. But narrative change is still where Chapter 9 starts, and the book does not say what would count as it working either.
 
@@ -86,4 +86,4 @@ The strongest unexamined thread: Acemoglu says he has been talking about pro-wor
 
 **Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter and quotations are transcribed speech. Re-check wording against print before quoting as exact — particularly the regulation passages, which are the load-bearing ones here.
 
-**Related:** [[Acemoglu and Restrepo - The Task Framework]] · [[Hayek and Decentralization]] · [[AI Growth Forecasts - Whose Timeline]]
+**Related:** [Acemoglu and Restrepo - The Task Framework](/research/acemoglu-and-restrepo-the-task-framework/) · [Hayek and Decentralization](/research/hayek-and-decentralization/) · [AI Growth Forecasts - Whose Timeline](/research/ai-growth-forecasts-whose-timeline/)

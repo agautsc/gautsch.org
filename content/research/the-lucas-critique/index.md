@@ -71,4 +71,4 @@ The framing of the three differences (local/global, temporary/permanent, unantic
 
 Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed; references are by chapter.
 
-**Related:** [[King and Plosser - Real Business Cycles]] · [[Induced Innovation and the Habakkuk Thesis]] · [[Acemoglu and Restrepo - The Task Framework]]
+**Related:** [King and Plosser - Real Business Cycles](/research/king-and-plosser-real-business-cycles/) · [Induced Innovation and the Habakkuk Thesis](/research/induced-innovation-and-the-habakkuk-thesis/) · [Acemoglu and Restrepo - The Task Framework](/research/acemoglu-and-restrepo-the-task-framework/)

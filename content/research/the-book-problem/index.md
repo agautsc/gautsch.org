@@ -87,4 +87,4 @@ The utilitarianism critique here is genuinely good and not original to Acemoglu 
 
 **Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter and quotations are transcribed speech — re-check against print before quoting as exact. The claim that *utilitarian* never occurs rests on that transcript, which is weaker than a printed index; what is solid either way is that no passage anywhere in the book argues against utilitarianism.
 
-**Related:** [[Social Contract Theory and Its Critics]] · [[John Rawls]] · [[Henry Sidgwick]] · [[Rorty, Objectivism, and Moral Progress]]
+**Related:** [Social Contract Theory and Its Critics](/research/social-contract-theory-and-its-critics/) · [John Rawls](/research/john-rawls/) · [Henry Sidgwick](/research/henry-sidgwick/) · [Rorty, Objectivism, and Moral Progress](/research/rorty-objectivism-and-moral-progress/)

@@ -233,9 +233,38 @@ def main():
             f.write(f'transcript_anchor: "{p["anchor"]}"\n')
         f.write('models: ["Claude"]\n')
         f.write("draft: false\n---\n\n")
-        f.write(strip_page_frontmatter_artifacts(p["body"]))
+        f.write(resolve_wikilinks(
+            strip_page_frontmatter_artifacts(p["body"]), pages, f"{t}"))
         f.close()
     print(f"\nwrote content/research/_index.md and {len(pages)} pages")
+
+WIKILINK = re.compile(r"\[\[([^\[\]|]+?)(?:\|([^\[\]|]+?))?\]\]")
+
+def resolve_wikilinks(body, pages, where):
+    """Rewrite Obsidian [[wikilinks]] as markdown links into /research/.
+
+    The vault keeps wikilinks because Obsidian needs them; Hugo has no idea what
+    they are and Goldmark passes them straight through as literal text. Before
+    this existed, /research shipped 75 of them rendered as "[[The Book Problem]]".
+
+    This has to happen to the markdown rather than in the layout, because
+    .Content feeds surfaces a layout never touches: the RSS feed, the meta and
+    OpenGraph descriptions, and the JSON-LD articleBody. Fixing only the rendered
+    body leaves literal brackets in every link preview and every feed reader.
+
+    Targets resolve on page title, which for this set equals the vault filename.
+    An unresolved link is left alone and reported -- loudly, because shipping it
+    silently is how the original bug survived a design pass.
+    """
+    def sub(m):
+        target = m.group(1).strip()
+        display = (m.group(2) or m.group(1)).strip()
+        page = pages.get(target)
+        if not page:
+            print(f"   ! unresolved wikilink in {where}: {m.group(0)}")
+            return m.group(0)
+        return f"[{display}](/research/{page['slug']}/)"
+    return WIKILINK.sub(sub, body)
 
 def strip_page_frontmatter_artifacts(body):
     # the H1 is redundant with the title, and the short version is lifted into front matter

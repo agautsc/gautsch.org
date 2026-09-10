@@ -25,6 +25,15 @@
          they do not compete with the answer. Rewritten from the rendered HTML
          because Goldmark will not parse markdown inside a raw <details> block. */ -}}
   {{- $c := .Content }}
+  {{- /* Guard, not a fix. Obsidian [[wikilinks]] are resolved to markdown links
+         by scripts/import_research.py, because .Content also feeds the RSS feed,
+         the meta/OpenGraph descriptions and the JSON-LD -- surfaces no layout can
+         reach. This catches the case that fix cannot: a wikilink pasted straight
+         from the vault into a page edited by hand. Fail loudly; shipping 75 of
+         these as literal brackets is what happened when nothing was watching. */ -}}
+  {{- if strings.Contains $c "[[" }}
+    {{- warnf "research: %s carries an unresolved [[wikilink]] -- convert it to a markdown link, or re-run scripts/import_research.py --write" .File.Path }}
+  {{- end }}
   {{- /* The body repeats the question that front matter already renders as
          .rh-asked, followed by a rule. Both were being shown all along -- invisible
          while they were set in the same type, obvious once one of them is
