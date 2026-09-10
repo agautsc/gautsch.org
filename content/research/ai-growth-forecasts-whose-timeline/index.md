@@ -90,6 +90,25 @@ That episode is the single most useful precedent, and it cuts **both ways**:
 - Aghion, Jones & Jones, "Artificial Intelligence and Economic Growth" (2019) — the theoretical route to explosive growth
 - Autor, ["The Work of the Future"](https://mitpress.mit.edu/9780262547307/the-work-of-the-future/) — the measured middle
 
+
+## From the book
+
+*What Happened to Liberal Democracy?* takes the same position and **prints no number for it.** Chapter 9 states it in words:
+
+> *"My reading of the evidence is that the benefits from AI-based automation in the medium term, though non-trivial, are not huge. The rollout of AI will be slow, as is the rollout of any technology that requires major organizational changes."*
+
+The Hulten's-theorem arithmetic above, and the 0.53–0.66% TFP figure, live in the paper and not in the book. So the table's Acemoglu row is sourced correctly — it just has no counterpart in the book a general reader would pick up, which means the version of his position most people will encounter is *"non-trivial, not huge"* and a claim about organizational adoption speed.
+
+**The distribution argument is the one the book actually cares about,** and it is where he spends his words:
+
+> *"Even if such benefits were realized, how would they be distributed? The most natural path to broad-based benefits from productivity improvements would be via shared prosperity, working through higher wages for all sorts of work, and skills. This is what the Industrial Compact achieved until its unravelling in the early 1980s. But if all the gains are from automation, without the pro-worker AI possibilities I discuss below, then wage increases will not follow, and in fact, mass-scale automation could lead to significant joblessness."*
+
+He then closes the obvious escape hatch — broad AI ownership, or universal basic income — on two grounds. Political economy: *"Large tech companies would not be enthusiastic about redistributing all of their profits to the broader population."* And, more interestingly, a social objection that has nothing to do with money: *"A society in which a large fraction of the population does not contribute to production or other beneficial activities would create huge social status gaps between the makers and the takers… Communities are most vibrant when their members feel they are contributing to society at large."*
+
+**This reframes the table.** Compounding the scenarios makes the disagreement legible as a disagreement about *size*, and on the book's own account size is the second question. Acemoglu's position is that the explosive-growth row could be right and his objection would survive intact, because a large enough automation-only gain is a *worse* outcome on his framework than a small pro-worker one. The interview never says this and the table above cannot show it: **the rows are not ranked the way their totals are.** That is the missing column, and it is not a number.
+
+**On the AGI question underneath the timelines**, the book is more explicit than the interview: *"A quick transition to AGI seems unlikely, in part because existing models still do not show evidence of true comprehension or deep understanding, even in simple contexts"* — the illustration being that a model can explain how to repair a garage door while having *"no recognition of the social context of this problem,"* and that *"as far as they are concerned, there is no difference between repairing a garage door, summarizing an ancient text, and diagnosing cancer."* Whether that is a claim about current systems or about the architecture is left open, which is the same ambiguity the interview leaves.
+
 ---
 
 ## Working notes
@@ -101,5 +120,9 @@ That episode is the single most useful precedent, and it cuts **both ways**:
 **The 2026 update problem.** Cowen's framing — "Anthropic is a trillion-dollar company, revenue through the ceiling" — is doing rhetorical work that the economics doesn't support. Firm valuation is not productivity. A company can be worth a trillion dollars by capturing existing surplus rather than creating new output, which is precisely the distinction Acemoglu's whole framework is built on. **Neither man says this out loud** and it's arguably the biggest unexamined move in the segment.
 
 **Draft 2 should add:** actual measured US TFP growth 2022–2026 as a scoreboard row. If AI were already producing Goldman-scale gains we would be starting to see it. That is a checkable fact and it would date-stamp the argument rather than leaving it hypothetical.
+
+**And a distribution column.** The book check (above) shows the table is ranking the scenarios on a dimension Acemoglu treats as secondary. A second column — who gets the gains under each scenario — would make the comparison his rather than merely arithmetic. It cannot be filled with numbers, which is precisely why it is worth adding.
+
+**Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter and quotations are transcribed speech. Confirmed by the check: the book carries no growth or TFP figures for AI at all, so nothing in the table above needs re-sourcing to it.
 
 **Related:** [[Acemoglu and Restrepo - The Task Framework]] · [[Automation and the Labor Share]] · [[Pro-Worker AI]]

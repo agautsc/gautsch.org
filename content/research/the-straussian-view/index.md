@@ -62,4 +62,8 @@ The Straussian worry appears **twice** in this interview under different names. 
 
 **Draft 2 could add:** Cowen's public writing on elite competence and on "the great forgetting" would either confirm or complicate this. That's a research task, not a lookup.
 
+**Checked against the book, which cannot settle this** — it is a page about Cowen's view, and Acemoglu's book has no Strauss, no esoteric-writing discussion, and no treatment of elite competence in these terms. Two things in it do bear on the substance, though, and both cut against the Straussian reading: Chapter 2 identifies the abandonment of liberalism's pillars with precisely this posture, *"as the college-educated acquired more social power and started favouring a top-down, technocratic outlook"*; and Chapter 10 makes non-denigration a principle rather than a courtesy — liberal society may argue for its values *"without indoctrination, imposition, and denigration."* Whatever Acemoglu thinks of Cowen's frame, his book has an answer to it. The draft-2 task above is unchanged: it needs Cowen's own writing, not Acemoglu's.
+
+Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed; references are by chapter.
+
 **Related:** [[Working-Class Liberalism and Community Elbow Room]] · [[Henry Sidgwick]]

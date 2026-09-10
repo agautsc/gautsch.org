@@ -90,6 +90,20 @@ Reading the timeline as a whole, the adjustment to print was not primarily peopl
 
 **Acemoglu is proposing step 3 and Cowen is defending step 5.** They are arguing about different points on a sequence that historically took two centuries to traverse — and the historical order runs against Cowen's implicit assumption that free speech came first and worked.
 
+## From the book
+
+**The analogy is Cowen's, not Acemoglu's.** The press appears once in twelve hours of *What Happened to Liberal Democracy?*, and not as a technology-adjustment story at all — it is Chapter 2's example of a community *refusing* a technology, the Ottoman Empire that gave Europe inoculation while it *"steadfastly opposed the dissemination of other valuable knowledge and the adoption of useful technologies such as the printing press."* There is no adjustment period, no counting of years, and no comparison to social media anywhere in the book.
+
+**The Reformation is in there, and it is on the other side of the ledger.** Chapter 8, *Social Engineering*, treats the century after Luther as a case of institutions tightening rather than of a society adapting:
+
+> *"In the centuries after the Reformation, following Martin Luther's influential 95 Theses that launched Protestantism, the Catholic Church doubled down on indoctrination and thought policing. Beginning with the Council of Trent, 1545 to 1563, the Church tried to stop the spread of Protestantism by more closely policing religious practice and thought. Recent scholarship suggests that these efforts did more than slow down the advance of the dangerous ideas of Protestantism, they stopped scientific inquiry and even the sharing of scientific findings."*
+
+That is a striking convergence with the finding this page arrives at independently — that the adjustment *was* institution-building rather than habituation — with the sign reversed. The page treats the censorship regimes as part of the settlement. Chapter 8 treats them as the disaster: the Index and the Inquisition are its examples of social engineering doing lasting epistemic damage. **Both readings are available from the same events, and which one you take decides what "we adjusted" is supposed to prove.**
+
+**On social media, the book does not use an adjustment frame at all.** Chapter 9's diagnosis is structural and current: an *"algorithmic cage of norms"* produced by a business model — *"Social media companies have an incentive to build an algorithmic cage"* because *"digital ads exploit strong emotions and proclivities toward intense norm enforcement and thought policing."* His counterfactual is not that we will get used to it but that it could have been built otherwise: *"if social media platforms did not algorithmically boost the most sensationalist and emotion-triggering content and were organized more like neutral repositories, accurate information could be obtained."* And the prescription is immediate rather than generational — *"in the age of algorithms, the regulation of social media and AI should be at the top of the list."*
+
+So the honest placement of this page is that it answers **Adam's question and Cowen's frame**, not a thesis of the book. Acemoglu's on-air concession that the press had a violent adjustment period which is now over is a concession made in conversation; his book never argues it, and the mechanism it does supply for social media — designed incentives, correctable now — is one on which waiting for an adjustment is the wrong response.
+
 ## Reading
 
 - Dittmar, ["Information Technology and Economic Change: The Impact of the Printing Press"](https://people.bu.edu/chamley/764-23/Dittmar.pdf), *QJE* 2011 — cities adopting print grew ~21 pp faster 1500–1600
@@ -109,5 +123,9 @@ Reading the timeline as a whole, the adjustment to print was not primarily peopl
 **Confounding worth stating plainly:** the printing press did not *cause* the religious wars in a simple sense. The Reformation had causes of its own, and print amplified and accelerated it. Any comparison to social media inherits the same problem — it is very hard to separate the technology from what it carried.
 
 **Draft 2 could add:** a side-by-side adoption-curve comparison (share of European cities with a press, 1450–1600, vs. share of adults on social platforms, 2004–2026). The print side is available from the incunabula short-title catalogue. That would answer the "faster or slower" question with a picture instead of an argument.
+
+**Checked against the book, and the framing needed a caveat.** The press-as-adjustment analogy is Cowen's; the book contains one passing reference to the printing press and no adjustment argument at all. Chapter 8 does cover the post-Reformation century, and reads the same censorship regimes this page counts as *settlement* as the central case of social engineering doing damage. That is a genuine tension between the page and the book, and it is now stated above rather than smoothed over. The endpoint question below is unaffected — the book takes no position on it either.
+
+**Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter and quotations are transcribed speech. The claim that the press appears only once rests on that transcript and is the weakest kind of finding it can support; the positive readings from Chapters 2, 8 and 9 are solid.
 
 **Related:** [[Social Contract Theory and Its Critics]] — the free-speech-absolutism question runs on the same tension between a floor of rights and a community's room to regulate.

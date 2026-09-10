@@ -70,4 +70,8 @@ It is also why the Habakkuk framing is a better fit for him than the RBC framing
 ## Working notes
 **Habakkuk's thesis is contested** and I should say so plainly: economic historians have pushed back for sixty years, notably on whether American labor really was that much scarcer once you account for skill mix, and on whether British firms were as unmechanized as the story requires. Peter Temin and others have argued the wage-gap evidence is weaker than Habakkuk claimed. Acemoglu calls it "intriguing," which is doing some work. **Draft 2 should give the counter-literature a proper paragraph** rather than the sentence it has here.
 
+**Checked against the book: Habakkuk is not in it**, and neither is the nineteenth-century labor-scarcity literature. The book's version of "technology responds to conditions" is contemporary and institutional rather than historical — Chapter 6 on German versus American robot adoption, where the difference is union bargaining and apprenticeship rather than relative wages, and Chapter 9 on why business models and AGI ideology push AI toward automation. That is induced innovation with the inducement coming from institutions and beliefs instead of factor prices, which is a meaningfully different claim and arguably a more defensible one. Worth noting in draft 2 alongside the counter-literature: Acemoglu calls Habakkuk "intriguing" on air and builds on something else in print.
+
+Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed; references are by chapter.
+
 **Related:** [[King and Plosser - Real Business Cycles]] · [[The Lucas Critique]] · [[Acemoglu and Restrepo - The Task Framework]] · [[Automation and the Labor Share]]

@@ -67,4 +67,8 @@ His one counter is that another thing is changing simultaneously: people are liv
 ## Working notes
 The framing of the three differences (local/global, temporary/permanent, unanticipated/anticipated) is my unpacking of a compressed question — Cowen gestures at all three but only states them loosely. I think it's a faithful expansion, but it's an expansion.
 
+**Checked against the book: not there.** No Lucas critique, no rational-expectations discussion, no macroeconomic methodology at all. This exchange is two economists talking shop, and the book is not a macro book — its argument about technology runs through institutions and choices rather than through model stability. Nothing on this page needs revising against it, and nobody needs to search it again.
+
+Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed; references are by chapter.
+
 **Related:** [[King and Plosser - Real Business Cycles]] · [[Induced Innovation and the Habakkuk Thesis]] · [[Acemoglu and Restrepo - The Task Framework]]

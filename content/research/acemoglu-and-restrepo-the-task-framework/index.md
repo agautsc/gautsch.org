@@ -75,6 +75,37 @@ That is why he can say "I am not, 100 percent not, against automation" without c
 
 Cowen's move in this conversation is to grant the micro and deny the macro: fine at the firm and sector level, but the aggregate labor share barely moved — "62 to 60" adjusting for equity compensation — and automation since the Industrial Revolution has plainly made workers richer. Acemoglu's reply is that the macro series is not a test of automation because it bundles automation with everything else, including new task creation, which he estimates accounts for **40–50%** of what the US labor market currently supports. Full treatment in [[Automation and the Labor Share]].
 
+
+## From the book
+
+*What Happened to Liberal Democracy?* carries this machinery without the notation, mostly in **Chapter 6, *Pathway to Crisis***, and it supplies the numbers the interview only alludes to.
+
+**The 50–70% figure is in the book, not just in the *Econometrica* abstract:**
+
+> *"Recent estimates suggest that between 50 and 70 percent of the surge in U.S. wage inequality over the last four decades can be accounted for by the effects of automation, and that much of the decline in the wages of low-education demographic groups, such as young men with a high school degree or less, can be explained by the spread of automation tools."*
+
+**And the robot adoption series it rests on:** the US went from about **3.5 robots per 1,000 industrial workers in 1993 to 15 in 2014 and 25.5 by 2020**. Germany reached roughly twice the US density.
+
+**The displacement mechanism, stated plainly** — this is the task framework in prose:
+
+> *"Recall that in the industrial compact, as companies reached larger markets and increased their production volume, they also hired more workers, generating both jobs and, for your labour market competition, higher wages. With automation, this latter link was broken. Firms could expand and output could multiply without any need to hire more workers."*
+
+**The carmaker claim is verified — with corrections.** The example that this page called *"doing enormous work in his argument"* and worth its own page in draft 2 is in Chapter 6, and three details in the interview version don't survive:
+
+| The interview says | The book says |
+|---|---|
+| Japanese, Korean and German | German, in detail; then *"comparable adjustments were made in Japan, Finland, the Netherlands, Norway, and Sweden."* **Korea is not among them.** |
+| Carmakers | German manufacturing generally, via **Industry 4.0** and Digital Factory. Autos are the *American* half of the contrast. |
+| Redesigned jobs around robots | Retrained blue-collar workers into technical and supervisory occupations, and deployed computer-aided design and quality-control tools usable **without a college degree** — credited to Douglas Engelbart. |
+
+The core of it holds, and is stronger than the interview version because the comparison is embarrassing for the simple technological story:
+
+> *"German manufacturing firms have introduced industrial robots considerably faster than their American counterparts… But German manufacturing companies must negotiate with worker representatives and unions when making these choices… robot adoption in Germany was not associated with large employment drops. Blue-collar work declined, but there were concurrent increases in technical occupations."*
+
+**More robots, fewer layoffs.** And the within-Germany variation is the part that makes it evidence rather than anecdote: *"in establishments where labor was better organized, there were less steep employment declines, and more pronounced efforts to reallocate blue-collar workers to technical tasks."* Same country, same technology, same decade — the difference is who was in the room. That is the strongest empirical support for the "choice" claim anywhere in the conversation, exactly as this page suspected.
+
+**On the American side**, the book gives the autos numbers the interview does not: the sector paid *"about 40% higher wages to Americans without a college degree than the rest of the economy,"* and employment of workers with a high-school degree or less fell from **625,000 in the 1960s to 371,000 by 2010**.
+
 ---
 
 ## Working notes
@@ -83,6 +114,12 @@ Cowen's move in this conversation is to grant the micro and deny the macro: fine
 
 **⚠ Unverified: the Barany, Patel and Siegel paper.** Cowen cites [CEPR DP21700](https://cepr.org/publications/dp21700) on France through 2019 finding no labor-share harm. CEPR blocks automated fetching (HTTP 403) and the paper does not surface in search. There *is* a related January 2026 paper by Aseem Patel, ["Labour Market Power and Automation"](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6075686), using French administrative data — **not the same paper**, and I should not pretend it is. Someone with CEPR access should pull DP21700 and check what it actually claims. Acemoglu's on-air response was "I don't know this new paper," so the exchange is unresolved on both sides.
 
-**The most useful unasked question:** the framework says the automation/new-task mix is a *choice*, and Acemoglu gives a concrete example — Japanese, Korean and German carmakers redesigning jobs around robots while American firms did not. That example is doing enormous work in his argument and I have not verified it. If it holds up it is the strongest empirical support for the "choice" claim in the whole conversation. **Worth its own page in draft 2.**
+**The most useful unasked question — now answered.** Draft 1 said the Japanese/Korean/German carmaker example was doing enormous work in his argument, was unverified, and would be the strongest empirical support for the "choice" claim if it held up. **It holds up**, in Chapter 6, with three corrections: no Korea, German manufacturing rather than carmakers, and retraining under Industry 4.0 rather than job redesign around robots. Written up above. It is still worth its own page in draft 2 — more so now, because the within-Germany establishment-level variation is a cleaner identification than the cross-country comparison the interview offers.
+
+The same claim appears on [[Working-Class Liberalism and Community Elbow Room]] with the same corrections applied.
+
+**Still unverified after the book check:** the 40–50% new-tasks figure (not in the book) and the Barany–Patel–Siegel paper above (not in the book either — it postdates it, and Acemoglu says on air he hasn't read it).
+
+**Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter and quotations are transcribed speech. Numbers transcribed by machine deserve particular suspicion — the robot-density and employment figures above should be confirmed against print before republication.
 
 **Related:** [[Automation and the Labor Share]] · [[AI Growth Forecasts - Whose Timeline]] · [[Induced Innovation and the Habakkuk Thesis]] · [[King and Plosser - Real Business Cycles]]

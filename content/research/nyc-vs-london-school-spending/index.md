@@ -65,6 +65,22 @@ Acemoglu concedes immediately — *"Oh, yes, I know… We're throwing money at i
 
 The interesting thing for you: the CBC's framing is literally *"Highest Costs, Middling Marks."* Both men accept the premise that the money isn't reaching the outcome. Neither offers a mechanism.
 
+
+## From the book
+
+The interview's NYC-versus-London comparison is Cowen's, and it is not in *What Happened to Liberal Democracy?*. What the book has is **the same argument at national scale**, in Chapter 1, as part of the case that liberal democracy stopped delivering:
+
+> *"Building schools is expensive, but it's much easier than increasing the quality of education once the buildings are there… Many indicators point to worsening educational performance over the last decades, even as inflation-adjusted spending per pupil rose from around $6,500 in the 1970s to almost $17,000 in 2019, both in 2022–23 dollars. By the late 2010s, only a third of fourth-grade students could read at the proficient level expected for their grade."*
+
+**A 2.6× real increase in per-pupil spending, against a third of fourth-graders reading at grade level.** That is the shape of the claim this page is testing, sourced to a figure Acemoglu himself publishes, and it does the job the "3.8×" ratio was going to do — without the London estimate the working notes below say not to publish.
+
+Two things worth noting about how he uses it:
+
+- **It is deliberately not a story about schools.** The passage sits inside a longer list — health spending three times France's or Japan's against lower life expectancy, one in four Americans without a primary care physician — and the conclusion drawn is about **public services in general** failing to convert money into outcomes. Education is one instance of *"the crisis of drains and dole"* he names in Chapter 10, not the subject.
+- **He does not blame teachers' unions**, in the book or, notably, anywhere the transcript reaches. The causes offered are that the low-hanging fruit was picked, that American schools serve a harder population, and that the pandemic made it worse. Cowen's framing of the exchange invites the union answer; Acemoglu doesn't take it.
+
+The book supplies no international comparison of school spending, so nothing above needs re-sourcing to it — and the NAEP-style outcome data the working notes ask for is exactly what his "only a third of fourth-grade students" figure is.
+
 ---
 
 ## Working notes
@@ -78,6 +94,10 @@ The interesting thing for you: the CBC's framing is literally *"Highest Costs, M
 **Draft 2 should add:**
 - A real deflated time series, NYC per-pupil in constant 2026 dollars, 2000–2026
 - The same for enrolment on a second axis — the divergence is the whole story
-- Outcome data alongside it (NAEP scores) so "middling marks" is shown rather than asserted
+- Outcome data alongside it (NAEP scores) so "middling marks" is shown rather than asserted — and the book gives the national version of exactly this pairing, so the page can lead with Acemoglu's own numbers and use NYC as the local case rather than the other way round
+
+**Checked against the book.** No NYC–London comparison exists in it; the national spending-versus-outcomes claim does, in Chapter 1, and is written up above. That does not rescue the "3.8×" figure — still do not publish it — but it does mean the page no longer depends on it to make its point.
+
+**Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter. The $6,500 / $17,000 figures are machine-transcribed numbers and the transcript garbles the base-year phrase; confirm both against print before publication.
 
 **Related:** [[Education Quality and Economic Performance - The Outliers]]

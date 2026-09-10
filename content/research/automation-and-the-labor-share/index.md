@@ -78,6 +78,28 @@ flowchart LR
     style F fill:#2f7d5f,color:#fff
 ```
 
+## From the book — which series Acemoglu himself uses
+
+The measurement fight above has an obvious tie-breaker that draft 1 did not reach for: **what number does Acemoglu print when he is not being interviewed?** Chapter 6 of *What Happened to Liberal Democracy?* answers it, and the answer is neither the BLS headline nor Cowen's.
+
+> *"In 1980, the share of labour in US national income was 58%, with the rest going to capital. Since then, the national share of labour has fallen to 52%, and the share of capital has [risen]."*
+
+**58 → 52, on national income, from 1980.** Six points, not the nine the BLS nonfarm series implies over its longer window, and not the two Cowen offers. Three things follow:
+
+- **Cowen's "62 to 60" is not a straw man of Acemoglu's position, but it is not Acemoglu's number either.** The gap between them is 6 points against 2 — a real disagreement about magnitude, on top of the disagreement about which question the aggregate answers.
+- **The start date is doing work.** Acemoglu begins at 1980, not 1947, which excludes the flat postwar stretch and starts the clock at the moment his own account says the industrial compact broke. That is a defensible choice and it is also an argumentative one — the same kind of endpoint choice flagged on [[The Printing Press - How Long Was the Adjustment]].
+- **National income, not nonfarm business.** A different denominator again, which is exactly why the table above needs its caveat.
+
+**The number he actually leans on is sectoral, and it is much larger:**
+
+> *"The labour share in value added in the manufacturing sector declined from 74% in 1981 to 46% in the mid-2010s, much larger than the decline in the aggregate economy that I mentioned previously, which was from 58% to 52%."*
+
+**74 → 46 in manufacturing.** He then decomposes it in the direction his framework predicts: *"While some manufacturing industries, such as apparel, had stable labour shares, the industries that were at the forefront of new robot installations, such as motor vehicles, chemical products, electrical equipment, and primary and fabricated metals, had sharper drops in their labour share and also cut down employment."*
+
+That is the whole Cowen–Acemoglu exchange in miniature, and it clarifies who is arguing what. **Acemoglu is not defending the aggregate series.** He publishes it, calls it small, and then goes immediately to the sector where the effect is four times larger and where robot adoption and labor-share decline line up industry by industry. Cowen's move — point at the aggregate, note it barely moved — lands on a number Acemoglu has already conceded is not the one carrying his argument.
+
+**For the chart.** This resolves the "which series" decision the working notes below hand back to Adam, at least for panel 1: if the page is about *Acemoglu's* claim, the honest series is the manufacturing labor share in value added, with the aggregate plotted beneath it for scale. That is two lines from published sources, it shows exactly why the two men are talking past each other, and it does not require anyone's replication files.
+
 ## Reading
 
 - Acemoglu & Restrepo, ["Automation and New Tasks"](https://www.aeaweb.org/articles?id=10.1257/jep.33.2.3), *JEP* 2019 — the accessible statement
@@ -96,6 +118,10 @@ The table above is the honest first draft: numbers with provenance, and the reas
 
 **Numbers I'd want double-checked before publication:** the 1947 Q1 65.8% and 2000 Q4 62.8% figures come through secondary sources quoting BLS, not from BLS directly. The Elsby/Hobijn/Şahin one-third result is from their abstract.
 
-**What I could not resolve:** Cowen's "62 to 60, adjusting for equity compensation." I could not find the specific series he's using. It is plausibly Barkai (2020) or a Mercatus-adjacent calculation. Until that's identified, treat the 62→60 as a claim in an argument rather than a fact.
+**What I could not resolve:** Cowen's "62 to 60, adjusting for equity compensation." I could not find the specific series he's using. It is plausibly Barkai (2020) or a Mercatus-adjacent calculation. Until that's identified, treat the 62→60 as a claim in an argument rather than a fact. **Still unresolved** — the book check settles what Acemoglu's number is, not what Cowen's is.
+
+**What the book did settle:** which series Acemoglu himself publishes (58→52 on national income since 1980, and 74→46 in manufacturing value added since 1981), and therefore which line panel 1 of the chart should be. Written up above. It also means the "62 to 60" exchange is not two people disputing a measurement — it is Cowen testing an aggregate that Acemoglu's own book already sets aside as too small to carry the argument.
+
+**Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter and the figures above are machine-transcribed numbers. **Confirm 74/46/58/52 against print before publication** — a transcript is exactly the wrong place to source a number to the percentage point, and these four are now load-bearing on this page.
 
 **Related:** [[Acemoglu and Restrepo - The Task Framework]] · [[AI Growth Forecasts - Whose Timeline]]

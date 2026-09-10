@@ -58,9 +58,33 @@ He is explicit that this is *not* grounded in an external standard. Cowen presse
 
 Worth holding, because he does not answer them in this conversation:
 
-1. **Rawls already did this.** *Political Liberalism* (1993) introduces "overlapping consensus" precisely to handle deep disagreement — the idea that people with incompatible worldviews can converge on shared political principles for their own different reasons. That is a consensus mechanism, not a book of absolutes. Acemoglu says Rawls "goes into that direction" anyway; the transcript doesn't show why.
+1. **Rawls already did this.** *Political Liberalism* (1993) introduces "overlapping consensus" precisely to handle deep disagreement — the idea that people with incompatible worldviews can converge on shared political principles for their own different reasons. That is a consensus mechanism, not a book of absolutes. Acemoglu says Rawls "goes into that direction" anyway; the transcript doesn't show why. **The book does** — see below, and the answer is that he does not deny the later Rawls so much as absorb him.
 2. **The contract *is* the consensus device.** A contractarian can say the hypothetical agreement is not a substitute for consensus but a model of what consensus under fair conditions would look like.
 3. **Without an external standard, what stops a community consensus that is monstrous?** His answer is the individual-freedom floor. Whether that floor is thick enough to do the work is the whole argument.
+
+## From the book
+
+The whole of Chapter 3 is titled *Liberalism Without Social Contract*, and it is the chapter this page was guessing at.
+
+**What he rejects, precisely.** Not the conclusions of any particular contract theory — the standing of a hypothetical agreement to settle anything:
+
+> *"The root problem is that social contract theories, interpreted as the basis for general ethical rules, go against self-government. They don't seek the actual consent of individuals and communities to public choices by a process of deliberation, communication, and debate. Rather, they attempt to circumvent any opposition by invoking high-level precepts without broad buy-in from the population."*
+
+Rousseau gets the sharper version, and it is structural rather than about any specific general will:
+
+> *"In every application of the social contract lies a contradiction. If it is the general will that supports true freedom, then true freedom must entail violations of individual freedoms conceived or misconceived differently from those enshrined in the general will… Under the general will, however, there is no room for deliberation or debate, and people cannot have any recourse against the general will."*
+
+**What he keeps.** The chapter's positive move is that contractarian arguments are perfectly good *arguments* — they are just not consent. Rawls's own alternative reading of his project is quoted approvingly and then bounded:
+
+> *"such reasoning should be used mainly in the context of deliberation and cannot justify actual policies or impositions of values on people, for example, becoming the basis of laws and how policymakers judge different options."*
+
+By the chapter's end, philosophy is demoted to an input and the deliberation is the thing:
+
+> *"One can conceive of the role of political philosophy, including ideas based on treating others as we would want them to treat us, or contractarian arguments, especially those based on liberal principles like John Rawls's, as providing input into building such principles via debate and deliberation."*
+
+**And he shows his work.** The chapter's two worked examples of consensus actually happening are the **2018 Irish abortion referendum**, preceded by the Citizens' Assembly, and the **US path to the Respect for Marriage Act (2022)** via the 2012 Maine, Maryland and Washington referenda. Both are cases where a genuinely contested value question was settled by argument among real people over time rather than by a principle derived in advance. That is what "real consensus among real people" means in his framework, and the interview never supplies it.
+
+**The floor is in Chapter 10, not here.** The interview's "elbow room" phrasing makes the floor sound undefined. It isn't — Chapter 10 names it: freedom of expression, freedom to acquire education, equality before the law, and the right to exit the community. See [[Working-Class Liberalism and Community Elbow Room]].
 
 ## Reading
 
@@ -79,8 +103,12 @@ Worth holding, because he does not answer them in this conversation:
 
 **What I'm confident about:** the lineage, the general-will/will-of-all distinction, the "forced to be free" passage, and that step-1 framing determines the output. Standard material.
 
-**What needs the book.** Acemoglu's claim that Rawls "goes into that direction" is the load-bearing one and the transcript doesn't defend it. My guess is he means Rawls's *lexical priority* rule — liberty first, then fair equality of opportunity, then the difference principle — which really does function as a rulebook for value clashes. That would make his target lexical priority specifically, not contractarianism generally. **Unverified.** Someone should read *What Happened to Liberal Democracy?* and check whether he names lexical priority. If he does, this page and [[The Book Problem]] merge into one argument.
+**Checked against the book, and the guess was wrong.** Draft 1 said "someone should read *What Happened to Liberal Democracy?* and check whether he names lexical priority." Someone has. **He never does** — the word does not appear, and the priority ordering is never discussed as an ordering. His target is contractarianism generally, exactly as the fallback reading had it, and specifically the presumed-consent move rather than any principle derived from it. The **From the book** section replaces this. [[John Rawls]] carries the detail.
 
-**Where I think he's weakest:** he objects to a book, and then names one value (individual freedom) that outranks everything else. That is a one-line book. The difference between a short book and a long one is real but it is a difference of degree.
+The consequence for this page is that it and [[The Book Problem]] do **not** merge into one argument. They were only going to merge if lexical priority turned out to be the target; it isn't.
 
-**Draft 2 should add:** what "community-level agreements" concretely means in his framework — currently split into [[Working-Class Liberalism and Community Elbow Room]] because Adam asked for a worked example there.
+**Where I think he's weakest — still stands, and the book sharpens it.** He objects to a rulebook, then names a floor that outranks everything else. Chapter 10 makes that floor explicit and four items long (expression, education, equality before the law, exit), which is more than the one line the interview implies, and it is asserted rather than deliberated. A four-item book is still a book. What the book adds in his defence is that the floor is justified *instrumentally* throughout — Chapter 2 argues rights are warranted because they enable experimentation and collective knowledge, "not because of a notion of natural rights."
+
+**Draft 2 should add:** what "community-level agreements" concretely means in his framework. This is now answered from Chapter 10 rather than constructed — see [[Working-Class Liberalism and Community Elbow Room]].
+
+**Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter and quotations are transcribed speech. Re-check wording against print before quoting as exact.

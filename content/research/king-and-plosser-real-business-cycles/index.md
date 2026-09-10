@@ -72,4 +72,8 @@ Three moves, and they're worth separating:
 ## Working notes
 Cowen's "you're like Long and Plosser" is a compliment and a needle at the same time, which is characteristic. The substantive question underneath — **is induced innovation a self-correcting mechanism strong enough to make demographic decline harmless?** — is genuinely open, and [[The Lucas Critique]] is the strongest reason to doubt it.
 
+**Checked against the book: not there.** No real-business-cycle literature, no Long and Plosser, and no treatment of demographic decline as a growth question. The *Baby Busts* result Cowen presses him on is a working paper, not book material. What the book does supply, in Chapter 6, is the empirical half of the induced-innovation argument underneath this exchange — German firms adopting robots faster than American ones and reallocating rather than shedding workers, which is automation responding to institutions rather than to scarcity. See [[Acemoglu and Restrepo - The Task Framework]]. The open question below — whether induced innovation is self-correcting enough to make demographic decline harmless — gets no help from the book either way.
+
+Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed; references are by chapter.
+
 **Related:** [[Induced Innovation and the Habakkuk Thesis]] · [[The Lucas Critique]] · [[Acemoglu and Restrepo - The Task Framework]]
