@@ -1,0 +1,24 @@
+{{- $page := . -}}
+{{- $transcript := site.GetPage "/research" -}}
+{{- $url := printf "https://gautsch.org%s" .RelPermalink -}}
+{{- $body := partial "research/pack-text.html" .RenderShortcodes -}}
+{{- $excerpt := "" -}}
+{{- $speaker := "" -}}
+{{- $paragraphs := findRE `(?s)<p\b[^>]*>.*?</p>` $transcript.RawContent -}}
+{{- range $paragraphs -}}
+  {{- /* Remove the annotation tooltip, which is commentary, not speech. */ -}}
+  {{- $p := replaceRE `(?s)<span class="rh-pop".*?</span><a class="rh-pop-more".*?</a></span>` "" . -}}
+  {{- with findRE `<strong class="rh-speaker">[^<]+</strong>` $p -}}
+    {{- $speaker = index . 0 | plainify | htmlUnescape -}}
+  {{- end -}}
+  {{- if strings.Contains $p (printf `id="%s"` $page.Params.transcript_anchor) -}}
+    {{- $p = replaceRE `<strong class="rh-speaker">[^<]+</strong>` "" $p -}}
+    {{- $excerpt = printf "%s %s" $speaker (partial "research/pack-text.html" $p) -}}
+  {{- end -}}
+{{- end -}}
+{{- if not $excerpt }}{{ errorf "No transcript excerpt for reading pack: %s" .File.Path }}{{ end -}}
+{{- $text := printf "# %s — reading pack\n\nPage: %s\n\n## How to use this pack\n\nHelp the reader explore this rabbit hole. Start by asking what caught their attention, then discuss one question at a time. Explore the strongest counterargument and what remains uncertain. Distinguish the original speakers' claims, Adam's question, the site's research commentary, and your own interpretation. Do not treat the commentary as a transcript or assume Adam endorses every claim. Preserve corrections and uncertainty; do not invent sources or pretend to have opened links.\n\nThis pack contains the page's current research text, references and figure text. Related rabbit holes are linked, not included. It is a reading companion, not an independently verified source.\n\n## The short version\n\n%s\n\n## Relevant transcript excerpt\n\nSource: %s\n\nAnnotated transcript: https://gautsch.org/research/#%s\n\n%s\n\n## Research commentary\n\n%s\n" .Title $url .Params.short_version $transcript.Params.source_url .Params.transcript_anchor $excerpt $body -}}
+{{- with .Params.models -}}
+  {{- $text = printf "%s\n---\nResearch page built in conversation with %s.\n" $text (delimit . " and ") -}}
+{{- end -}}
+{{- return (resources.FromString (printf "%sreading-pack.md" (strings.TrimPrefix "/" .RelPermalink)) $text) -}}

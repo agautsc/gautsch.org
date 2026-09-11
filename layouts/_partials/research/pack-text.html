@@ -1,0 +1,17 @@
+{{- /* Keep Markdown prose; turn rendered figure HTML into portable text.
+       Links retain their destinations, including figure citations. */ -}}
+{{- $text := . -}}
+{{- $text = replaceRE `(?s)<style\b[^>]*>.*?</style>` "" $text -}}
+{{- $text = replaceRE `(?s)<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>` "[$2]($1)" $text -}}
+{{- $text = replaceRE `(?s)<h[1-6]\b[^>]*>(.*?)</h[1-6]>` "\n\n### $1\n\n" $text -}}
+{{- $text = replaceRE `<li\b[^>]*>` "\n- " $text -}}
+{{- $text = replaceRE `</(?:p|div|section|header|figcaption|figure|li|dl|dt|dd)>` "\n" $text -}}
+{{- $text = replaceRE `</(?:span|strong|b|time)>` " " $text -}}
+{{- $text = replaceRE `<(?:p|div|section|header|figcaption|figure)\b[^>]*>` "\n" $text -}}
+{{- $text = replaceRE `<[^>]+>` "" $text -}}
+{{- $text = htmlUnescape $text -}}
+{{- /* Root-relative destinations must survive outside the website. */ -}}
+{{- $text = replaceRE `\]\(/` "](https://gautsch.org/" $text -}}
+{{- $text = replaceRE `\n[ \t]+` "\n" $text -}}
+{{- $text = replaceRE `\n{3,}` "\n\n" $text -}}
+{{- return (strings.TrimSpace $text) -}}

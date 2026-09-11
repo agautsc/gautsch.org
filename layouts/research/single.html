@@ -5,6 +5,7 @@
        written twice. Model credit is page-level and honest: it names only who
        actually worked on the page. */ -}}
 {{- with resources.Get "css/research.css" }}<style>{{ .Content | safeCSS }}</style>{{ end }}
+<div class="rh-conversation-layout">
 <article class="rh-page">
   <header class="rh-header">
     <p class="rh-kicker">A rabbit hole</p>
@@ -88,4 +89,6 @@
     </span>
   </footer>
 </article>
+{{ partial "research/conversation.html" . }}
+</div>
 {{ end }}

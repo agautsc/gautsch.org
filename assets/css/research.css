@@ -395,3 +395,49 @@ p[id^="a"]:target, a.rh-mark:target {
 }
 .rh-body a[href^="https://"]:hover, .rh-body a[href^="http://"]:hover { color: var(--rh-ink-deep); }
 .rh-body a:focus-visible { outline: 2px solid var(--rh-ink); outline-offset: 3px; }
+
+
+/* A reading companion beside the page; below the article on smaller screens.
+   Site instructions stay in print: handwriting is reserved for Adam's voice. */
+.rh-conversation-layout { position: relative; }
+.rh-conversation {
+  margin: 2.5rem auto 0; max-width: 42rem; padding: 1.4rem;
+  background: var(--rh-stock); border: 1px solid var(--rh-rule);
+  border-top: 3px solid var(--rh-accent); box-shadow: 4px 4px 0 var(--rh-rule);
+  font-size: .95rem; line-height: 1.5; overflow-wrap: anywhere;
+}
+.rh-conversation-kicker {
+  color: var(--rh-accent-ink); text-transform: uppercase; letter-spacing: .09em;
+  font-size: .7rem; font-weight: 600; margin-bottom: .6rem;
+}
+.rh-conversation h2 { font-size: 1.55rem; line-height: 1.15; margin: 0 0 .8rem; }
+.rh-conversation p { margin-bottom: 1rem; }
+.rh-conversation-copy {
+  background: var(--rh-ink); color: var(--rh-stock); padding: .75rem .9rem;
+  border-radius: 2px; font: inherit; line-height: 1.25; text-align: left;
+  cursor: pointer; width: 100%; min-height: 44px;
+}
+.rh-conversation-copy:hover { background: var(--rh-ink-deep); }
+.rh-conversation :is(button, a, summary, textarea):focus-visible {
+  outline: 2px solid var(--rh-ink); outline-offset: 4px;
+}
+.rh-conversation-status { color: var(--rh-ink); font-size: .85rem; }
+.rh-conversation-status:empty { display: none; }
+.rh-conversation-status:not(:empty) { margin-top: .6rem; }
+.rh-conversation-prompt { margin: .85rem 0; }
+.rh-conversation summary { cursor: pointer; color: var(--rh-ink); padding: .3rem 0; }
+.rh-conversation label { display: block; margin: .5rem 0; font-size: .85rem; }
+.rh-conversation textarea {
+  display: block; width: 100%; padding: .65rem; border: 1px solid var(--rh-rule-soft);
+  background: var(--rh-pop); color: var(--rh-text); font: inherit;
+  font-size: 1rem; line-height: 1.5; resize: vertical;
+}
+.rh-conversation-download { color: var(--rh-ink); text-decoration: underline; text-underline-offset: 3px; }
+.rh-conversation .rh-conversation-help { color: var(--rh-muted); font-size: .85rem; margin: .6rem 0 0; }
+@media (min-width: 78rem) {
+  .rh-conversation {
+    position: absolute; top: 0; left: calc(100% + 1.5rem);
+    width: 15rem; margin: 0;
+  }
+}
+@media print { .rh-conversation { display: none; } }

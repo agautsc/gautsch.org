@@ -1,0 +1,23 @@
+{{- $pack := partial "research/reading-pack.html" . -}}
+{{- $packURL := printf "https://gautsch.org%s" $pack.RelPermalink -}}
+{{- $prompt := printf "Read %s (the reading pack for ‘%s’). Help me think through the argument, including its strongest counterargument and what remains uncertain. Start by asking what caught my attention, then explore one question at a time. Distinguish the original speakers’ claims, Adam’s question, the site’s research commentary, and your own interpretation. If you can’t open the link, ask me to attach the reading pack." $packURL .Title -}}
+{{- if hugo.IsServer -}}
+  {{- $prompt = printf "I’m attaching the reading pack for ‘%s’. Read it and help me think through the argument, including its strongest counterargument and what remains uncertain. Start by asking what caught my attention, then explore one question at a time. Distinguish the original speakers’ claims, Adam’s question, the site’s research commentary, and your own interpretation. If I haven’t attached the pack yet, ask me for it." .Title -}}
+{{- end -}}
+<aside class="rh-conversation" aria-labelledby="rh-conversation-title">
+  <p class="rh-conversation-kicker">One more rabbit hole?</p>
+  <h2 id="rh-conversation-title">Continue the conversation</h2>
+  <p>Take this rabbit hole to your robot of choice. Explore the argument, challenge it, or follow a question of your own.</p>
+  <button class="rh-conversation-copy" type="button" hidden>Copy conversation starter</button>
+  <p class="rh-conversation-status" role="status" aria-live="polite"></p>
+  <details class="rh-conversation-prompt">
+    <summary>Read or select the prompt</summary>
+    <label for="rh-conversation-text">Paste into your robot</label>
+    <textarea id="rh-conversation-text" readonly rows="9" spellcheck="false">{{ $prompt }}</textarea>
+  </details>
+  <a class="rh-conversation-download" href="{{ $pack.RelPermalink }}" download="{{ .File.ContentBaseName }}-reading-pack.md">Download the reading pack (.md)</a>
+  <p class="rh-conversation-help">{{ if hugo.IsServer }}Attach the reading pack with your prompt.{{ else }}If your robot can’t open the link, attach the reading pack.{{ end }}</p>
+</aside>
+{{- with resources.Get "js/research-conversation.js" | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{- end }}
