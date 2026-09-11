@@ -1,0 +1,36 @@
+/* A typeset research figure: handwriting remains Adam’s register. */
+.rh-body .print-timeline { margin: 1.5rem 0 2.5rem; background: var(--rh-stock); border: 1px solid var(--rh-rule); border-top: 3px solid var(--rh-accent); }
+.print-heading, .print-clocks, .print-chronology, .print-timeline figcaption { padding: 1.5rem 1.6rem; }
+.rh-body .print-eyebrow { margin: 0 0 .9rem; color: var(--rh-accent-ink); font-size: .72rem; line-height: 1.5; letter-spacing: .09em; text-transform: uppercase; font-weight: 600; }
+.rh-body .print-heading h3 { margin: 0 0 .9rem; font-size: clamp(1.8rem, 5vw, 2.5rem); line-height: 1.08; font-weight: 600; letter-spacing: -.025em; }
+.rh-body .print-heading > p:last-child { margin: 0; font-size: 1.05rem; line-height: 1.5; }
+.print-clocks { border-block: 1px solid var(--rh-rule); background: var(--rh-page); }
+.print-clock + .print-clock { margin-top: 1.15rem; }
+.print-clock-label { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; font-size: .98rem; line-height: 1.3; }
+.print-clock-label > strong { white-space: nowrap; color: var(--rh-ink); font-size: 1.55rem; font-variant-numeric: tabular-nums; }
+.print-clock-label small { font-size: .85rem; font-weight: 400; }
+.print-track { height: 6px; background: var(--rh-rule); margin: .4rem 0; }
+.print-track span { display: block; height: 100%; background: var(--rh-ink); }
+.rh-body .print-clock p { margin: 0; font-size: .85rem; line-height: 1.4; color: var(--rh-muted); }
+.rh-body .print-scale { margin: 1rem 0 0; font-size: .82rem; line-height: 1.45; color: var(--rh-muted); }
+.rh-body .print-chapter h4 { margin: .4rem 0 1rem; font-size: 1.25rem; line-height: 1.4; font-weight: 600; }
+.print-chapter h4 > span { margin-right: .35rem; color: var(--rh-accent-ink); font-size: .85rem; }
+.print-chapter h4 small { display: block; margin-left: 1.6rem; font-size: .82rem; font-weight: 400; color: var(--rh-muted); }
+.print-chapter + .print-chapter { margin-top: 1.5rem; }
+.rh-body .print-chapter ol { list-style: none; margin: 0 0 0 .35rem; padding: 0; border-left: 1px solid var(--rh-rule-soft); }
+.rh-body .print-chapter li { position: relative; display: grid; grid-template-columns: 6.2rem minmax(0,1fr); gap: .7rem; margin: 0; padding: 0 0 1.1rem 1.2rem; font-size: .98rem; line-height: 1.4; }
+.rh-body .print-chapter li:last-child { padding-bottom: .2rem; }
+.print-chapter li::before { content: ""; position: absolute; width: 7px; height: 7px; border: 1px solid var(--rh-accent); background: var(--rh-stock); border-radius: 50%; top: .35rem; left: -4px; }
+.print-date { color: var(--rh-accent-ink); font-size: .9rem; font-variant-numeric: tabular-nums; }
+.rh-body .print-chapter li p { margin: .15rem 0 0; font-size: .93rem; line-height: 1.45; color: var(--rh-muted); }
+.print-timeline figcaption { border-top: 1px solid var(--rh-rule); font-size: .95rem; line-height: 1.5; }
+.print-sources { display: block; margin-top: .8rem; color: var(--rh-muted); font-size: .8rem; }
+@media(max-width: 480px) {
+  .print-heading, .print-clocks, .print-chronology, .print-timeline figcaption { padding: 1.2rem 1rem; }
+  .rh-body .print-chapter li { grid-template-columns: minmax(0,1fr); gap: .15rem; }
+  .print-clock-label { font-size: .9rem; gap: .6rem; }
+  .print-clock-label > strong { font-size: 1.35rem; }
+}
+.print-sources a { color: var(--rh-ink); text-decoration: underline; text-underline-offset: .15em; }
+.print-sources a:hover { color: var(--rh-ink-deep); }
+.print-sources a:focus-visible { outline: 2px solid var(--rh-ink); outline-offset: 3px; }

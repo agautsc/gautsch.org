@@ -4,7 +4,7 @@ short_version: |
   Adam's instinct is right: most of this conversation is a timeline argument wearing a theory costume. The useful thing is that the positions can be reduced to a single number — how many percentage points AI adds to annual productivity growth — and then compounded. Do that and the disagreement becomes legible. Acemoglu's published estimate adds about **$180 billion** to US GDP over a decade. Cowen's casual floor adds about **$1.8 trillion** — ten times more, and he calls it modest. Goldman Sachs adds **$5.7 trillion**. The explosive-growth scenarios add **$57 trillion**. These are not different opinions about the same forecast. They are different universes, and the gap between the two men in this room is smaller than the gap between either of them and the industry.
 asked: "A good amount of this conversation is economists arguing over timelines… I would love to see a rabbit hole around timelines for some of these arguments. What I mean is like a timeline understanding what game-changer means over time. What does GDP growth look like with an OpenAI assumption versus Acemoglu assumption for example."
 transcript_anchor: "a16"
-models: ["Claude"]
+models: ["Claude", "Codex"]
 draft: false
 ---
 
@@ -63,15 +63,7 @@ Note the last row carefully. Acemoglu does **not** predict a smooth trickle. His
 
 This is why the two men talk past each other on timing. Cowen points at 1995–98 and says *look how fast it moved*. Acemoglu points at 1975–2008 and says *that boom took twenty years of prior investment to arrive*. **Both are describing the same history with different window sizes.** Neither is wrong about the data.
 
-```mermaid
-timeline
-    title Whose clock is running?
-    1975-1995 : Two decades of IT investment : Little measured productivity gain : "Computers everywhere but in the statistics"
-    1995-1998 : The boom : Productivity growth up ~0.5 pp : Cowen's benchmark
-    2004-2019 : Productivity slowdown : Despite continued IT investment
-    2022-2026 : LLM capability rises fast : Application layer lags : Acemoglu's "sluggish diffusion"
-    2026-2036 : The disputed decade : Acemoglu +0.05pp : Cowen +0.5pp : Industry +1.5pp or more
-```
+{{< research-figure "ai-clocks" >}}
 
 ## The Solow paradox, which is the real precedent
 

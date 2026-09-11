@@ -1,0 +1,116 @@
+{
+  "periods": [
+    {
+      "start": 1450,
+      "end": 1648,
+      "label": "From Gutenberg to Westphalia",
+      "note": "A political settlement: the Thirty Years’ War ends."
+    },
+    {
+      "start": 1450,
+      "end": 1695,
+      "label": "From Gutenberg to the end of English licensing",
+      "note": "A change in press control, in one country."
+    },
+    {
+      "start": 1517,
+      "end": 1648,
+      "label": "From Luther to Westphalia",
+      "note": "The shorter clock starts with the Reformation."
+    }
+  ],
+  "chapters": [
+    {
+      "number": "01",
+      "title": "Print spreads",
+      "span": "c. 1450–1517",
+      "events": [
+        [
+          "c. 1450",
+          "Gutenberg’s press, Mainz",
+          "The starting point here is movable-type printing in Europe."
+        ],
+        [
+          "1450–1500",
+          "The incunabula period",
+          "Printing spreads across Europe during the first half-century."
+        ],
+        [
+          "1455",
+          "The Gutenberg Bible",
+          "A landmark of the new printing process."
+        ],
+        [
+          "1517",
+          "Luther’s 95 Theses",
+          "Print becomes a vehicle for religious controversy. This is the alternative start of the adjustment clock."
+        ]
+      ]
+    },
+    {
+      "number": "02",
+      "title": "Conflict and control",
+      "span": "1524–1648",
+      "events": [
+        [
+          "1524–1525",
+          "German Peasants’ War",
+          "Religious and political upheaval turns violent."
+        ],
+        [
+          "1545–1563",
+          "Council of Trent",
+          "The Catholic Church organizes its response to the Reformation."
+        ],
+        [
+          "1559",
+          "Index of Prohibited Books",
+          "Formal Catholic censorship attempts to control what circulates."
+        ],
+        [
+          "1562–1598",
+          "French Wars of Religion",
+          "Decades of conflict; the St. Bartholomew’s Day Massacre follows in 1572."
+        ],
+        [
+          "1618–1648",
+          "Thirty Years’ War",
+          "The long conflict that makes 1648 one possible endpoint."
+        ]
+      ]
+    },
+    {
+      "number": "03",
+      "title": "Settlements, not a finish line",
+      "span": "1648–1791",
+      "events": [
+        [
+          "1648",
+          "Peace of Westphalia",
+          "Ends the Thirty Years’ War. A political settlement, not the end of every religious conflict."
+        ],
+        [
+          "1662",
+          "English Licensing Act",
+          "Pre-publication licensing regulates the English press."
+        ],
+        [
+          "1695",
+          "English licensing lapses",
+          "The licensing system expires; other restrictions on publication remain."
+        ],
+        [
+          "1710",
+          "Statute of Anne",
+          "Britain establishes statutory copyright with limited terms."
+        ],
+        [
+          "1791",
+          "First Amendment",
+          "The United States gives freedom of the press constitutional protection."
+        ]
+      ]
+    }
+  ],
+  "source_mermaid": "timeline\n    title From Mainz to a settled press\n    1450 : Gutenberg's press at Mainz : Movable type in Europe\n    1455 : The Gutenberg Bible\n    1450-1500 : The incunabula period : Book prices fall by two-thirds : Presses spread across Europe\n    1517 : Luther's 95 Theses : Presses in 200+ European cities. The first viral text\n    1524-1525 : German Peasants' War : ~100,000 dead\n    1545-1563 : Council of Trent : The institutional counter-move\n    1559 : Index Librorum Prohibitorum : Formal Catholic censorship\n    1562-1598 : French Wars of Religion : 2-4 million dead\n    1572 : St. Bartholomew's Day Massacre\n    1618-1648 : Thirty Years' War : 4.5-8 million dead : German lands lose 20-35% of population\n    1648 : Peace of Westphalia : Confessional settlement\n    1662 : English Licensing Act : State pre-publication control\n    1695 : Licensing Act lapses : England ends pre-publication censorship\n    1710 : Statute of Anne : Copyright as we know it\n    1791 : First Amendment"
+}

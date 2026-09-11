@@ -4,7 +4,7 @@ short_version: |
   Adam's reading is correct. Acemoglu is *not* claiming automation causes mass unemployment. He is claiming displaced workers land in other work at lower pay, and that the pie slice going to workers as a whole shrinks and does not come back. "First-order impact" is the technical way of saying: *the mechanical, immediate effect, before any offsetting reactions.* When a task moves from a person to a machine, labor's share of income falls immediately and by arithmetic. Everything else — new hiring, cheaper goods, new jobs — is second-order, and second-order effects may or may not be big enough to undo it.
 asked: "This might be too much to ask, but I'd really like to go down a rabbit hole on this. I'd love to see some chart showing this. If I understand what he's saying it's that people might get another job, but it's not as well paid. I'd love some references on that. Also, the 'first-order impact' is something I'd like to be explained more as well. What is he describing when he's saying that."
 transcript_anchor: "a12"
-models: ["Claude"]
+models: ["Claude", "Codex"]
 draft: false
 ---
 
@@ -65,18 +65,7 @@ Here is the US labor share, nonfarm business sector. **Read the caveat below bef
 
 So the honest framing is: **Cowen and Acemoglu are not disagreeing about a number. They are disagreeing about which number is the right question.** Cowen points at an aggregate that barely moved and says the worry is overblown. Acemoglu says the aggregate bundles automation with new-task creation and therefore cannot test his claim, which is about automation held separately.
 
-```mermaid
-flowchart LR
-    A["Task automated"] --> B["FIRST ORDER<br/>wage bill falls<br/>labor share drops"]
-    B --> C["SECOND ORDER<br/>cheaper output, firm expands<br/>demand rises for remaining tasks"]
-    C --> D["THIRD ORDER<br/>new tasks and industries<br/>appear"]
-    D --> E{"Do 2nd and 3rd<br/>fully offset the 1st?"}
-    E -->|"Historically, mostly"| F["Wages rise, labor share<br/>roughly stable"]
-    E -->|"Acemoglu's AI worry"| G["Partial offset:<br/>employment recovers,<br/>wages and share do not"]
-    style B fill:#c94f4f,color:#fff
-    style G fill:#c94f4f,color:#fff
-    style F fill:#2f7d5f,color:#fff
-```
+{{< research-figure "labor-share" >}}
 
 ## From the book — which series Acemoglu himself uses
 

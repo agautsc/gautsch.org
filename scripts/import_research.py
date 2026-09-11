@@ -22,7 +22,8 @@ def slugify(s):
     return re.sub(r"[-\s]+", "-", s)
 
 def read(p):
-    return io.open(p, encoding="utf-8").read().replace("\xa0", " ")
+    with io.open(p, encoding="utf-8") as source:
+        return source.read().replace("\xa0", " ")
 
 # ---------- markdown -> html for transcript prose ----------
 def inline(t):
@@ -197,11 +198,22 @@ def main():
     print(f"paragraphs: {len(paras)}   with highlight: {sum(1 for p in paras if p['highlighted'])}")
     print(f"short versions: {sum(1 for p in pages.values() if p['short'])}/{len(pages)}")
 
+    figures = load_site_figures()
+    rendered_pages = {
+        t: resolve_wikilinks(render_site_figures(strip_page_frontmatter_artifacts(p["body"]), p["slug"], figures), pages, t)
+        for t, p in pages.items()
+    }
+
+    root = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "content", "research")
+    for t, p in pages.items():
+        existing = os.path.join(root, p["slug"], "index.md")
+        if os.path.exists(existing):
+            validate_review_provenance(read(existing), rendered_pages[t], p["slug"])
+
     if not a.write:
         print("\n[dry-run] nothing written. pass --write")
         return
 
-    root = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "content", "research")
     os.makedirs(root, exist_ok=True)
 
     tbody = "\n".join(p["html"] for p in paras)
@@ -231,12 +243,59 @@ def main():
             f.write(f'asked: "{p["asked"].replace(chr(34), chr(39))}"\n')
         if p.get("anchor"):
             f.write(f'transcript_anchor: "{p["anchor"]}"\n')
-        f.write('models: ["Claude"]\n')
+        models = ['Claude', 'Codex'] if p['slug'] in figures else ['Claude']
+        f.write('models: ' + json.dumps(models) + '\n')
         f.write("draft: false\n---\n\n")
-        f.write(resolve_wikilinks(
-            strip_page_frontmatter_artifacts(p["body"]), pages, f"{t}"))
+        f.write(rendered_pages[t])
         f.close()
     print(f"\nwrote content/research/_index.md and {len(pages)} pages")
+
+def validate_review_provenance(existing, incoming, slug):
+    """Do not silently undo the book review with an older vault copy.
+
+    This checks known provenance markers, not factual accuracy or every edit.
+    Reconcile source copies before intentionally removing reviewed material.
+    """
+    markers = (r"^## From the book\s*$", r"checked against the audiobook edition")
+    for marker in markers:
+        if re.search(marker, existing, re.I | re.M) and not re.search(marker, incoming, re.I | re.M):
+            raise ValueError(f"{slug}: import would remove book-review material; reconcile the vault source with the site before importing")
+
+
+def load_site_figures():
+    """Map source pages to curated figures and their preserved Mermaid input."""
+    directory = os.path.join(os.path.dirname(__file__), "..", "data", "research")
+    with open(os.path.join(directory, "figures.json"), encoding="utf-8") as source:
+        figures = {
+            value["slug"]: {"source": value["source_mermaid"],
+                            "shortcode": '{{< research-figure "' + key + '" >}}'}
+            for key, value in json.load(source).items()
+        }
+    with open(os.path.join(directory, "printing.json"), encoding="utf-8") as source:
+        figures["the-printing-press-how-long-was-the-adjustment"] = {
+            "source": json.load(source)["source_mermaid"],
+            "shortcode": '{{< printing-timeline >}}',
+        }
+    return figures
+
+
+def render_site_figures(body, slug, figures=None):
+    """Preserve vault diagrams; render readable figures at the content boundary.
+
+    Reconcile changed source diagrams with data/research before replacing them.
+    This runs for every page before any output is written, including on dry runs.
+    """
+    if figures is None:
+        figures = load_site_figures()
+    if slug not in figures:
+        return body
+    figure = figures[slug]
+    matches = list(re.finditer(r"```mermaid[^\S\n]*\n(.*?)```", body, re.S))
+    if len(matches) != 1 or matches[0].group(1).strip() != figure["source"]:
+        raise ValueError(f"{slug}: source diagram changed; review data/research before importing")
+    match = matches[0]
+    return body[:match.start()] + figure["shortcode"] + body[match.end():]
+
 
 WIKILINK = re.compile(r"\[\[([^\[\]|]+?)(?:\|([^\[\]|]+?))?\]\]")
 

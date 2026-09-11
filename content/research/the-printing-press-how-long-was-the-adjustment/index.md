@@ -4,7 +4,7 @@ short_version: |
   Adam read the exchange correctly: Acemoglu concedes the printing press had a violent adjustment period and argues it is over. The uncomfortable number is how long it took. Depending on where you put the endpoint, **130 to 250 years**, and the middle of it contains the two deadliest religious conflicts in European history. Social media is roughly **20 years old**. If the printing press is the right analogy, we are not near the end of anything. And there is a second finding hiding in the timeline: the adjustment was not people getting used to it. It was *institutions being built* — censorship regimes first, then copyright, libel law, and a professionalized press. That matters a lot for Acemoglu's argument, because it means "we adjusted" is not an argument against regulating; the adjustment largely *was* regulation.
 asked: "I'd love a rabbit hole giving me a timeline around the printing press adoption and how long it took to normalize the technology… How long do we believe that to have been before the adjustment was over? Do we believe that adjustment is going to be faster or slower for social media? Was the printing press adjustment more or less negative than social media?"
 transcript_anchor: "a14"
-models: ["Claude"]
+models: ["Claude", "Codex"]
 draft: false
 ---
 
@@ -14,25 +14,7 @@ draft: false
 
 ## The timeline
 
-```mermaid
-timeline
-    title From Mainz to a settled press
-    1450 : Gutenberg's press at Mainz : Movable type in Europe
-    1455 : The Gutenberg Bible
-    1450-1500 : The incunabula period : Book prices fall by two-thirds : Presses spread across Europe
-    1517 : Luther's 95 Theses : Presses in 200+ European cities. The first viral text
-    1524-1525 : German Peasants' War : ~100,000 dead
-    1545-1563 : Council of Trent : The institutional counter-move
-    1559 : Index Librorum Prohibitorum : Formal Catholic censorship
-    1562-1598 : French Wars of Religion : 2-4 million dead
-    1572 : St. Bartholomew's Day Massacre
-    1618-1648 : Thirty Years' War : 4.5-8 million dead : German lands lose 20-35% of population
-    1648 : Peace of Westphalia : Confessional settlement
-    1662 : English Licensing Act : State pre-publication control
-    1695 : Licensing Act lapses : England ends pre-publication censorship
-    1710 : Statute of Anne : Copyright as we know it
-    1791 : First Amendment
-```
+{{< printing-timeline >}}
 
 ## So how long?
 

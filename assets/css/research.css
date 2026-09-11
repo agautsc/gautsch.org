@@ -388,3 +388,10 @@ p[id^="a"]:target, a.rh-mark:target {
   .rh-transcript { font-size: 1.14rem; }
   .rh-transcript .rh-now::before { left: -.6rem; }
 }
+
+/* References remain recognisable as links inside Reading tables and figure notes. */
+.rh-body a[href^="https://"], .rh-body a[href^="http://"] {
+  color: var(--rh-ink); text-decoration: underline; text-underline-offset: .15em;
+}
+.rh-body a[href^="https://"]:hover, .rh-body a[href^="http://"]:hover { color: var(--rh-ink-deep); }
+.rh-body a:focus-visible { outline: 2px solid var(--rh-ink); outline-offset: 3px; }

@@ -1,0 +1,376 @@
+{
+  "task-effects": {
+    "slug": "acemoglu-and-restrepo-the-task-framework",
+    "kind": "effects",
+    "kicker": "The task framework · a conceptual map",
+    "title": "One technology. Three effects on workers.",
+    "intro": "These forces can operate together. The outcome depends on their strength, not on moving from one box to the next.",
+    "takeaway": "More output does not automatically mean more income for workers. Ask which tasks disappear, which remain, and which are created.",
+    "source_mermaid": "flowchart TD\n    A[New technology] --> B[Displacement effect<br/>tasks move from labor to capital]\n    A --> C[Productivity effect<br/>output cheaper, demand for labor rises<br/>in remaining tasks]\n    A --> D[Reinstatement effect<br/>new tasks created where<br/>labor has comparative advantage]\n    B --> E{Net effect on<br/>wages and labor share}\n    C --> E\n    D --> E\n    E --> F[Shared prosperity<br/>reinstatement keeps pace]\n    E --> G[So-so automation<br/>displacement without much<br/>productivity gain or new tasks]\n    style B fill:#c94f4f,color:#fff\n    style D fill:#2f7d5f,color:#fff\n    style G fill:#c94f4f,color:#fff\n    style F fill:#2f7d5f,color:#fff",
+    "cards": [
+      {
+        "label": "Displacement",
+        "title": "Machines take over tasks",
+        "text": "Work previously done by people moves to capital. Demand for labor in those tasks falls.",
+        "effect": "Pulls labor demand down",
+        "mark": "−"
+      },
+      {
+        "label": "Productivity",
+        "title": "Remaining work can expand",
+        "text": "Lower production costs can increase output and demand for people in tasks that remain.",
+        "effect": "Can offset displacement",
+        "mark": "+"
+      },
+      {
+        "label": "Reinstatement",
+        "title": "New tasks need people",
+        "text": "New work creates roles where labor has a comparative advantage.",
+        "effect": "Rebuilds a role for labor",
+        "mark": "+"
+      }
+    ],
+    "question": "Which effects dominate?",
+    "outcomes": [
+      {
+        "title": "Gains reach workers",
+        "text": "Productivity gains and new tasks are strong enough to support labor demand and wages."
+      },
+      {
+        "title": "“So-so” automation",
+        "text": "Tasks are displaced, with too little productivity gain or new work to compensate."
+      }
+    ],
+    "sources": [
+      [
+        "Acemoglu & Restrepo, Automation and New Tasks (2019)",
+        "https://www.aeaweb.org/articles?id=10.1257/jep.33.2.3"
+      ]
+    ]
+  },
+  "labor-share": {
+    "slug": "automation-and-the-labor-share",
+    "kind": "labor",
+    "kicker": "An illustrative example · not measured data",
+    "title": "Getting another job can still mean a smaller share.",
+    "intro": "Hold output at $100 to isolate the direct effect. Move a $10 task from labor to capital; then ask what could offset the loss.",
+    "takeaway": "Employment, wages, and labor’s share are different outcomes. A recovery in jobs alone does not establish that wages or labor’s share recovered.",
+    "source_mermaid": "flowchart LR\n    A[\"Task automated\"] --> B[\"FIRST ORDER<br/>wage bill falls<br/>labor share drops\"]\n    B --> C[\"SECOND ORDER<br/>cheaper output, firm expands<br/>demand rises for remaining tasks\"]\n    C --> D[\"THIRD ORDER<br/>new tasks and industries<br/>appear\"]\n    D --> E{\"Do 2nd and 3rd<br/>fully offset the 1st?\"}\n    E -->|\"Historically, mostly\"| F[\"Wages rise, labor share<br/>roughly stable\"]\n    E -->|\"Acemoglu's AI worry\"| G[\"Partial offset:<br/>employment recovers,<br/>wages and share do not\"]\n    style B fill:#c94f4f,color:#fff\n    style G fill:#c94f4f,color:#fff\n    style F fill:#2f7d5f,color:#fff",
+    "total": 100,
+    "bars": [
+      {
+        "label": "Before automation",
+        "labor": 60,
+        "capital": 40
+      },
+      {
+        "label": "Direct effect only",
+        "labor": 50,
+        "capital": 50
+      }
+    ],
+    "change": "Labor’s share: 60% → 50% · down 10 percentage points",
+    "offsets": [
+      {
+        "title": "Expansion in remaining tasks",
+        "text": "Lower costs can expand output and increase demand for people who still do part of the work."
+      },
+      {
+        "title": "Creation of new tasks",
+        "text": "New products and activities can create work that people are better placed to do."
+      }
+    ],
+    "note": "The later response is not assigned a number here. It can offset part, all, or more than the initial loss; this example holds everything else fixed.",
+    "sources": [
+      [
+        "Model context: Automation and New Tasks (2019)",
+        "https://www.aeaweb.org/articles?id=10.1257/jep.33.2.3"
+      ]
+    ]
+  },
+  "education-outliers": {
+    "slug": "education-quality-and-economic-performance-the-outliers",
+    "kind": "outliers",
+    "kicker": "A guide to mechanisms · not a fitted regression",
+    "title": "Skills matter. So does the route from skills to income.",
+    "intro": "These are explanations to investigate when educational performance and economic outcomes diverge. They are not a ranking of countries.",
+    "takeaway": "A genuine outlier chart needs a defined outcome, comparable test years, and a fitted model. GDP per person and GDP growth answer different questions.",
+    "source_mermaid": "flowchart TD\n    A[\"Cognitive skills<br/>(PISA / TIMSS)\"] --> B{\"Can those skills<br/>reach a market?\"}\n    B -->|Yes| C[\"On the line<br/>most countries\"]\n    B -->|\"No — landlocked,<br/>blockaded, bad institutions\"| D[\"UNDER-performers<br/>skills stranded\"]\n    E[\"Resource rents\"] --> F[\"OVER-performers<br/>income without skills\"]\n    style D fill:#c94f4f,color:#fff\n    style F fill:#e0a33e,color:#000\n    style C fill:#2f7d5f,color:#fff",
+    "rows": [
+      {
+        "label": "Skills put to use",
+        "title": "Learning can support production",
+        "mechanism": "People can apply their skills in firms and markets.",
+        "result": "A route from skills to economic gains"
+      },
+      {
+        "label": "Skills face barriers",
+        "title": "Potential may go unrealized",
+        "mechanism": "Weak institutions, limited market access, or migration can interrupt that route.",
+        "result": "A possible explanation for lower output"
+      },
+      {
+        "label": "Income has other sources",
+        "title": "Resources can lift income",
+        "mechanism": "Oil, gas, or other resource rents add income beyond what test scores measure.",
+        "result": "A possible explanation for higher income"
+      }
+    ],
+    "note": "The examples in this article are illustrative. No residual analysis has been reproduced, so this figure does not certify any named country as an outlier.",
+    "sources": [
+      [
+        "Hanushek & Woessmann, The Knowledge Capital of Nations",
+        "https://mitpress.mit.edu/9780262548953/the-knowledge-capital-of-nations/"
+      ]
+    ]
+  },
+  "community-rights": {
+    "slug": "working-class-liberalism-and-community-elbow-room",
+    "kind": "rights",
+    "kicker": "Community elbow room · the book’s two layers",
+    "title": "Different choices. A common floor of rights.",
+    "intro": "Local self-government allows communities to pursue different priorities. Individual freedoms set the limit on that discretion.",
+    "takeaway": "A community can hold views you reject. In this account, it cannot turn those views into restrictions that take away basic individual freedoms.",
+    "source_mermaid": "flowchart TD\n    A[\"FLOOR — not negotiable<br/>meaningful individual freedom<br/>enough to leave, speak, act\"] --> B[\"ELBOW ROOM<br/>communities set their own<br/>practices, values, priorities\"]\n    B --> C[\"Different communities reach<br/>different answers — legitimately\"]\n    A -.->|\"a community may not<br/>breach the floor\"| B\n    style A fill:#2f7d5f,color:#fff\n    style B fill:#3d6ea8,color:#fff",
+    "upper": "Room for local choices",
+    "examples": [
+      "Public-service priorities",
+      "Local policy preferences",
+      "Community practices"
+    ],
+    "upper_note": "Examples of variation, not a prescribed model for every community.",
+    "boundary": "Every local choice must respect the floor",
+    "rights": [
+      "Freedom of expression",
+      "Freedom to acquire education",
+      "Equality before the law",
+      "The right to leave the community"
+    ],
+    "note": "Based on the Chapter 10 account discussed below. Workplace bargaining over technology is a separate part of the book’s programme.",
+    "sources": [
+      [
+        "Chapter 10 and the transcript discussion",
+        "#from-the-book"
+      ]
+    ]
+  },
+  "innovation-lineage": {
+    "slug": "induced-innovation-and-the-habakkuk-thesis",
+    "kind": "timeline",
+    "kicker": "An intellectual history · dates are not to scale",
+    "title": "Scarcity changes what is worth inventing.",
+    "intro": "Follow one question through the literature: when labor becomes scarce or expensive, does innovation turn toward saving it?",
+    "takeaway": "Incentives can redirect technology. They do not guarantee that every society will adapt, or that the benefits will be shared.",
+    "source_mermaid": "timeline\n    title Induced innovation\n    1932 : Hicks, The Theory of Wages : \"A change in relative prices is itself a spur to invention\"\n    1962 : Habakkuk : Scarce American labor drove American mechanization\n    1964-1966 : Kennedy, Samuelson, Drandakis-Phelps : Formal induced-innovation models\n    1969 : Kamien and Schwartz : Critiques; the literature stalls\n    1998-2002 : Acemoglu, Directed Technical Change : The modern revival, with microfoundations\n    2018-2022 : Acemoglu and Restrepo, Demographics and Automation : Aging causes automation - and that is fine\n    2026 : Acemoglu, Autor, Beirne and Scott : Baby Busts and Growth Booms",
+    "groups": [
+      {
+        "title": "The intuition and the early models",
+        "rows": [
+          {
+            "date": "1932",
+            "title": "Hicks · The Theory of Wages",
+            "text": "Relative factor prices can influence the direction of invention."
+          },
+          {
+            "date": "1962",
+            "title": "Habakkuk · American and British Technology",
+            "text": "A historical argument: scarce American labor encouraged mechanization. The thesis remains contested."
+          },
+          {
+            "date": "1964–1966",
+            "title": "Kennedy, Samuelson, Drandakis & Phelps",
+            "text": "Formal models turn induced innovation from a historical intuition into an economic mechanism."
+          },
+          {
+            "date": "1969",
+            "title": "Kamien & Schwartz",
+            "text": "Further modeling of induced technical progress."
+          }
+        ]
+      },
+      {
+        "title": "Directed technology and demographic change",
+        "rows": [
+          {
+            "date": "1998–2002",
+            "title": "Acemoglu · Directed technical change",
+            "text": "Market size and relative prices help explain which technologies innovators develop."
+          },
+          {
+            "date": "2018–2022",
+            "title": "Acemoglu & Restrepo · Demographics and Automation",
+            "text": "From working paper to publication: aging is associated with more automation. Productivity effects depend on the setting."
+          },
+          {
+            "date": "2026",
+            "title": "Acemoglu, Autor, Beirne & Scott · Baby Busts and Growth Booms",
+            "text": "The paper Cowen invokes when asking whether fewer young workers can induce a technological response."
+          }
+        ]
+      }
+    ],
+    "sources": [
+      [
+        "Acemoglu, Factor Prices and Technical Change: review of the earlier literature",
+        "https://economics.mit.edu/sites/default/files/publications/Factor%20Prices%20and%20Technical%20Change%20from%20Induced%20In.pdf"
+      ],
+      [
+        "Demographics and Automation",
+        "https://www.nber.org/papers/w24421"
+      ],
+      [
+        "Baby Busts and Growth Booms",
+        "https://www.nber.org/papers/w35401"
+      ]
+    ]
+  },
+  "ai-clocks": {
+    "slug": "ai-growth-forecasts-whose-timeline",
+    "kind": "timeline",
+    "kicker": "Historical windows and a forecast horizon",
+    "title": "A short boom can sit inside a long wait.",
+    "intro": "Cowen emphasizes the years when gains become visible. Acemoglu emphasizes the investment and organizational change before those gains arrive.",
+    "takeaway": "Choose the time window before comparing the claim. And keep productivity gains, GDP gains, and annual growth rates in separate columns.",
+    "source_mermaid": "timeline\n    title Whose clock is running?\n    1975-1995 : Two decades of IT investment : Little measured productivity gain : \"Computers everywhere but in the statistics\"\n    1995-1998 : The boom : Productivity growth up ~0.5 pp : Cowen's benchmark\n    2004-2019 : Productivity slowdown : Despite continued IT investment\n    2022-2026 : LLM capability rises fast : Application layer lags : Acemoglu's \"sluggish diffusion\"\n    2026-2036 : The disputed decade : Acemoglu +0.05pp : Cowen +0.5pp : Industry +1.5pp or more",
+    "groups": [
+      {
+        "title": "The IT precedent, as this conversation frames it",
+        "rows": [
+          {
+            "date": "1975–1995",
+            "title": "Investment before the payoff",
+            "text": "The long preparation period in Acemoglu’s reading: adoption and reorganization take time."
+          },
+          {
+            "date": "1995–1998",
+            "title": "The boom Cowen points to",
+            "text": "A short window of visible improvement becomes his benchmark for what AI might deliver."
+          },
+          {
+            "date": "2004–2019",
+            "title": "The later slowdown",
+            "text": "Continued investment does not imply a permanently faster rate of productivity growth."
+          }
+        ]
+      },
+      {
+        "title": "AI: separate what is happening from what is assumed",
+        "rows": [
+          {
+            "date": "2022–2026",
+            "title": "Capability versus diffusion",
+            "text": "The interview distinguishes fast model improvement from slower development of useful applications."
+          },
+          {
+            "date": "2026–2036",
+            "title": "This page’s illustrative scenario window",
+            "text": "The table above holds alternative growth assumptions constant for ten years. This is a comparison exercise, not observed data or a common forecast made by all the authors.",
+            "forecast": true
+          }
+        ]
+      }
+    ],
+    "note": "Total-factor productivity (TFP) and GDP are different measures. Acemoglu’s 2024 paper reports separate ten-year gains; neither can be substituted directly for an annual GDP-growth rate.",
+    "sources": [
+      [
+        "Acemoglu, The Simple Macroeconomics of AI",
+        "https://www.nber.org/papers/w32487"
+      ],
+      [
+        "See the scenario assumptions",
+        "#the-scenarios-compounded"
+      ]
+    ]
+  },
+  "social-contracts": {
+    "slug": "social-contract-theory-and-its-critics",
+    "kind": "lineage",
+    "kicker": "A map of arguments · not a chain of succession",
+    "title": "Change the starting point. Change the agreement.",
+    "intro": "These thinkers use different kinds of agreement to answer different questions. Read across each entry: the premise helps explain the conclusion.",
+    "takeaway": "The question behind Acemoglu’s objection: when does an argument about what people would accept become a substitute for asking actual people?",
+    "source_mermaid": "timeline\n    title The social contract lineage\n    1651 : Hobbes, Leviathan : Absolute sovereign; the alternative is war of all against all\n    1689 : Locke, Two Treatises : Government by consent; rights precede the state; revolution permitted\n    1762 : Rousseau, Du contrat social : The general will; \"forced to be free\"\n    1785 : Kant : The contract as a regulative idea, not a historical event\n    1971 : Rawls, A Theory of Justice : Original position, veil of ignorance\n    1974 : Nozick, Anarchy State and Utopia : Minimal state from the same starting point\n    1986 : Gauthier, Morals by Agreement : Contract from rational bargaining\n    1998 : Scanlon, What We Owe to Each Other : Principles nobody could reasonably reject",
+    "groups": [
+      {
+        "title": "Political authority and public law",
+        "rows": [
+          {
+            "date": "1651",
+            "title": "Hobbes · Leviathan",
+            "premise": "People need security against violent conflict.",
+            "result": "An effective sovereign provides peace."
+          },
+          {
+            "date": "1689",
+            "title": "Locke · Two Treatises",
+            "premise": "People have rights before government exists.",
+            "result": "Government is limited and must protect those rights."
+          },
+          {
+            "date": "1762",
+            "title": "Rousseau · The Social Contract",
+            "premise": "Citizens associate under a general will aimed at the common good.",
+            "result": "Legitimate law expresses collective self-rule."
+          },
+          {
+            "date": "1793",
+            "title": "Kant · Theory and Practice",
+            "premise": "The original contract is an idea of reason, not a historical event.",
+            "result": "Laws should be tested against possible public consent."
+          }
+        ]
+      },
+      {
+        "title": "Justice, rights, bargaining, and morality",
+        "rows": [
+          {
+            "date": "1971",
+            "title": "Rawls · A Theory of Justice",
+            "premise": "Choose principles without knowing your place in society.",
+            "result": "Fair terms for the basic structure of society."
+          },
+          {
+            "date": "1974",
+            "title": "Nozick · Anarchy, State, and Utopia",
+            "premise": "Individual rights constrain what others and the state may do.",
+            "result": "A minimal state; a rival to Rawls, not the same contract argument."
+          },
+          {
+            "date": "1986",
+            "title": "Gauthier · Morals by Agreement",
+            "premise": "Rational bargainers seek mutually advantageous cooperation.",
+            "result": "Moral constraints justified through agreement."
+          },
+          {
+            "date": "1998",
+            "title": "Scanlon · What We Owe to Each Other",
+            "premise": "Ask which principles no one could reasonably reject.",
+            "result": "A test of moral justification, not a blueprint for the state."
+          }
+        ]
+      }
+    ],
+    "sources": [
+      [
+        "Kant, Theory and Practice (1793)",
+        "https://users.sussex.ac.uk/~sefd0/tx/tp2.htm"
+      ],
+      [
+        "Hobbes, Leviathan",
+        "https://www.gutenberg.org/ebooks/3207"
+      ],
+      [
+        "Locke, Second Treatise",
+        "https://www.gutenberg.org/ebooks/7370"
+      ],
+      [
+        "Rousseau, The Social Contract",
+        "https://www.gutenberg.org/ebooks/46333"
+      ],
+      [
+        "Scanlon, What We Owe to Each Other",
+        "https://philosophy.fas.harvard.edu/publications/what-we-owe-each-other"
+      ]
+    ]
+  }
+}

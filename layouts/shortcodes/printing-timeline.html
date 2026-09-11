@@ -1,0 +1,36 @@
+{{- $data := hugo.Data.research.printing -}}
+{{- with resources.Get "css/printing-timeline.css" }}<style>{{ .Content | safeCSS }}</style>{{ end }}
+<figure class="print-timeline" aria-labelledby="print-title">
+  <header class="print-heading">
+    <p class="print-eyebrow">Europe, then Britain &amp; the United States · c. 1450–1791</p>
+    <h3 id="print-title">A press arrives.<br>A settlement takes centuries.</h3>
+    <p>How long did adjustment take? It depends on when you start the clock—and what counts as the end.</p>
+  </header>
+  <div class="print-clocks" aria-label="Three interpretations of the adjustment period">
+    <p class="print-eyebrow">Three ways to count</p>
+    {{ range $data.periods }}
+    <div class="print-clock">
+      <div class="print-clock-label"><span>{{ .label }}</span><strong>≈{{ sub .end .start }} <small>years</small></strong></div>
+      <div class="print-track" aria-hidden="true"><span style="width:{{ mul (div (float (sub .end .start)) 245.0) 100 }}%"></span></div>
+      <p><b>{{ .start }}–{{ .end }}</b> · {{ .note }}</p>
+    </div>
+    {{ end }}
+    <p class="print-scale">Bar lengths compare elapsed years on the same scale. These are interpretations, not a measured date when society “finished” adjusting.</p>
+  </div>
+  <div class="print-chronology">
+    <p class="print-eyebrow">The milestones · chronological, not to scale</p>
+    {{ range $data.chapters }}
+    <section class="print-chapter" aria-labelledby="print-chapter-{{ .number }}">
+      <h4 id="print-chapter-{{ .number }}"><span>{{ .number }}</span> {{ .title }} <small>{{ .span }}</small></h4>
+      <ol>
+      {{ range .events }}
+        <li><span class="print-date">{{ index . 0 }}</span><div><strong>{{ index . 1 }}</strong><p>{{ index . 2 }}</p></div></li>
+      {{ end }}
+      </ol>
+    </section>
+    {{ end }}
+  </div>
+  <figcaption><strong>The useful comparison:</strong> adoption and institutional adjustment run on different clocks. These milestones do not show that print alone caused the wars—or predict how long social media’s adjustment will take.
+    <span class="print-sources">Based on this page’s reading list. Endpoint references: <a href="https://blogs.loc.gov/law/2017/10/the-peace-of-westphalia/">Westphalia</a>, <a href="https://hansard.parliament.uk/Commons/1818-06-05/debates/40418a40-99de-4ace-8850-7e1677288447/FromTheSelectCommitteeOnTheCopyrightActs">English licensing</a>, <a href="https://avalon.law.yale.edu/18th_century/anne_1710.asp">Statute of Anne</a>.</span>
+  </figcaption>
+</figure>

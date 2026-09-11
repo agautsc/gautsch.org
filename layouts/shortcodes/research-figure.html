@@ -1,0 +1,74 @@
+{{- $key := .Get 0 -}}
+{{- $f := index hugo.Data.research.figures $key -}}
+{{- if not $f }}{{ errorf "Unknown research figure %q on %s" $key .Page.File.Path }}{{ end -}}
+{{- with resources.Get "css/research-figures.css" }}<style>{{ .Content | safeCSS }}</style>{{ end }}
+<figure class="rh-figure rh-figure--{{ $f.kind }}" aria-labelledby="figure-{{ $key }}">
+  <header class="rh-figure-head">
+    <p class="rh-figure-kicker">{{ $f.kicker }}</p>
+    <h3 id="figure-{{ $key }}">{{ $f.title }}</h3>
+    <p>{{ $f.intro }}</p>
+  </header>
+  {{ if or (eq $f.kind "timeline") (eq $f.kind "lineage") }}
+  <div class="rh-figure-main">
+    {{ range $i, $group := $f.groups }}
+    <section class="rh-figure-group" aria-labelledby="figure-{{ $key }}-group-{{ $i }}">
+      <h4 id="figure-{{ $key }}-group-{{ $i }}"><span>{{ printf "%02d" (add $i 1) }}</span> {{ .title }}</h4>
+      <ol class="rh-figure-events">
+        {{ range .rows }}
+        <li{{ if .forecast }} class="rh-figure-forecast"{{ end }}>
+          <span class="rh-figure-date">{{ .date }}</span>
+          <div class="rh-figure-event">
+            <h5>{{ .title }}</h5>
+            {{ if eq $f.kind "lineage" }}
+              <dl class="rh-figure-argument"><div><dt>Starting point</dt><dd>{{ .premise }}</dd></div><div><dt>What follows</dt><dd>{{ .result }}</dd></div></dl>
+            {{ else }}<p>{{ .text }}</p>{{ end }}
+          </div>
+        </li>
+        {{ end }}
+      </ol>
+    </section>
+    {{ end }}
+  </div>
+  {{ else if eq $f.kind "effects" }}
+  <div class="rh-figure-main">
+    <div class="rh-figure-effects">
+      {{ range $f.cards }}<section class="rh-effect">
+        <p class="rh-effect-label"><span aria-hidden="true">{{ .mark }}</span>{{ .label }}</p>
+        <h4>{{ .title }}</h4><p>{{ .text }}</p><p class="rh-effect-direction">{{ .effect }}</p>
+      </section>{{ end }}
+    </div>
+    <div class="rh-figure-balance"><h4>{{ $f.question }}</h4><p>The signs show direction, not measured size. There is no automatic net gain.</p></div>
+    <div class="rh-figure-outcomes">{{ range $f.outcomes }}<section><h5>{{ .title }}</h5><p>{{ .text }}</p></section>{{ end }}</div>
+  </div>
+  {{ else if eq $f.kind "labor" }}
+  <div class="rh-figure-main">
+    <p class="rh-figure-kicker">Same $100 of output · two allocations</p>
+    <div class="rh-share-bars">{{ range $f.bars }}
+      <div class="rh-share-row"><h4>{{ .label }}</h4>
+        <div class="rh-share-bar" role="img" aria-label="{{ .label }}: ${{ .labor }} to labor, ${{ .capital }} to capital, out of ${{ $f.total }} output.">
+          <span class="rh-share-labor" style="width:{{ mul (div (float .labor) (float $f.total)) 100 }}%" aria-hidden="true">Labor ${{ .labor }}</span>
+          <span class="rh-share-capital" style="width:{{ mul (div (float .capital) (float $f.total)) 100 }}%" aria-hidden="true">Capital ${{ .capital }}</span>
+        </div>
+      </div>{{ end }}</div>
+    <p class="rh-share-change">{{ $f.change }}</p>
+    <h4 class="rh-offset-heading">What could offset the loss?</h4>
+    <div class="rh-figure-outcomes">{{ range $f.offsets }}<section><h5>{{ .title }}</h5><p>{{ .text }}</p></section>{{ end }}</div>
+  </div>
+  {{ else if eq $f.kind "outliers" }}
+  <div class="rh-figure-main">
+    <ol class="rh-outlier-paths">{{ range $i, $row := $f.rows }}
+      <li><span class="rh-outlier-number" aria-hidden="true">{{ printf "%02d" (add $i 1) }}</span><div><p class="rh-figure-kicker">{{ .label }}</p><h4>{{ .title }}</h4><p>{{ .mechanism }}</p><p class="rh-outlier-result">{{ .result }}</p></div></li>
+    {{ end }}</ol>
+  </div>
+  {{ else if eq $f.kind "rights" }}
+  <div class="rh-figure-main">
+    <section class="rh-community"><h4>{{ $f.upper }}</h4><ul>{{ range $f.examples }}<li>{{ . }}</li>{{ end }}</ul><p>{{ $f.upper_note }}</p></section>
+    <p class="rh-rights-boundary">{{ $f.boundary }}</p>
+    <section class="rh-rights-floor"><h4>The individual-rights floor</h4><ul>{{ range $f.rights }}<li>{{ . }}</li>{{ end }}</ul></section>
+  </div>
+  {{ end }}
+  {{ with $f.note }}<p class="rh-figure-note">{{ . }}</p>{{ end }}
+  <figcaption><strong>What to take away</strong><p>{{ $f.takeaway }}</p>
+    <div class="rh-figure-sources"><span>Sources &amp; context:</span> {{ range $i, $s := $f.sources }}{{ if $i }} · {{ end }}<a href="{{ index $s 1 }}">{{ index $s 0 }}</a>{{ end }}</div>
+  </figcaption>
+</figure>

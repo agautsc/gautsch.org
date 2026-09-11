@@ -4,7 +4,7 @@ short_version: |
   Most economics treats technology as one thing that makes labor more productive. Acemoglu and Restrepo broke it into two opposing forces. **Automation** takes tasks away from workers and gives them to machines, which pushes wages and labor's share of income down. **New task creation** invents work that did not exist, which pushes them back up. Neither is guaranteed to dominate. That is the whole argument, and once you have it, "is technology good for workers?" stops being answerable in general and becomes a question about the *mix* in a particular period. This is the machinery running underneath every automation exchange in the conversation.
 asked: "I'd love a rabbit hole specifically explaining the Acemoglu and Restrepo papers. What is the general thesis of these works. Provide some historic context towards the importance of them in economic thought and how have they evolved. They seem to be important to understanding this conversation.'* — and separately, *'Can you summarize and link to those papers"
 transcript_anchor: "a11"
-models: ["Claude"]
+models: ["Claude", "Codex"]
 draft: false
 ---
 
@@ -22,21 +22,7 @@ The task framework's core move: **technology does not augment workers, it reallo
 
 ## The three effects
 
-```mermaid
-flowchart TD
-    A[New technology] --> B[Displacement effect<br/>tasks move from labor to capital]
-    A --> C[Productivity effect<br/>output cheaper, demand for labor rises<br/>in remaining tasks]
-    A --> D[Reinstatement effect<br/>new tasks created where<br/>labor has comparative advantage]
-    B --> E{Net effect on<br/>wages and labor share}
-    C --> E
-    D --> E
-    E --> F[Shared prosperity<br/>reinstatement keeps pace]
-    E --> G[So-so automation<br/>displacement without much<br/>productivity gain or new tasks]
-    style B fill:#c94f4f,color:#fff
-    style D fill:#2f7d5f,color:#fff
-    style G fill:#c94f4f,color:#fff
-    style F fill:#2f7d5f,color:#fff
-```
+{{< research-figure "task-effects" >}}
 
 **"So-so automation"** is their term for the worst case and it is the key concept for the AI argument: technology just good enough to replace a worker, not good enough to generate much productivity gain. Self-checkout is the standard example. You get displacement with a small productivity effect and no new tasks — the mix Acemoglu fears AI is producing.
 

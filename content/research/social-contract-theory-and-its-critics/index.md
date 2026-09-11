@@ -4,7 +4,7 @@ short_version: |
   Social contract theory says political authority is legitimate because people would agree to it. The trick is that the agreement never happened: it is hypothetical, and the theorist decides what rational people *would* have agreed to. Acemoglu's objection is that this move quietly answers the hardest question in politics — *whose values win when values clash?* — by writing the answer into the premises. He wants that question left open and settled by real consensus among real people.
 asked: "Rabbit hole on social contracts"
 transcript_anchor: "a01"
-models: ["Claude"]
+models: ["Claude", "Codex"]
 draft: false
 ---
 
@@ -20,18 +20,7 @@ Every social contract theory makes the same three moves:
 2. **Ask what they would agree to.** The answer is engineered by how you describe step 1.
 3. **Treat that agreement as the source of legitimacy.** The state may do what people would have consented to, and no more.
 
-```mermaid
-timeline
-    title The social contract lineage
-    1651 : Hobbes, Leviathan : Absolute sovereign; the alternative is war of all against all
-    1689 : Locke, Two Treatises : Government by consent; rights precede the state; revolution permitted
-    1762 : Rousseau, Du contrat social : The general will; "forced to be free"
-    1785 : Kant : The contract as a regulative idea, not a historical event
-    1971 : Rawls, A Theory of Justice : Original position, veil of ignorance
-    1974 : Nozick, Anarchy State and Utopia : Minimal state from the same starting point
-    1986 : Gauthier, Morals by Agreement : Contract from rational bargaining
-    1998 : Scanlon, What We Owe to Each Other : Principles nobody could reasonably reject
-```
+{{< research-figure "social-contracts" >}}
 
 The step-1 description does all the work. Hobbes describes the state of nature as terrifying and gets an absolute sovereign. Locke describes it as inconvenient but tolerable and gets a limited government. Rawls puts you behind a veil of ignorance and gets redistribution. **Nobody in any of these stories ever signed anything.**
 

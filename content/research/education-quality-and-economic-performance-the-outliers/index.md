@@ -4,7 +4,7 @@ short_version: |
   There is a strong cross-country relationship between how much students actually *know* (test scores) and how fast an economy grows. Hanushek and Woessmann call this "knowledge capital," and their central finding is that once you use test scores instead of years of schooling, most famous puzzles stop being puzzles — the East Asian miracle and the Latin American growth disappointment both fall onto the line. The countries left off the line divide into two clean groups: **resource-rich states that out-earn their skills** (the Gulf), and **states whose skills cannot reach a market** — landlocked, blockaded, or badly governed. Armenia, which prompted the question, is the second kind, and it is close to the archetype.
 asked: "What are the outliers for education to economic performance? Meaning what countries are under and over performing economically compared to the educational quality."
 transcript_anchor: "a22"
-models: ["Claude"]
+models: ["Claude", "Codex"]
 draft: false
 ---
 
@@ -24,16 +24,7 @@ That last point reframes Adam's question. The interesting outliers are not "who 
 
 ## The two kinds of outlier
 
-```mermaid
-flowchart TD
-    A["Cognitive skills<br/>(PISA / TIMSS)"] --> B{"Can those skills<br/>reach a market?"}
-    B -->|Yes| C["On the line<br/>most countries"]
-    B -->|"No — landlocked,<br/>blockaded, bad institutions"| D["UNDER-performers<br/>skills stranded"]
-    E["Resource rents"] --> F["OVER-performers<br/>income without skills"]
-    style D fill:#c94f4f,color:#fff
-    style F fill:#e0a33e,color:#000
-    style C fill:#2f7d5f,color:#fff
-```
+{{< research-figure "education-outliers" >}}
 
 **Over-performers — income above what skills predict**
 

@@ -3,7 +3,7 @@ title: "Induced Innovation and the Habakkuk Thesis"
 short_version: |
   When Cowen calls Acemoglu a real business cycle theorist, Acemoglu reaches past him for a different ancestor: *"Habakkuk was the first one who was about this."* H.J. Habakkuk argued in 1962 that America out-innovated Britain in the 19th century **because American labor was scarce and expensive**, which pushed American firms toward labor-saving machinery. That is the seed of the whole induced-innovation idea, and it is the intellectual root of Acemoglu's optimism about falling birth rates.
 transcript_anchor: "a19"
-models: ["Claude"]
+models: ["Claude", "Codex"]
 draft: false
 ---
 
@@ -23,17 +23,7 @@ The general principle: **the direction of technical change responds to relative 
 
 ## The lineage
 
-```mermaid
-timeline
-    title Induced innovation
-    1932 : Hicks, The Theory of Wages : "A change in relative prices is itself a spur to invention"
-    1962 : Habakkuk : Scarce American labor drove American mechanization
-    1964-1966 : Kennedy, Samuelson, Drandakis-Phelps : Formal induced-innovation models
-    1969 : Kamien and Schwartz : Critiques; the literature stalls
-    1998-2002 : Acemoglu, Directed Technical Change : The modern revival, with microfoundations
-    2018-2022 : Acemoglu and Restrepo, Demographics and Automation : Aging causes automation - and that is fine
-    2026 : Acemoglu, Autor, Beirne and Scott : Baby Busts and Growth Booms
-```
+{{< research-figure "innovation-lineage" >}}
 
 Acemoglu's own line — *"The models that I've been working on for the last 25 years on this topic always said that's a possibility"* — refers to his **directed technical change** work of the late 1990s and early 2000s, which supplied the market-size and price effects that make induced innovation work formally rather than as an intuition.
 
