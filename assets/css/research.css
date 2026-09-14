@@ -258,12 +258,15 @@ p[id^="a"]:target, a.rh-mark:target {
    paper laid on the page rather than a UI card. The single column stays; the
    margin rebuild was explicitly deferred 2026-09-04. */
 
-.rh-anno { position: relative; }
+.rh-transcript p { position: relative; }
+.rh-anno { position: static; }
 
 .rh-pop {
-  position: absolute; z-index: 40; left: 50%; bottom: calc(100% + .6rem);
-  transform: translateX(-50%) translateY(.25rem);
-  width: min(23rem, calc(100vw - 2.5rem));
+  position: absolute; z-index: 40; left: 0; bottom: 100%;
+  transform: translateY(.25rem);
+  width: min(23rem, 100%);
+  max-height: calc(100dvh - 10rem); overflow-y: auto;
+  overflow-wrap: anywhere;
   display: flex; flex-direction: column; gap: .55rem;
   padding: .95rem 1.05rem;
   background: var(--rh-pop); color: var(--rh-text);
@@ -284,15 +287,25 @@ p[id^="a"]:target, a.rh-mark:target {
   border-bottom: 1px solid currentColor; padding-bottom: 1px;
 }
 
-.rh-anno.rh-below .rh-pop { bottom: auto; top: calc(100% + .6rem); }
+.rh-anno.rh-below .rh-pop { bottom: auto; top: 100%; }
 
 @media (hover: hover) and (pointer: fine) {
   .rh-anno:hover .rh-pop,
   .rh-anno:focus-within .rh-pop { opacity: 1; visibility: visible; pointer-events: auto;
-    transform: translateX(-50%) translateY(0); }
+    transform: translateY(0); }
 }
 .rh-anno.is-open .rh-pop { opacity: 1; visibility: visible; pointer-events: auto;
-  transform: translateX(-50%) translateY(0); }
+  transform: translateY(0); }
+
+/* Touch and narrow screens keep the opened note in the reading flow. Anchoring
+   it to a wrapped inline highlight can push even a hidden note off the page. */
+@media (max-width: 640px), (hover: none) {
+  .rh-pop { display: none; position: static; width: 100%; margin: .6rem 0;
+    max-height: none; transform: none; }
+  .rh-anno:hover .rh-pop, .rh-anno:focus-within .rh-pop,
+  .rh-anno.is-open .rh-pop { display: flex; opacity: 1; visibility: visible;
+    pointer-events: auto; transform: none; }
+}
 
 @media (prefers-reduced-motion: reduce) { .rh-pop { transition: none; } }
 

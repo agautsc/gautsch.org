@@ -59,8 +59,9 @@
   var open = null;
   function close() { if (open) { open.classList.remove("is-open"); open = null; } }
   function place(anno) {
-    var r = anno.getBoundingClientRect();
-    anno.classList.toggle("rh-below", r.top < 220);
+    var r = anno.closest("p").getBoundingClientRect();
+    var pop = anno.querySelector(".rh-pop");
+    anno.classList.toggle("rh-below", r.top < pop.offsetHeight + 16);
   }
   document.querySelectorAll(".rh-anno").forEach(function (anno) {
     var mark = anno.querySelector(".rh-mark");
