@@ -1,18 +1,36 @@
 {{ define "main" }}
 {{- /* The homepage IS the most recent essay, rendered in full. The essay also keeps
        its own permanent URL at /writing/<slug>/ — this is a window onto it, not a
-       replacement, so the permalink is surfaced at the end of the piece. */ -}}
+       replacement, so the permalink is surfaced at the end of the piece.
+
+       Since 2026-09-15 the homepage wears the /research notebook skin (Adam's
+       call): the same masthead, paper and type. The essay's own bundle style.css
+       is deliberately NOT loaded here, so a weekly post's custom design shows at
+       its permalink and the homepage stays on notebook paper. */ -}}
+{{- with resources.Get "css/research.css" | minify }}<style>{{ .Content | safeCSS }}</style>{{ end }}
 {{- with first 1 (where site.RegularPages "Type" "writing") }}
   {{- range . }}
-  {{ partial "writing-article.html" (dict "page" . "showPermalink" true) }}
+<div class="rh-wrap rh-home">
+  <header class="rh-header">
+    <p class="rh-kicker">{{ .Date.Format "January 2, 2006" }}</p>
+    <h1 class="rh-title">{{ .Title }}</h1>
+    {{- /* .Params.summary, not .Summary — see writing-article.html. The deck is
+           Adam talking about his own piece, so it takes the handwritten register. */}}
+    {{- with .Params.summary }}<p class="rh-deck">{{ . }}</p>{{ end }}
+  </header>
+  <div class="rh-home-body">
+    {{ .Content }}
+  </div>
+  <p class="wc-permalink"><a href="{{ .RelPermalink }}">Permalink</a></p>
+</div>
   {{- end }}
 {{- else }}
   {{- /* No published essay yet. Never leave the homepage blank. */ -}}
-  <article class="writing-custom">
-    <header class="wc-header">
-      <h1 class="wc-title">{{ site.Title }}</h1>
-      <p class="wc-deck">No essay published yet. <a href="/archive/">The archive</a> has the older writing.</p>
-    </header>
-  </article>
+<div class="rh-wrap rh-home">
+  <header class="rh-header">
+    <h1 class="rh-title">{{ site.Title }}</h1>
+    <p class="rh-deck">No essay published yet. <a href="/archive/">The archive</a> has the older writing.</p>
+  </header>
+</div>
 {{- end }}
 {{ end }}

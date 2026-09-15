@@ -8,8 +8,9 @@
    ink-and-marker register. The reader learns that code in about ten seconds and
    never needs a legend.
 
-   This file is loaded ONLY by layouts/research/*.html, so `body` selectors here
-   are section-scoped in practice. It deliberately no longer *consumes* PaperMod's
+   This file is loaded ONLY by layouts/research/*.html and the homepage
+   (layouts/index.html, since 2026-09-15), so `body` selectors here are scoped
+   to those pages in practice. It deliberately no longer *consumes* PaperMod's
    custom properties — it overrides them, so the surrounding chrome (nav, footer)
    sits on the same paper instead of fighting it. /research is light-only by
    decision, so .dark is neutralised rather than themed. */
@@ -106,6 +107,27 @@ body #theme-toggle { display: none; }
 .rh-foreword a { color: var(--rh-ink); text-decoration: underline; text-underline-offset: .15em; }
 .rh-foreword a:hover { color: var(--rh-ink-deep); }
 .rh-foreword a:focus-visible { outline: 2px solid var(--rh-ink); outline-offset: 3px; }
+
+/* ---------- the homepage: the newest essay on notebook paper ---------- */
+
+.rh-home-body { font-size: 1.12rem; line-height: 1.68; color: var(--rh-text); }
+.rh-home-body p { margin: 0 0 1.1rem; }
+.rh-home-body a { color: var(--rh-ink); text-decoration: underline; text-underline-offset: .15em; box-shadow: none; }
+.rh-home-body a:hover { color: var(--rh-ink-deep); }
+.rh-home-body a:focus-visible { outline: 2px solid var(--rh-ink); outline-offset: 3px; }
+.rh-home-body h2, .rh-home-body h3 { color: var(--rh-text); line-height: 1.2; margin: 2.4rem 0 .9rem; }
+.rh-home-body blockquote {
+  margin: 1.6rem 0; padding: .2rem 0 .2rem 1.2rem;
+  border-left: 3px solid var(--rh-accent); color: var(--rh-text-2);
+}
+.rh-home-body img { max-width: 100%; height: auto; }
+/* The rabbit-hole introduction's own labels, minus its bundle stylesheet. */
+.rh-home-body .rabbit-label {
+  font-size: .74rem; letter-spacing: .13em; text-transform: uppercase;
+  font-weight: 600; color: var(--rh-muted); margin-bottom: .9rem;
+}
+.rh-home-body .rabbit-credit { font-size: .92rem; line-height: 1.62; color: var(--rh-muted); }
+.rh-home .wc-permalink { border-top-color: var(--rh-rule); color: var(--rh-muted); }
 
 /* ---------- the contents block: the notebook's own index page ---------- */
 
