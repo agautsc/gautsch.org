@@ -19,9 +19,20 @@
     </p>
   </header>
 
+  {{- /* Adam's foreword lives in data/research/foreword.yaml, not in _index.md,
+         because the importer rewrites _index.md on every run. */ -}}
+  {{- with hugo.Data.research.foreword }}
+  <section class="rh-foreword" aria-labelledby="rh-foreword-title">
+    <h2 id="rh-foreword-title">{{ .title }}</h2>
+    {{- range .paragraphs }}
+    <p>{{ . | $.RenderString }}</p>
+    {{- end }}
+  </section>
+  {{- end }}
+
   {{- $pages := where site.RegularPages "Section" "research" }}
   {{- with $pages }}
-  <nav class="rh-list" aria-label="The rabbit holes">
+  <nav class="rh-list" id="rabbit-holes" aria-label="The rabbit holes">
     <h2>{{ len . }} rabbit holes</h2>
     <ol>
       {{- range sort . "Title" }}
@@ -51,7 +62,7 @@
     {{- $summary := .Params.short_version | markdownify | strings.TrimSpace | strings.TrimPrefix "<p>" | strings.TrimSuffix "</p>" }}
     {{- $transcript = replaceRE $pattern (printf "${1}%s${2}" (replace $summary "$" "$$")) $transcript }}
   {{- end }}
-  {{ $transcript | safeHTML }}
+  <div id="transcript">{{ $transcript | safeHTML }}</div>
 </div>
 
 {{- /* Cut 3. Play-while-highlighting. Timings come from data/research/timings.json,

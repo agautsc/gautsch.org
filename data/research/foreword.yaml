@@ -1,0 +1,33 @@
+# Adam's foreword for /research/. His words, lightly copy-edited from his
+# Basecamp comment of 2026-09-15 (to-do 10250697855). Kept out of
+# content/research/_index.md because scripts/import_research.py regenerates
+# that file on every import.
+title: Foreword
+paragraphs:
+  - >-
+    I'll listen to a podcast sometimes and say, "I'll have to look that up
+    later." I never do.
+  - >-
+    When listening to [Tyler Cowen](https://marginalrevolution.com/) and
+    [Daron Acemoglu](https://economics.mit.edu/people/faculty/daron-acemoglu)
+    running at full speed, I found myself saying that so many times that I
+    figured I should actually look these things up.
+  - >-
+    So I grabbed the transcript, read through it, and highlighted the key areas
+    I was going to ask the robots to explain. Then I went and read
+    Dr. Acemoglu's [new book](https://www.penguinrandomhouse.com/books/815318/what-happened-to-liberal-democracy-by-daron-acemoglu/)
+    and asked the robots to do the same. What came from it was 18 unique
+    asynchronous rabbit holes to start to explore.
+  - >-
+    Here's that research. You'll find [all 18 rabbit holes](#rabbit-holes)
+    below and realize that most, if not all, of them could go much deeper. So
+    I've provided a quick way to grab a prompt and a link to a .md file with
+    all the research on each one that you can drop into your robot of choice to
+    continue the dive.
+  - >-
+    If you're interested, you can [read the whole transcript](#transcript) and
+    listen along in real time. Of course, please go and
+    [subscribe](https://conversationswithtyler.com/) and follow all the folks
+    involved in this. Thanks to Tyler for
+    [giving permission](https://x.com/tylercowen/status/2090483143736492125).
+    ChatGPT didn't believe he would. Sam Altman, you owe me a Coke.
