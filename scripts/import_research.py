@@ -256,7 +256,7 @@ def validate_review_provenance(existing, incoming, slug):
     This checks known provenance markers, not factual accuracy or every edit.
     Reconcile source copies before intentionally removing reviewed material.
     """
-    markers = (r"^## From the book\s*$", r"checked against the audiobook edition")
+    markers = (r"^## From the book\s*$", r"checked against the audiobook edition", r"<!-- reader-review: 2026-09-15 -->")
     for marker in markers:
         if re.search(marker, existing, re.I | re.M) and not re.search(marker, incoming, re.I | re.M):
             raise ValueError(f"{slug}: import would remove book-review material; reconcile the vault source with the site before importing")

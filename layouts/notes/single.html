@@ -17,7 +17,12 @@
   {{- with .Params.photos }}
   <div class="note-photos{{ if gt (len .) 1 }} note-photos-grid{{ end }}">
     {{- range . }}
-    <img src="{{ . | relURL }}" alt="" loading="lazy" decoding="async">
+    {{- $description := index hugo.Data.note_images . }}
+    {{- if not $description }}{{ errorf "Missing image review for %s" . }}{{ end }}
+    <figure>
+      <img src="{{ . | relURL }}" alt="{{ $description.alt }}" loading="lazy" decoding="async">
+      {{- with $description.caption }}<figcaption>{{ . }}</figcaption>{{ end }}
+    </figure>
     {{- end }}
   </div>
   {{- end }}

@@ -1,0 +1,5 @@
+[
+  {"title":"Who gets to decide?", "description":"Start with agreement and consent, then examine the rules used when values collide and the case for decisions made locally.", "pages":["social-contract-theory-and-its-critics","john-rawls","the-book-problem","hayek-and-decentralization"]},
+  {"title":"Technology and working lives", "description":"Distinguish replacing tasks from creating work, follow the distribution of gains, and consider the institutions that could shape the outcome.", "pages":["acemoglu-and-restrepo-the-task-framework","automation-and-the-labor-share","pro-worker-ai","working-class-liberalism-and-community-elbow-room"]},
+  {"title":"How long does change take?", "description":"Compare the measures behind AI forecasts, the lag between invention and adoption, and the difficulty of predicting policy effects when people adapt.", "pages":["ai-growth-forecasts-whose-timeline","the-printing-press-how-long-was-the-adjustment","induced-innovation-and-the-habakkuk-thesis","the-lucas-critique"]}
+]

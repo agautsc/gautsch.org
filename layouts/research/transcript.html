@@ -31,7 +31,27 @@
   </nav>
   {{- end }}
 
-  {{ .Content }}
+  <details class="rh-paths">
+    <summary>Explore by interest</summary>
+    <p>Follow the highlights in the transcript, browse any topic above, or try one of these optional paths.</p>
+    {{ range hugo.Data.research.paths }}
+    <nav aria-label="{{ .title }}">
+      <h2>{{ .title }}</h2>
+      <p>{{ .description }}</p>
+      <ol>{{ range .pages }}{{ with site.GetPage (printf "/research/%s" .) }}<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>{{ else }}{{ errorf "Unknown research path page: %s" . }}{{ end }}{{ end }}</ol>
+    </nav>
+    {{ end }}
+  </details>
+  {{- /* Summaries have one source: each article's short_version. Replace only
+         generated annotation text; preserve the published transcript verbatim. */ -}}
+  {{- $transcript := .Content }}
+  {{- range $pages }}
+    {{- $slug := path.Base (strings.TrimSuffix "/" .File.Dir) }}
+    {{- $pattern := printf `(?s)(<span class="rh-pop" id="pop-%s"[^>]*><span class="rh-pop-title">.*?</span><span class="rh-pop-short">).*?(</span>)` $slug }}
+    {{- $summary := .Params.short_version | markdownify | strings.TrimSpace | strings.TrimPrefix "<p>" | strings.TrimSuffix "</p>" }}
+    {{- $transcript = replaceRE $pattern (printf "${1}%s${2}" (replace $summary "$" "$$")) $transcript }}
+  {{- end }}
+  {{ $transcript | safeHTML }}
 </div>
 
 {{- /* Cut 3. Play-while-highlighting. Timings come from data/research/timings.json,

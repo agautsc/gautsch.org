@@ -5,6 +5,9 @@
 {{- $text = replaceRE `(?s)<a\b[^>]*href="([^"]+)"[^>]*>(.*?)</a>` "[$2]($1)" $text -}}
 {{- $text = replaceRE `(?s)<h[1-6]\b[^>]*>(.*?)</h[1-6]>` "\n\n### $1\n\n" $text -}}
 {{- $text = replaceRE `<li\b[^>]*>` "\n- " $text -}}
+{{- $text = replaceRE `</t[hd]>` " | " $text -}}
+{{- $text = replaceRE `</tr>` "\n" $text -}}
+{{- $text = replaceRE `</caption>` "\n" $text -}}
 {{- $text = replaceRE `</(?:p|div|section|header|figcaption|figure|li|dl|dt|dd)>` "\n" $text -}}
 {{- $text = replaceRE `</(?:span|strong|b|time)>` " " $text -}}
 {{- $text = replaceRE `<(?:p|div|section|header|figcaption|figure)\b[^>]*>` "\n" $text -}}

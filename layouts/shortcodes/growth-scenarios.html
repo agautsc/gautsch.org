@@ -1,0 +1,12 @@
+{{- $d := hugo.Data.research.growth_scenarios -}}
+{{- $baseline := mul $d.base_trillions (math.Pow (add 1 $d.baseline_rate) $d.years) -}}
+<table>
+  <caption>Illustration only: constant annual GDP growth for {{ $d.years }} years</caption>
+  <thead><tr><th scope="col">Assumed extra growth</th><th scope="col">Annual rate</th><th scope="col">Year-ten GDP</th><th scope="col">Extra in year ten</th></tr></thead>
+  <tbody>{{ range $d.increments_pp }}
+    {{- $rate := add $d.baseline_rate (div . 100.0) -}}
+    {{- $total := mul $d.base_trillions (math.Pow (add 1 $rate) $d.years) -}}
+    <tr><th scope="row">{{ printf "+%.1f pp" . }}</th><td>{{ printf "%.2f%%" (mul $rate 100) }}</td><td>{{ printf "$%.2fT" $total }}</td><td>{{ printf "+$%.2fT" (sub $total $baseline) }}</td></tr>
+  {{ end }}</tbody>
+</table>
+<p><small>Formula: 30 × (1 + annual rate)<sup>10</sup>. Differences are from the 2% baseline, in fixed purchasing-power units; they are endpoint differences, not accumulated gains.</small></p>

@@ -4,20 +4,32 @@ summary: "Things I've been building, mostly on nights and weekends."
 ---
 
 Things I've been building, mostly on nights and weekends. A few are public. Several
-run on a server in my house and aren't reachable from the open internet — those are
-listed without a link.
+run on a server in my house and aren't reachable from the open internet. Links below
+say whether they open a website you can visit or a source repository you can explore.
 
 ---
 
-**[Declaration of Innovation](https://declarationofinnovation.org/)** — An open, remixable community charter for groups that gather to make, and make things better. ([source](https://github.com/agautsc/declaration-of-innovation))
+## Websites to visit
 
-**[Weird Al Stylebook](https://agautsc.github.io/weird-al-stylebook/)** — A static editorial-style site built from a mockup, with a client-side grammar checker on the second page. ([source](https://github.com/agautsc/weird-al-stylebook))
+**Declaration of Innovation** — An open, remixable community charter for groups that gather to make, and make things better. [Visit website](https://declarationofinnovation.org/) · [Source code](https://github.com/agautsc/declaration-of-innovation)
 
-**[Ask The Aux](https://github.com/agautsc/ask-the-aux)** — A shared-device party game. The group answers one prompt with songs and ends up with a playlist and a round recap.
+**Weird Al Stylebook** — A static editorial-style site built from a mockup, with a client-side grammar checker on the second page. [Visit website](https://agautsc.github.io/weird-al-stylebook/) · [Source code](https://github.com/agautsc/weird-al-stylebook)
 
-**[Public Art Map](https://github.com/agautsc/public-art)** — A mobile photo feed and map of public art, seeded from Wikimedia and OpenStreetMap. Atlanta only so far.
+## Source code to explore
 
-**[gautsch.org](https://github.com/agautsc/gautsch.org)** — This site. A weekly essay, each one with its own design.
+These links open repositories, not hosted demos. Setup details and access depend on the repository.
+
+**Ask The Aux** — A shared-device party game. The group answers one prompt with songs and ends up with a playlist and a round recap. [Source code](https://github.com/agautsc/ask-the-aux)
+
+**Public Art Map — original experiment** — The earlier Instagram-and-spreadsheet map. [Original source code](https://github.com/agautsc/public-art). The later home-hosted version is described below.
+
+**gautsch.org** — This site. A weekly essay, each one with its own design. [Source code for this website](https://github.com/agautsc/gautsch.org)
+
+## At home and personal experiments
+
+These are descriptions of personal projects, with no public demo offered here.
+
+**Public Art Map — home version** — A mobile photo feed and map seeded from Wikimedia and OpenStreetMap, focused on Atlanta. The original repository above is a different implementation.
 
 **Google Reader 2026** — The RSS reader I missed. Add a feed, press `j` and `k` to move through it, `m` to toggle read. Categories, a phone reading view, and one-key clipping into Obsidian.
 

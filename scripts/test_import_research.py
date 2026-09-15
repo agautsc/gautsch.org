@@ -32,7 +32,7 @@ class ResearchFiguresTest(unittest.TestCase):
         self.assertEqual(importer.render_site_figures('ordinary prose', 'unmapped', figures), 'ordinary prose')
 
     def test_reviewed_material_is_preserved(self):
-        for marker in ('## From the book\n', 'Checked against the audiobook edition'):
+        for marker in ('## From the book\n', 'Checked against the audiobook edition', '<!-- reader-review: 2026-09-15 -->'):
             with self.subTest(marker=marker):
                 with self.assertRaisesRegex(ValueError, 'remove book-review material'):
                     importer.validate_review_provenance(marker, 'Older copy', 'example')

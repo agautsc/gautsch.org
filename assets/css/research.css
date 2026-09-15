@@ -361,6 +361,9 @@ p[id^="a"]:target, a.rh-mark:target {
   position: sticky; bottom: 0; z-index: 50; margin: 2.2rem -1rem 0;
   display: flex; align-items: center; gap: .95rem; flex-wrap: wrap;
   padding: .75rem 1.1rem;
+  padding-bottom: calc(.75rem + env(safe-area-inset-bottom, 0px));
+  padding-left: max(1.1rem, env(safe-area-inset-left, 0px));
+  padding-right: max(1.1rem, env(safe-area-inset-right, 0px));
   background: var(--rh-stock);
   border-top: 2px solid var(--rh-accent);
   box-shadow: 0 -3px 14px rgba(36, 31, 27, .07);
@@ -373,6 +376,7 @@ p[id^="a"]:target, a.rh-mark:target {
   background: var(--rh-accent-ink); color: var(--rh-stock);
   min-width: 5.4rem;
 }
+.rh-player[hidden] { display: none; }
 .rh-play:hover { background: var(--rh-ink); }
 .rh-play:focus-visible { outline: 2px solid var(--rh-ink); outline-offset: 2px; }
 .rh-time { color: var(--rh-muted); font-variant-numeric: tabular-nums; }
@@ -403,6 +407,12 @@ p[id^="a"]:target, a.rh-mark:target {
 }
 
 /* References remain recognisable as links inside Reading tables and figure notes. */
+.rh-paths { margin: 1.5rem 0 2rem; padding: 1rem; border: 1px solid var(--rh-rule); background: var(--rh-stock); }
+.rh-paths summary { cursor: pointer; font-weight: 600; }
+.rh-paths h2 { font-size: 1.3rem; margin-top: 1rem; }
+.rh-paths p { margin: .5rem 0; }
+.rh-paths ol { padding-left: 1.5rem; }
+.rh-paths a { text-decoration: underline; color: var(--rh-ink); }
 .rh-body a[href^="https://"], .rh-body a[href^="http://"] {
   color: var(--rh-ink); text-decoration: underline; text-underline-offset: .15em;
 }

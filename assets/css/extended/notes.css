@@ -27,6 +27,18 @@
   color: var(--secondary);
 }
 
+.notes-search { margin: 1.5rem 0; }
+.notes-search label { display: block; font-weight: 600; }
+.notes-search p { font-size: .9rem; margin: .4rem 0; }
+.notes-search input { width: 100%; padding: .7rem; border: 1px solid var(--secondary); border-radius: 4px; background: var(--theme); color: var(--primary); }
+.notes-search button { margin-top: .5rem; padding: .5rem .8rem; border: 1px solid var(--secondary); border-radius: 4px; cursor: pointer; }
+.notes-search :focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.notes-years { display: flex; flex-wrap: wrap; gap: .5rem 1rem; margin: 1rem 0; }
+.notes-years a { text-decoration: underline; padding: .3rem 0; }
+.notes-index [hidden] { display: none !important; }
+.notes-item-title { overflow-wrap: anywhere; }
+.note-photos figcaption { color: var(--secondary); font-size: .9rem; margin: .5rem 0 1rem; }
+
 .notes-year {
   margin: calc(var(--gap) * 1.8) 0 calc(var(--gap) / 2);
   padding-bottom: calc(var(--gap) / 4);

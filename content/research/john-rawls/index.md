@@ -12,21 +12,21 @@ draft: false
 
 ---
 
-**The famous machinery.** Rawls asks you into the **original position**, behind a **veil of ignorance**: you are choosing the basic rules of society without knowing your class, race, sex, talents, or even your conception of the good life. What would you pick? Rawls argues you would pick two principles, and — this is the part that matters here — you would pick them in a **strict order**:
+<!-- reader-review: 2026-09-15 -->
+
+**The famous machinery.** Rawls's **original position**, behind a **veil of ignorance**, asks what principles people would choose without knowing their place in society. His two principles give basic liberties priority over the second principle's requirements for opportunity and economic distribution:
 
 1. **The liberty principle** — the most extensive basic liberties compatible with the same for everyone.
 2. **Fair equality of opportunity** — positions genuinely open to all.
 3. **The difference principle** — inequalities are permitted only if they benefit the least advantaged.
 
-The ordering is **lexical** (Rawls's word: "lexical priority"). You cannot trade a bit of liberty for a lot of economic gain. Principle 1 is satisfied completely before principle 2 is considered at all.
+The priority rules exclude trading basic liberties for greater income and put fair opportunity ahead of the difference principle. This is background to Rawls, **not the target of Acemoglu's objection**. See the [account of the two principles](https://plato.stanford.edu/entries/rawls/#TwoPriJusFai).
 
 **Why Acemoglu objects.** In the transcript:
 
 > *"Ultimately, even though he's a true liberal, John Rawls also goes into that direction."*
 
-"That direction" is the general-will direction — having *"a book in our hand which says when values clash… here is a higher value and we're going to follow that."* The obvious candidate for the book in Rawls is lexical priority: a pre-committed ranking, decided by philosophical argument, that overrides whatever a particular community concludes.
-
-**That reading is wrong, and the book says so.** See below — his objection is to the veil, not to the ordering.
+Chapter 3 explains the objection: a philosopher's account of what people would agree to cannot stand in for their actual participation and consent. The earlier draft guessed that Acemoglu meant Rawls's ordering of principles. The book review corrected that guess; the hypothetical agreement is what is at issue.
 
 **Rawls vs. Nozick**, if you want the other half: Robert Nozick's *Anarchy, State, and Utopia* (1974) accepts the contractarian starting point and derives a minimal state, arguing that redistribution violates rights that people hold prior to any distribution. The two books are usually taught together.
 
@@ -46,7 +46,7 @@ And then the general form of the complaint, which is about **who does the decidi
 
 **Three things this changes.**
 
-**1. The ordering is not his target — and he presents it backwards from how it is usually taught.** Chapter 3 derives the difference principle from the veil, and then introduces the liberty principle as a guardrail on it: a liberty principle *"granting everybody access to basic liberties in order to ensure that the Difference Principle does not end up taking away people's fundamental liberties."* That is the priority relation running the other way from Rawls's own lexical ordering, and Acemoglu passes over it without comment. He is not objecting to the ranking because he is not reading Rawls as a ranking.
+**1. The ordering is not his target.** Chapter 3 discusses the difference principle and describes basic liberties as a guardrail on it. Presenting them in that order does not reverse their priority: a guardrail on redistribution is compatible with liberty taking precedence. The objection developed in the chapter is instead to presumed agreement replacing self-government.
 
 **2. He does mention the later Rawls.** In the same passage: *"In later work, Rawls also grapples with the issue of shared moral principles, or public reason, which I discuss below."* So *Political Liberalism* is not the unnoticed refutation it looks like from the interview — it is acknowledged, and folded into his own account of deliberation later in the chapter.
 
