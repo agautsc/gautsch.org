@@ -1,6 +1,8 @@
 {{- $pack := partial "research/reading-pack.html" . -}}
 {{- $packURL := printf "https://gautsch.org%s" $pack.RelPermalink -}}
-{{- $prompt := printf "Read the Markdown reading pack for ‘%s’: %s. Help me think through the argument, including its strongest counterargument and what remains uncertain. Start by asking what caught my attention, then explore one question at a time. Distinguish the original speakers’ claims, Adam’s question, the site’s research commentary, and your own interpretation." .Title $packURL -}}
+{{- $webPack := partial "research/reading-pack-web.html" $pack -}}
+{{- $webPackURL := printf "https://gautsch.org%s" $webPack.RelPermalink -}}
+{{- $prompt := printf "Read the reading pack for ‘%s’ at %s (web page). The same pack is available as Markdown at %s . Before discussing it, confirm the title and that you could read its transcript excerpt and research commentary. If neither link is readable, say so and ask me to paste the pack’s text. Do not substitute a different rabbit hole or general knowledge for the requested pack. Related packs are linked, not included; only claim to have read those you actually opened. Once you have read this pack, help me think through the argument, including its strongest counterargument and what remains uncertain. Start by asking what caught my attention, then explore one question at a time. Distinguish the original speakers’ claims, Adam’s question, the site’s research commentary, and your own interpretation." .Title $webPackURL $packURL -}}
 <aside class="rh-conversation" aria-labelledby="rh-conversation-title">
   <p class="rh-conversation-kicker">One more rabbit hole?</p>
   <h2 id="rh-conversation-title">Continue the conversation</h2>
@@ -12,8 +14,8 @@
     <label for="rh-conversation-text">Paste into your robot</label>
     <textarea id="rh-conversation-text" readonly rows="9" spellcheck="false">{{ $prompt }}</textarea>
   </details>
-  <a class="rh-conversation-download" href="{{ $pack.RelPermalink }}">Open the reading pack (.md)</a>
-  <p class="rh-conversation-help">The prompt links directly to the Markdown reading pack.</p>
+  <a class="rh-conversation-download" href="{{ $webPack.RelPermalink }}">Open the reading pack</a>
+  <p class="rh-conversation-help">Read it as a web page or <a href="{{ $pack.RelPermalink }}">Markdown</a>. The prompt includes both links.</p>
 </aside>
 {{- with resources.Get "js/research-conversation.js" | fingerprint }}
 <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>

@@ -1,0 +1,15 @@
+{{- /* Render the same pack as HTML for readers whose browsers cannot ingest Markdown. */ -}}
+{{- $pack := . -}}
+{{- $body := $pack.Content | markdownify -}}
+{{- $html := printf `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, follow">
+<title>Research reading pack | gautsch.org</title>
+<style>body{max-width:48rem;margin:2rem auto;padding:0 1rem;font:1.125rem/1.6 Georgia,serif;color:#241f1b;background:#fbf7ec}a{color:#33415c}pre{overflow:auto}table{display:block;overflow:auto}blockquote{margin-left:1rem;padding-left:1rem;border-left:3px solid #9b5121}</style>
+</head>
+<body><main>%s</main></body>
+</html>` $body -}}
+{{- return (resources.FromString (replace (strings.TrimPrefix "/" $pack.RelPermalink) "reading-pack.md" "reading-pack.html") $html) -}}
