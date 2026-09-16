@@ -89,35 +89,6 @@
     </span>
   </footer>
 </article>
-{{- /* The sidebar wrapper spans the article's height on wide screens so the box
-       inside it can stick while the page scrolls. Previous/next follow the same
-       title order and numbering as the contents list on /research/. */ -}}
-{{- $holes := sort (where site.RegularPages "Section" "research") "Title" }}
-{{- $here := 0 }}
-{{- range $i, $p := $holes }}{{ if eq $p $ }}{{ $here = $i }}{{ end }}{{ end }}
-<div class="rh-sidebar">
-  <div class="rh-sidebar-box">
-    {{ partial "research/conversation.html" . }}
-    <nav class="rh-pager" aria-label="Previous and next rabbit holes">
-      <p class="rh-pager-count">{{ printf "%02d" (add $here 1) }} of {{ len $holes }}</p>
-      {{- if gt $here 0 }}
-      {{- with index $holes (sub $here 1) }}
-      <a class="rh-pager-prev" rel="prev" href="{{ .RelPermalink }}">
-        <span class="rh-pager-dir"><span aria-hidden="true">&larr;</span> Previous</span>
-        <span class="rh-pager-title">{{ .Title }}</span>
-      </a>
-      {{- end }}
-      {{- end }}
-      {{- if lt (add $here 1) (len $holes) }}
-      {{- with index $holes (add $here 1) }}
-      <a class="rh-pager-next" rel="next" href="{{ .RelPermalink }}">
-        <span class="rh-pager-dir">Next <span aria-hidden="true">&rarr;</span></span>
-        <span class="rh-pager-title">{{ .Title }}</span>
-      </a>
-      {{- end }}
-      {{- end }}
-    </nav>
-  </div>
-</div>
+{{ partial "research/conversation.html" . }}
 </div>
 {{ end }}

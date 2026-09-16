@@ -2,14 +2,15 @@
 {{- $packURL := printf "https://gautsch.org%s" $pack.RelPermalink -}}
 {{- $webPack := partial "research/reading-pack-web.html" $pack -}}
 {{- $webPackURL := printf "https://gautsch.org%s" $webPack.RelPermalink -}}
-{{- $prompt := printf "Read the reading pack for ‘%s’ at %s (web page). The same pack is available as Markdown at %s . Before discussing it, confirm the title and that you could read its transcript excerpt and research commentary. If neither link is readable, say so and ask me to paste the pack’s text. Do not substitute a different rabbit hole or general knowledge for the requested pack. Related packs are linked, not included; only claim to have read those you actually opened. Once you have read this pack, help me think through the argument, including its strongest counterargument and what remains uncertain. Start by asking what caught my attention, then explore one question at a time. Distinguish the original speakers’ claims, Adam’s question, the site’s research commentary, and your own interpretation." .Title $webPackURL $packURL -}}
-<aside class="rh-conversation" aria-labelledby="rh-conversation-title">
+{{- $prompt := printf "Be a thoughtful Socratic teacher as we explore ‘%s’. Read its reading pack at %s (web page). The same pack is available as Markdown at %s . First, briefly confirm the title and that you could read both its transcript excerpt and research commentary. If neither link is readable, say so and ask me to paste the pack’s text; do not invent its contents or substitute another rabbit hole. Related packs are linked, not included; only claim to have read those you actually opened. Then start the conversation yourself: pick a central tension, surprising claim, or difficult tradeoff in this pack and ask ONE concrete, open-ended question about it. Give just enough context or a short everyday thought experiment that I can take a position without specialist knowledge. Do not begin by asking what I want to learn, what caught my attention, or which topic to discuss. Do not give a lecture, a list of questions, or the answer before I respond. Wait for my answer, then use it to choose the next question. Help me examine my assumptions, consider the strongest counterargument, and ask what evidence would change my mind. Keep a curious, patient tone; the aim is clearer thinking, not steering me toward a predetermined conclusion. Distinguish the original speakers’ claims, Adam’s question, the site’s research commentary, and your own interpretation. Be explicit about uncertainty." .Title $webPackURL $packURL -}}
+<aside class="rh-conversation" id="rh-conversation" aria-labelledby="rh-conversation-title">
+  <button class="rh-conversation-close" type="button" hidden aria-label="Close conversation panel">Close <span aria-hidden="true">&times;</span></button>
   <p class="rh-conversation-kicker">One more rabbit hole?</p>
   <h2 id="rh-conversation-title">Continue the conversation</h2>
   <p>Take this rabbit hole to your robot of choice. Explore the argument, challenge it, or follow a question of your own.</p>
   <button class="rh-conversation-copy" type="button" hidden>Copy conversation starter</button>
-  <p class="rh-conversation-status" role="status" aria-live="polite"></p>
-  <details class="rh-conversation-prompt">
+  <span class="rh-conversation-status" role="status" aria-live="polite"></span>
+  <details class="rh-conversation-prompt" id="rh-conversation-prompt">
     <summary>Read or select the prompt</summary>
     <label for="rh-conversation-text">Paste into your robot</label>
     <textarea id="rh-conversation-text" readonly rows="9" spellcheck="false">{{ $prompt }}</textarea>
@@ -17,6 +18,50 @@
   <a class="rh-conversation-download" href="{{ $webPack.RelPermalink }}">Open the reading pack</a>
   <p class="rh-conversation-help">Read it as a web page or <a href="{{ $pack.RelPermalink }}">Markdown</a>. The prompt includes both links.</p>
 </aside>
+{{- $holes := sort (where site.RegularPages "Section" "research") "Title" -}}
+{{- $here := 0 -}}
+{{- range $i, $p := $holes }}{{ if eq $p $ }}{{ $here = $i }}{{ end }}{{ end -}}
+<nav class="rh-bottom-bar" aria-label="Rabbit-hole navigation and conversation">
+  <div class="rh-reading-progress" role="progressbar" aria-label="Article reading progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden>
+    <div class="rh-progress-rabbit" aria-hidden="true">
+      <svg viewBox="0 0 100 80" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <g class="rh-rabbit-outline">
+          <circle cx="13" cy="49" r="7" />
+          <path d="M20 56C10 34 29 25 46 34L60 43 61 62 29 66Z" />
+          <path d="M59 36 47 9Q46 2 52 4L70 31M69 34 70 7Q72 1 76 6L79 37" />
+          <path d="M55 46Q51 29 68 29Q82 28 87 41L94 45 90 53 71 57 61 53" />
+          <path class="rh-rabbit-back-leg" d="M39 48Q24 43 24 57L31 67 48 67Q51 62 44 61L38 58" />
+          <path class="rh-rabbit-front-leg" d="m65 53 2 11h12q4 5-2 6H59L54 54" />
+        </g>
+        <g stroke-width="1.3">
+          <path d="m52 11 11 21m11-21 1 18M24 39q9-5 18 1M45 38l-4 9m-19 3-5-2M61 37l8 5m10-10-2 7M80 51l8-2" />
+          <path d="m29 38 3 4m3-5 3 5m3-4 3 5M46 52l7-2m-6 6 7-2m-5 6 6-2" />
+          <circle cx="33" cy="53" r="4" /><circle cx="63" cy="47" r="3" />
+          <path d="M31 53h4m28-2v4m-8-33 5-2m13-2h4" />
+        </g>
+        <circle cx="81" cy="41" r="3" fill="currentColor" stroke="none" />
+        <circle cx="82" cy="40" r=".9" fill="var(--rh-stock)" stroke="none" />
+        <path d="m91 45 3 1-3 2" fill="currentColor" />
+      </svg>
+    </div>
+  </div>
+  <div class="rh-bottom-inner">
+    {{- if gt $here 0 }}
+    {{- with index $holes (sub $here 1) }}
+    <a class="rh-bottom-arrow" rel="prev" href="{{ .RelPermalink }}" aria-label="Previous rabbit hole: {{ .Title }}" title="{{ .Title }}"><span aria-hidden="true">&larr;</span><span class="rh-bottom-direction">Previous</span></a>
+    {{- end }}
+    {{- else }}<span class="rh-bottom-arrow is-disabled" aria-disabled="true" aria-label="First rabbit hole"><span aria-hidden="true">&larr;</span><span class="rh-bottom-direction">Previous</span></span>{{ end }}
+    <div class="rh-bottom-center">
+      <button class="rh-deeper-toggle" type="button" hidden aria-haspopup="dialog" aria-controls="rh-conversation-drawer" aria-expanded="false">Go Deeper <span aria-hidden="true">&uarr;</span></button>
+      <a class="rh-conversation-fallback" href="#rh-conversation">Go Deeper <span aria-hidden="true">&uarr;</span></a>
+    </div>
+    {{- if lt (add $here 1) (len $holes) }}
+    {{- with index $holes (add $here 1) }}
+    <a class="rh-bottom-arrow" rel="next" href="{{ .RelPermalink }}" aria-label="Next rabbit hole: {{ .Title }}" title="{{ .Title }}"><span class="rh-bottom-direction">Next</span><span aria-hidden="true">&rarr;</span></a>
+    {{- end }}
+    {{- else }}<span class="rh-bottom-arrow is-disabled" aria-disabled="true" aria-label="Last rabbit hole"><span class="rh-bottom-direction">Next</span><span aria-hidden="true">&rarr;</span></span>{{ end }}
+  </div>
+</nav>
 {{- with resources.Get "js/research-conversation.js" | fingerprint }}
 <script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
 {{- end }}
