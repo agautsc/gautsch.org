@@ -54,8 +54,12 @@
     {{- with .Params.sharedurl }}
     <p class="note-link">Linked: <a href="{{ . }}" rel="noopener nofollow">{{ . }}</a></p>
     {{- end }}
+    {{- if and (isset .Params "youtube") (not .Params.youtube) .Params.linkedin }}
+    <p class="note-video-pending">This note's video isn't hosted here yet. <a href="{{ .Params.linkedin }}" rel="noopener nofollow">Watch it on LinkedIn</a>.</p>
+    {{- else }}
     {{- with .Params.linkedin }}
     <p class="note-source"><a href="{{ . }}" rel="noopener nofollow">Original on LinkedIn</a></p>
+    {{- end }}
     {{- end }}
     <p class="note-back"><a href="/notes/">All notes</a></p>
   </footer>

@@ -136,11 +136,17 @@
       await navigator.clipboard.writeText(prompt.value);
       status.textContent = 'Copied. Paste it into your robot.';
     } catch {
-      details.open = true;
-      prompt.focus({preventScroll: true});
-      prompt.select();
-      details.scrollIntoView({block: 'center'});
       status.textContent = 'Select and copy the prompt below.';
+      const selectPrompt = () => {
+        prompt.focus({preventScroll: true});
+        prompt.select();
+        details.scrollIntoView({block: 'center'});
+      };
+      // A <details> that has just opened cannot take focus until a frame has
+      // rendered (Chromium ignored focus() until then, leaving it on the button),
+      // so wait two animation frames.
+      details.open = true;
+      requestAnimationFrame(() => requestAnimationFrame(selectPrompt));
     }
   });
 })();

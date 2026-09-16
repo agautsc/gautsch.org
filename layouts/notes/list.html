@@ -33,7 +33,9 @@
         <span class="notes-item-title">{{ .Title }}</span>
       </a>
       {{- if .Params.photos }}<span class="notes-badge" title="has photos">photo</span>{{ end }}
-      {{- if isset .Params "youtube" }}<span class="notes-badge" title="has video">video</span>{{ end }}
+      {{- /* An empty youtube id means the clip is only on LinkedIn so far. */ -}}
+      {{- if .Params.youtube }}<span class="notes-badge" title="has video">video</span>
+      {{- else if isset .Params "youtube" }}<span class="notes-badge" title="video on LinkedIn">video on LinkedIn</span>{{ end }}
     </li>
     {{- end }}
   </ul>

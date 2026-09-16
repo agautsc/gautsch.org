@@ -1,5 +1,6 @@
 ---
 title: "Induced Innovation and the Habakkuk Thesis"
+description: "Habakkuk's 1962 thesis that scarce American labor spurred labor-saving invention, and why it grounds Acemoglu's view of falling birth rates."
 short_version: |
   When Cowen calls Acemoglu a real business cycle theorist, Acemoglu reaches past him for a different ancestor: *"Habakkuk was the first one who was about this."* H.J. Habakkuk argued in 1962 that America out-innovated Britain in the 19th century **because American labor was scarce and expensive**, which pushed American firms toward labor-saving machinery. That is the seed of the whole induced-innovation idea, and it is the intellectual root of Acemoglu's optimism about falling birth rates.
 transcript_anchor: "a19"

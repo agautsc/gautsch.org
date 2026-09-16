@@ -1,5 +1,6 @@
 ---
 title: "Education Quality and Economic Performance - The Outliers"
+description: "Test scores, not years of schooling, track economic growth. The outliers are resource-rich states and places whose skills can't reach a market."
 short_version: |
   There is a strong cross-country relationship between how much students actually *know* (test scores) and how fast an economy grows. Hanushek and Woessmann call this "knowledge capital," and their central finding is that once you use test scores instead of years of schooling, most famous puzzles stop being puzzles — the East Asian miracle and the Latin American growth disappointment both fall onto the line. The countries left off the line divide into two clean groups: **resource-rich states that out-earn their skills** (the Gulf), and **states whose skills cannot reach a market** — landlocked, blockaded, or badly governed. Armenia, which prompted the question, is the second kind, and it is close to the archetype.
 asked: "What are the outliers for education to economic performance? Meaning what countries are under and over performing economically compared to the educational quality."
@@ -59,7 +60,7 @@ The data complicate the story in an interesting way:
 | World Bank Human Capital Index | A child born today will be **58%** as productive as with full health and education |
 | Expected years of schooling | 11.3 — falling to **8.0** when adjusted for learning quality |
 
-**Sources:** [World Bank Armenia learning analysis](https://documents1.worldbank.org/curated/en/099165002012328951/pdf/P1749800007e7703509aac0261edaee2ee6.pdf) · [TIMSS 2023 Armenia](https://timss2023.org/wp-content/uploads/2024/10/Armenia.pdf) · [World Bank on Armenian education and growth](https://www.worldbank.org/en/news/opinion/2023/03/22/education-and-innovation-at-the-core-of-armenia-economic-growth)
+**Sources:** [World Bank Armenia learning analysis](https://documents1.worldbank.org/curated/en/099165002012328951/pdf/P1749800007e7703509aac0261edaee2ee6.pdf) · [TIMSS 2023 Armenia](https://timss2023.org/wp-content/uploads/2024/10/Armenia.pdf) · [World Bank on Armenian education and growth (archived copy)](https://web.archive.org/web/20250211044359/https://www.worldbank.org/en/news/opinion/2023/03/22/education-and-innovation-at-the-core-of-armenia-economic-growth)
 
 **This is the nuance worth carrying.** Both Cowen and Acemoglu treat Armenian human capital as a given — *"the people are so smart," "the people are well educated."* That is the Soviet inheritance talking: Armenia was the USSR's engineering and technical hub, and the reputation is real. But the **measured learning of children in school today is weak**, and the 11.3 → 8.0 adjustment says most of the gap is quality, not access.
 

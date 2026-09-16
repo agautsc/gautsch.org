@@ -1,5 +1,6 @@
 ---
 title: "The Book Problem"
+description: "Acemoglu's \"book\" is a rulebook for settling clashes between values. What he objects to in Rawls and utilitarianism, and what he offers instead."
 short_version: |
   "The book" is Acemoglu's metaphor for rules that settle conflicts between values. His objection to Rawls concerns hypothetical agreement standing in for actual consent. His challenge to utilitarianism asks who chooses the welfare comparisons. A defender can reply that explicit, revisable comparisons make assumptions easier to challenge. Acemoglu offers a temporary framework shaped by deliberation, with a floor of individual freedoms. The disagreement concerns justification, revision, and whose agreement counts — not how many rules each side has.
 asked: "Expand on this 'the book' example that keeps being brought up"

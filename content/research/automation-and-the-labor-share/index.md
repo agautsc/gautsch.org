@@ -1,5 +1,6 @@
 ---
 title: "Automation and the Labor Share"
+description: "Acemoglu's claim isn't mass unemployment. Automation moves displaced workers into lower-paid work and shrinks labor's share of income."
 short_version: |
   Adam's reading is correct. Acemoglu is *not* claiming automation causes mass unemployment. He is claiming displaced workers land in other work at lower pay, and that the pie slice going to workers as a whole shrinks and does not come back. "First-order impact" is the technical way of saying: *the mechanical, immediate effect, before any offsetting reactions.* When a task moves from a person to a machine, labor's share of income falls immediately and by arithmetic. Everything else — new hiring, cheaper goods, new jobs — is second-order, and second-order effects may or may not be big enough to undo it.
 asked: "This might be too much to ask, but I'd really like to go down a rabbit hole on this. I'd love to see some chart showing this. If I understand what he's saying it's that people might get another job, but it's not as well paid. I'd love some references on that. Also, the 'first-order impact' is something I'd like to be explained more as well. What is he describing when he's saying that."

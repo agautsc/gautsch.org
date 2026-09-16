@@ -232,11 +232,15 @@ def main():
     idx.write('<div class="rh-transcript">\n' + tbody + "\n</div>\n")
     idx.close()
 
+    descriptions = load_descriptions()
     for t, p in pages.items():
         d = os.path.join(root, p["slug"]); os.makedirs(d, exist_ok=True)
         f = io.open(os.path.join(d, "index.md"), "w", encoding="utf-8")
         f.write("---\n")
         f.write(f'title: "{t}"\n')
+        if p["slug"] not in descriptions:
+            raise ValueError(f"{p['slug']}: add a description to data/research/descriptions.yaml")
+        f.write(f'description: {json.dumps(descriptions[p["slug"]], ensure_ascii=False)}\n')
         if p["short"]:
             f.write("short_version: |\n  " + p["short"].replace("\n", "\n  ") + "\n")
         if p["asked"]:
@@ -261,6 +265,19 @@ def validate_review_provenance(existing, incoming, slug):
         if re.search(marker, existing, re.I | re.M) and not re.search(marker, incoming, re.I | re.M):
             raise ValueError(f"{slug}: import would remove book-review material; reconcile the vault source with the site before importing")
 
+
+def load_descriptions():
+    """Search/share descriptions, one per slug, from data/research/descriptions.yaml.
+
+    Flat `slug: "text"` lines only, so no YAML dependency is needed."""
+    path = os.path.join(os.path.dirname(__file__), "..", "data", "research", "descriptions.yaml")
+    out = {}
+    with open(path, encoding="utf-8") as source:
+        for line in source:
+            m = re.match(r'^([a-z0-9-]+):\s*"(.*)"\s*$', line)
+            if m:
+                out[m.group(1)] = m.group(2).replace('\\"', '"')
+    return out
 
 def load_site_figures():
     """Map source pages to curated figures and their preserved Mermaid input."""

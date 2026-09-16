@@ -1,5 +1,6 @@
 ---
 title: "Rorty, Objectivism, and Moral Progress"
+description: "Rorty's pragmatism versus moral realism, and why Acemoglu's talk of moral progress without an outside standard draws Cowen's challenge."
 short_version: |
   Cowen is testing whether Acemoglu is a pragmatist or a realist about moral truth. Rorty's position: there is no standard outside our conversation, so stop looking for one and get better at the conversation. Objectivism (in the philosophical sense, not Ayn Rand's): moral facts exist independently of what anyone believes. Acemoglu lands in an uncomfortable middle — he talks about *gradual progress toward better understanding*, which sounds like there is something to progress toward, while denying he has any external standard. Cowen's "Like Rorty, you need one, though" is the needle going in.
 asked: "Rabbit hole comparing Richard Rorty's article versus an objectivist view including a high level view of objectivist and more reading on possibility of objectivism'* · *'Talk a little more about that'* · *'Expand on this, how is this like Rorty"

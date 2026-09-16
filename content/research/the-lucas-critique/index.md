@@ -1,5 +1,6 @@
 ---
 title: "The Lucas Critique"
+description: "The Lucas critique says historical relationships break when conditions change, so Acemoglu's evidence from past labor shortages may not carry over."
 short_version: |
   Robert Lucas's 1976 argument: relationships you observe in historical data are not stable laws. They are the product of how people behaved *under the policies and conditions that prevailed at the time*. Change the regime and people change their behavior, so the old relationship stops holding — which means you cannot use historical correlations to predict what a genuinely new situation will do. Applied here: Acemoglu found that past declines in young workers produced labor-saving innovation and higher growth. Cowen's objection is that **every one of those episodes was local and temporary, and the coming one is global and permanent** — so the historical relationship may simply not carry over.
 asked: "Please explain what a Lucas critique objection to this would be. Start by explain the Lucas critique"

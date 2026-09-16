@@ -1,5 +1,6 @@
 ---
 title: "NYC vs London - School Spending"
+description: "New York spends about $42,000 per student, roughly three to four times London. How much of that gap is accounting rather than classrooms."
 short_version: |
   Cowen's "through the roof" is not rhetoric. New York City is projected to spend **$42,168 per student** in 2025–26, the highest of any large district in the United States, while enrolment has fallen by roughly 100,000 since 2019–20. England's national funding formula averages **£6,608 per pupil**; even generously adjusted for London weighting and converted to dollars, the London figure lands somewhere near **$11,000–14,000**. That is a gap of roughly **three to four times**. ⚠ But a large slice of that gap is accounting, not classrooms, and the honest version of this comparison needs that spelled out — which is what most of this page does.
 asked: "Can you give me some data on per capita spending in New York City. Compare it to, say, London and give some historic data on spending growth indexed for inflation?"

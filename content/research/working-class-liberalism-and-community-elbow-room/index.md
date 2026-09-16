@@ -1,5 +1,6 @@
 ---
 title: "Working-Class Liberalism and Community Elbow Room"
+description: "What Acemoglu means by community elbow room: a floor of individual rights with real local authority above it, grounded in federalism."
 short_version: |
   Acemoglu's phrase is that you *"enshrine those rights, but then give enough elbow room to people to form their own community-level agreements."* Adam asked what that actually means and for a concrete example, which the transcript never supplies. Here is my best construction: the structure is **a thin floor of individual rights that no community may breach, and genuine local authority above it** — including authority to make choices a national elite would consider wrong. The book locates that elbow room in **federalism and local self-government** (Chapter 10), not in the workplace — though workplace governance turns out to be a separate plank of the same programme.
 asked: "What does this mean? Can you provide what you believe is your best guess to an example on this?"

@@ -1,5 +1,6 @@
 ---
 title: "Henry Sidgwick"
+description: "Who Henry Sidgwick was, and why Cowen offers his utilitarian answer to the value clashes Acemoglu declines to settle."
 short_version: |
   Victorian English philosopher (1838–1900), the most rigorous utilitarian who ever wrote, and the reason Cowen invokes him here: Sidgwick had a clean answer to the exact question Acemoglu is dodging. When values clash, convert everything into welfare and compare. Cowen is saying *there is a standard on offer — why won't you take it?*
 asked: "Who is Sidgwick"

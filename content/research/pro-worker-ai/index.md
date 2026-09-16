@@ -1,5 +1,6 @@
 ---
 title: "Pro-Worker AI"
+description: "Acemoglu's narrow definition of pro-worker AI, tools that expand what workers can do, and what he does and doesn't want regulators to decide."
 short_version: |
   This page covers a passage Adam highlighted but didn't annotate, because two other pages needed to point somewhere. Acemoglu's definition is narrow and specific: **AI that lets a worker do new or more sophisticated things**, by giving them information and expanding their expertise — a nurse doing more, an electrician doing more. It is the reinstatement half of the task framework, applied to AI. The important and widely-missed part is what he says about *policy*: he explicitly does **not** want a regulator deciding which AI is pro-worker — though the book asks for considerably more regulation than the interview lets on.
 transcript_anchor: "a18"

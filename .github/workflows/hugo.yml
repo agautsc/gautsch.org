@@ -55,6 +55,9 @@ jobs:
           hugo \
             --minify \
             --baseURL ${{ steps.pages.outputs.base_url }}
+      # Same checks as validate.yml; a failure stops the deploy.
+      - name: Check links, reading packs, feeds and metadata
+        run: python3 scripts/check_site.py public
       # v1 wrapped actions/upload-artifact@v3, which GitHub now auto-fails at
       # "Set up job" — see the 2024-04-16 artifact-actions deprecation notice.
       - name: Upload artifact

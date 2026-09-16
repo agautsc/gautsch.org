@@ -1,5 +1,6 @@
 ---
 title: "Social Contract Theory and Its Critics"
+description: "Social contract theory rests on agreement that never happened. Acemoglu says that settles whose values win before anyone is asked."
 short_version: |
   Social contract theory says political authority is legitimate because people would agree to it. The trick is that the agreement never happened: it is hypothetical, and the theorist decides what rational people *would* have agreed to. Acemoglu's objection is that this move quietly answers the hardest question in politics — *whose values win when values clash?* — by writing the answer into the premises. He wants that question left open and settled by real consensus among real people.
 asked: "Rabbit hole on social contracts"

@@ -1,5 +1,6 @@
 ---
 title: "AI Growth Forecasts - Whose Timeline"
+description: "Why Acemoglu's, Cowen's and Goldman's AI growth numbers can't be ranked: they measure different things over different horizons."
 short_version: |
   The disagreement is about size, timing, and what is being measured. Acemoglu's 2024 paper estimates ten-year gains in total-factor productivity and GDP. Cowen offers a half-point productivity-growth benchmark without a fixed horizon; Goldman's productivity estimate and global GDP headline measure different things again. They cannot be ranked by compounding all the numbers as annual US GDP growth. The source table separates those claims, and a clearly labeled arithmetic example shows how assumed GDP growth compounds.
 asked: "A good amount of this conversation is economists arguing over timelines… I would love to see a rabbit hole around timelines for some of these arguments. What I mean is like a timeline understanding what game-changer means over time. What does GDP growth look like with an OpenAI assumption versus Acemoglu assumption for example."

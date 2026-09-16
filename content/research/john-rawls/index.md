@@ -1,5 +1,6 @@
 ---
 title: "John Rawls"
+description: "John Rawls and the veil of ignorance, and Acemoglu's objection: a philosopher's hypothetical agreement standing in for real people's consent."
 short_version: |
   The most influential political philosopher of the 20th century (1921–2002), and the man who revived social contract theory almost single-handedly. His *A Theory of Justice* (1971) asks: what principles would you choose for a society if you did not know who you would be in it? Acemoglu's complaint, in Chapter 3 of *What Happened to Liberal Democracy?*, is not about the ordering of Rawls's principles at all. It is about the veil: nobody is ever actually asked, so a philosopher's account of what you would have agreed to is being used in place of your consent.
 asked: "Who is John Rawls."

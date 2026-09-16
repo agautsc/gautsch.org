@@ -1,5 +1,6 @@
 ---
 title: "King and Plosser - Real Business Cycles"
+description: "Who King and Plosser are, and why Cowen's real-business-cycle jab at Acemoglu, a left-leaning economist, lands."
 short_version: |
   Adam asked "Who?" and, separately, what Tyler is getting at. **Who:** Robert King and Charles Plosser, two of the founders of real business cycle theory; John Long and Plosser wrote its 1983 founding paper. **What Tyler is getting at:** he is accusing Acemoglu — a left-leaning economist who has spent his career on market failures — of having quietly adopted the macro of the freshwater right. And the accusation lands, which is why the exchange is fun.
 asked: "I'd love a little rabbit hole expanding on this paragraph. Explain what Tyler is getting at.'* and *'Who?"

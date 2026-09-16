@@ -1,5 +1,6 @@
 ---
 title: "Hayek and Decentralization"
+description: "Hayek on dispersed knowledge and prices, and why Acemoglu uses him to argue that large language models centralize what free societies spread out."
 short_version: |
   Hayek's central argument is that the knowledge a society needs to run itself is **inherently dispersed**: millions of people each know local, particular, often untransmittable things, and no central planner can gather it. Markets work not because they allocate efficiently but because prices carry that scattered knowledge without anyone having to collect it. Acemoglu — a left liberal — invokes Hayek to argue that **large language models have a centralizing architecture**, gathering all knowledge into one model, and that this cuts against the decentralization free societies require.
 asked: "How does this relate to Hayek"

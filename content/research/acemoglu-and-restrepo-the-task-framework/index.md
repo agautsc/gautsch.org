@@ -1,5 +1,6 @@
 ---
 title: "Acemoglu and Restrepo - The Task Framework"
+description: "Acemoglu and Restrepo split technology into automation, which displaces workers, and new tasks, which reinstate them. The mix decides what workers get."
 short_version: |
   Most economics treats technology as one thing that makes labor more productive. Acemoglu and Restrepo broke it into two opposing forces. **Automation** takes tasks away from workers and gives them to machines, which pushes wages and labor's share of income down. **New task creation** invents work that did not exist, which pushes them back up. Neither is guaranteed to dominate. That is the whole argument, and once you have it, "is technology good for workers?" stops being answerable in general and becomes a question about the *mix* in a particular period. This is the machinery running underneath every automation exchange in the conversation.
 asked: "I'd love a rabbit hole specifically explaining the Acemoglu and Restrepo papers. What is the general thesis of these works. Provide some historic context towards the importance of them in economic thought and how have they evolved. They seem to be important to understanding this conversation.'* — and separately, *'Can you summarize and link to those papers"
@@ -30,7 +31,7 @@ The task framework's core move: **technology does not augment workers, it reallo
 
 | Year | Paper | What it added |
 |---|---|---|
-| 2011 | Acemoglu & Autor, ["Skills, Tasks and Technologies"](https://economics.mit.edu/sites/default/files/publications/Skills%2C%20Tasks%20and%20Technologies%20-%20Implications%20for%20E.pdf) (*Handbook of Labor Economics*) | The framework itself. Tasks, not skills, are the unit. |
+| 2011 | Acemoglu & Autor, ["Skills, Tasks and Technologies"](https://www.nber.org/papers/w16082) (*Handbook of Labor Economics*) | The framework itself. Tasks, not skills, are the unit. |
 | 2018 | ["The Race Between Man and Machine"](https://www.aeaweb.org/articles?id=10.1257/aer.20160696) (*AER* 108:6) | The formal model. Automation vs. new tasks as a race; a balanced-growth path exists only if they stay in step. |
 | 2019 | ["Automation and New Tasks"](https://www.aeaweb.org/articles?id=10.1257/jep.33.2.3) (*JEP* 33:2) | The readable one. **Start here if you read only one.** |
 | 2020 | ["Robots and Jobs: Evidence from US Labor Markets"](https://www.journals.uchicago.edu/doi/abs/10.1086/705716) (*JPE* 128:6) | The empirical anchor. See numbers below. |
