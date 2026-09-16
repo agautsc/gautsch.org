@@ -1,0 +1,19 @@
+/* 404 (layouts/404.html): PaperMod positions the numeral absolutely; keep it in
+   flow so the heading and links below it are not covered. */
+.not-found {
+  position: static;
+  height: auto;
+  padding: 3rem 0 1rem;
+  font-size: 120px;
+  line-height: 1;
+}
+
+.not-found-title,
+.not-found-help {
+  text-align: center;
+}
+
+.not-found-help a {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}

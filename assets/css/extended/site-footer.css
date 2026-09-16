@@ -45,6 +45,14 @@
   box-shadow: none;
 }
 
+/* Links inside running text need a real underline, not just a faint rule, so
+   they are distinguishable without colour (WCAG 1.4.1). */
+.site-footer p a:not(.sf-more) {
+  box-shadow: none;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+
 .sf-more {
   white-space: nowrap;
 }

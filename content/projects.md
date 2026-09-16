@@ -1,5 +1,8 @@
 ---
 title: "Experiments in AI"
+date: 2026-08-06T20:09:02-04:00
+# Dated for structured data (it printed 0001-01-01); a living list shows no date.
+hideMeta: true
 summary: "Things I've been building, mostly on nights and weekends."
 ---
 

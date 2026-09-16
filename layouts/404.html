@@ -1,0 +1,6 @@
+{{- /* gautsch.org override of PaperMod's 404: a real heading and a way onward. */ -}}
+{{- define "main" }}
+<div class="not-found" aria-hidden="true">404</div>
+<h1 class="not-found-title">Page not found</h1>
+<p class="not-found-help">That page isn't here. Try <a href="{{ "writing/" | absURL }}">Writing</a>, <a href="{{ "research/" | absURL }}">Research</a>, <a href="{{ "notes/" | absURL }}">Notes</a> or the <a href="{{ "archive/" | absURL }}">Archive</a>.</p>
+{{- end }}{{/* end main */ -}}

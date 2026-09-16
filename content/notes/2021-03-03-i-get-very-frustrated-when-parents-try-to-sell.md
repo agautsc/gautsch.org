@@ -2,6 +2,12 @@
 title: "I get very frustrated when parents try to sell me Girl Scout cookies."
 date: 2021-03-03T16:07:01-05:00
 slug: "i-get-very-frustrated-when-parents-try-to-sell"
+# Four duplicate imports of this post were removed 2026-09-16; their URLs redirect here.
+aliases:
+  - /notes/2021/03/i-get-very-frustrated-when-parents-try-to-sell-2/
+  - /notes/2021/03/i-get-very-frustrated-when-parents-try-to-sell-3/
+  - /notes/2021/03/i-get-very-frustrated-when-parents-try-to-sell-4/
+  - /notes/2021/03/i-get-very-frustrated-when-parents-try-to-sell-5/
 summary: "I get very frustrated when parents try to sell me Girl Scout cookies. It is not the point of project. Taking the responsibility and initiative to try and…"
 linkedin: "https://www.linkedin.com/feed/update/urn%3Ali%3Ashare%3A6772985676922187776"
 sharedurl: "https://youtu.be/UUVZtV-luSE"

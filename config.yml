@@ -2,13 +2,46 @@ baseURL: "https://gautsch.org/"
 locale: "en-US"
 title: "gautsch.org"
 theme: "PaperMod"
+# robots.txt comes from PaperMod's template: allow everything in production and
+# point at the sitemap. AI answer engines get a curated map in /llms.txt.
+enableRobotsTXT: true
+# Only tags are used; the empty /categories/ page is not worth indexing.
+taxonomies:
+  tag: tags
+outputFormats:
+  llms:
+    mediaType: text/plain
+    baseName: llms
+    isPlainText: true
+    notAlternative: true
+outputs:
+  home: [HTML, RSS, llms]
+# The rabbit holes carry no date of their own (scripts/import_research.py writes
+# their front matter), so feeds, sitemaps and JSON-LD printed 0001-01-01. They
+# were published with /research on 2026-09-15.
+cascade:
+  - target:
+      path: "{/research/**}"
+      kind: page
+    date: 2026-09-15T20:00:00-04:00
 params:
+  # Site-wide metadata: homepage description, author for every article's
+  # JSON-LD, and the fallback share image for pages without their own.
+  description: "Essays, research rabbit holes and notes on tech and the robots from Adam Gautsch, who coaches tech startups at the ATDC at Georgia Tech."
+  author: "Adam Gautsch"
+  images:
+    - /og-card.png
+  schema:
+    publisherType: Person
+    sameAs:
+      - https://www.linkedin.com/in/adamgautsch/
+      - https://x.com/agautsc
   ShowFullTextinRSS: "true"
   # PaperMod's own footer is replaced by layouts/_partials/extend_footer.html,
   # which renders outside this guard. Turning it off here avoids forking the
   # theme's footer template (and the scripts that live in it).
   hideFooter: true
-  # Notes are deliberately absent here: the homepage is the newest essay, and 228
+  # Notes are deliberately absent here: the homepage is the newest essay, and 224
   # imported link posts would swamp the main feed if they joined it.
   mainSections:
     - writing

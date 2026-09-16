@@ -314,6 +314,7 @@ def main():
     taken, written = set(), 0
     skipped_empty, skipped_dupe, video_queue = [], [], []
     used_media = set()
+    seen = set()
 
     for row in rows:
         text = unwrap(row.get("ShareCommentary"))
@@ -321,6 +322,12 @@ def main():
         if not text:
             skipped_empty.append(stamp)
             continue
+        # The export repeats some shares verbatim (one 2021-03-03 post appeared five
+        # times); import each (minute, text) pair once.
+        if (stamp, text) in seen:
+            skipped_dupe.append((stamp, "repeated export row"))
+            continue
+        seen.add((stamp, text))
         dupe = already_published(text, prints)
         if dupe:
             skipped_dupe.append((stamp, dupe))

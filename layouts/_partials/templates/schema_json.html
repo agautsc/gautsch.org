@@ -1,10 +1,10 @@
-{{/* Local PaperMod override: omit articleBody to avoid duplicating full pages in metadata. */}}
+{{/* Local PaperMod override: omit articleBody to avoid duplicating full pages in metadata, and name a Person publisher after the author rather than the site title. */}}
 {{ if .IsHome }}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "{{- ( site.Params.schema.publisherType | default "Organization") | title -}}",
-  "name": {{ site.Title }},
+  "name": {{ if eq site.Params.schema.publisherType "Person" }}{{ site.Params.author }}{{ else }}{{ site.Title }}{{ end }},
   "url": {{ site.Home.Permalink }},
   "description": {{ site.Params.description | plainify | truncate 180 | safeHTML }},
   {{- if (eq site.Params.schema.publisherType "Person") }}
@@ -115,7 +115,7 @@
   },
   "publisher": {
     "@type": "{{- ( site.Params.schema.publisherType | default "Organization") | title -}}",
-    "name": {{ site.Title }},
+    "name": {{ if eq site.Params.schema.publisherType "Person" }}{{ site.Params.author }}{{ else }}{{ site.Title }}{{ end }},
     "logo": {
       "@type": "ImageObject",
       "url": {{ site.Params.assets.favicon | default "favicon.ico" | absURL }}

@@ -1,0 +1,41 @@
+{{- /* gautsch.org override of PaperMod's llms.txt (llmstxt.org format). Curated for
+       answer engines: what the site is, who writes it, and the primary sources —
+       essays, the annotated research transcript and its reading packs — rather
+       than a flat list of 224 imported LinkedIn notes. */ -}}
+{{- define "llms_text" }}{{ . | markdownify | plainify | htmlUnescape | strings.TrimSpace }}{{ end -}}
+# {{ site.Title }}
+
+> {{ site.Params.description }}
+
+{{ site.Title }} is the personal site of {{ site.Params.author }}. Essays are original writing. The research section is an annotated transcript of Tyler Cowen's conversation with Daron Acemoglu, with 18 "rabbit hole" pages that Adam researched in conversation with AI models; treat them as a reading companion, not an independently verified source. {{ with (site.GetPage "/notes").Pages.ByDate }}Notes are short posts imported from LinkedIn ({{ (index . 0).Date.Year }}–{{ (index . (sub (len .) 1)).Date.Year }}) and preserved as written.{{ end }}
+
+## Writing{{ "\n" }}
+{{- range where site.RegularPages "Section" "writing" }}
+{{- if not .Params.searchHidden }}
+- [{{ .Title }}]({{ .Permalink }}){{ with .Description | default .Summary }}: {{ template "llms_text" . }}{{ end }}
+{{- end }}
+{{- end }}
+
+## Research{{ "\n" }}
+{{- with site.GetPage "/research" }}
+- [{{ .Title }}]({{ .Permalink }}): {{ template "llms_text" .Description }}
+{{- end }}
+{{- range sort (where site.RegularPages "Section" "research") "Title" }}
+{{- $pack := partial "research/reading-pack.html" . }}
+- [{{ .Title }}]({{ .Permalink }}) ([Markdown reading pack]({{ $pack.Permalink }})){{ with .Params.short_version }}: {{ . | markdownify | plainify | htmlUnescape | strings.TrimSpace | truncate 200 }}{{ end }}
+{{- end }}
+
+## Projects{{ "\n" }}
+{{- with site.GetPage "/projects" }}
+- [{{ .Title }}]({{ .Permalink }}): {{ template "llms_text" .Summary }}
+{{- end }}
+
+## Optional{{ "\n" }}
+{{- with site.GetPage "/notes" }}
+- [{{ .Title }}]({{ .Permalink }}): {{ len .Pages }} short posts, grouped by year{{ with .Description }}. {{ . | plainify }}{{ end }}
+{{- end }}
+{{- with site.GetPage "/archive" }}
+- [{{ .Title }}]({{ .Permalink }}): {{ template "llms_text" .Description }}
+{{- end }}
+- [RSS feed]({{ "index.xml" | absURL }})
+- [Sitemap]({{ "sitemap.xml" | absURL }})

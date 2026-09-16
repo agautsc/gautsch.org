@@ -95,6 +95,7 @@ body #theme-toggle { display: none; }
 }
 
 .rh-credit { font-size: .92rem; line-height: 1.62; color: var(--rh-muted); margin: 0; max-width: 58ch; }
+.rh-credit a { text-decoration: underline; text-underline-offset: .18em; }
 
 /* ---------- the foreword: Adam's own introduction, set in type for reading length ---------- */
 
