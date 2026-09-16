@@ -3,11 +3,24 @@
        front matter rather than the body, so the body stays exactly the text as
        written — the import script never has to inject markup into Adam's words. */ -}}
 <article class="note">
-  <header class="note-header">
+  {{- /* Imported titles are the post's own opening words, so most notes would
+         print their first sentence twice. When the body already opens with the
+         title, the date leads visually and the title stays as the accessible
+         <h1> (and the page title) without repeating on screen. Typographer quotes
+         and the importer's trailing "…" are normalized before comparing. */ -}}
+  {{- $norm := dict "’" "'" "‘" "'" "“" "\"" "”" "\"" }}
+  {{- $title := .Title | strings.TrimSuffix "…" | strings.TrimSpace }}
+  {{- $body := .Plain | htmlUnescape | strings.TrimSpace }}
+  {{- range $k, $v := $norm }}{{ $title = replace $title $k $v }}{{ $body = replace $body $k $v }}{{ end }}
+  {{- /* The importer dropped links and an opening quote mark from titles. */ -}}
+  {{- $body = $body | replaceRE `https?://\S+` "" | strings.TrimSpace | replaceRE `^"` "" | replaceRE `\s+` " " }}
+  {{- $title = $title | replaceRE `^"` "" | replaceRE `\s+` " " | replaceRE ` \($` "" }}
+  {{- $redundant := and (gt (len $title) 0) (hasPrefix $body $title) }}
+  <header class="note-header{{ if $redundant }} note-header-date-led{{ end }}">
     <p class="note-kicker">
       <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
     </p>
-    <h1 class="note-title">{{ .Title }}</h1>
+    <h1 class="note-title{{ if $redundant }} visually-hidden{{ end }}">{{ .Title }}</h1>
   </header>
 
   <div class="note-body">

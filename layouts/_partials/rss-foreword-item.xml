@@ -1,0 +1,18 @@
+{{- /* One RSS item for the /research foreword (data/research/foreword.yaml).
+       Called from layouts/rss.xml. */ -}}
+{{- $f := .foreword }}
+{{- $link := "research/#rh-foreword-title" | absURL }}
+{{- $html := "" }}
+{{- range $f.paragraphs }}{{ $html = printf "%s<p>%s</p>" $html (. | markdownify) }}{{ end }}
+{{- $html = printf "%s<p><a href=\"%s\">%s</a></p>" $html ("research/" | absURL) "Read the annotated conversation and its 18 rabbit holes" }}
+    <item>
+      <title>{{ with $f.feed_title }}{{ . }}{{ else }}{{ $f.title }}{{ end }}</title>
+      <link>{{ $link }}</link>
+      <pubDate>{{ (time $f.date).Format "Mon, 02 Jan 2006 15:04:05 -0700" | safeHTML }}</pubDate>
+      {{- with .authorEmail }}<author>{{ . }}{{ with $.authorName }} ({{ . }}){{ end }}</author>{{ end }}
+      <guid>{{ $link }}</guid>
+      <description>{{ index $f.paragraphs 0 | markdownify | plainify | htmlUnescape | htmlEscape | safeHTML }}</description>
+      {{- if site.Params.ShowFullTextinRSS }}
+      <content:encoded>{{ (printf "<![CDATA[%s]]>" $html) | safeHTML }}</content:encoded>
+      {{- end }}
+    </item>

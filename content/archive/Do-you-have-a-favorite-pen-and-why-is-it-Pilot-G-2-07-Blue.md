@@ -7,3 +7,5 @@ tags:
 - LinkedIn
 - Short
 ---
+
+*Archive note: this 2022 LinkedIn post was imported with its title only. The original text was not preserved, so the question is all that remains.*
