@@ -81,3 +81,11 @@
 @media print { .rh-figure-events > li, .rh-effect, .rh-share-row { break-inside: avoid; } }
 
 .rh-body .rh-figure-main > .rh-figure-kicker { font-size: .72rem; margin-bottom: .8rem; }
+
+/* Let desktop diagrams use the margins while preserving mobile gutters. */
+@media screen and (min-width: 848px) {
+  .rh-body .rh-figure {
+    width: min(1000px, calc(100vw - 2 * var(--gap)));
+    margin-inline: calc(50% - min(500px, calc(50vw - var(--gap))));
+  }
+}

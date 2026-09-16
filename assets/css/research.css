@@ -71,7 +71,7 @@ body {
    clicks a control that does nothing. */
 body #theme-toggle { display: none; }
 
-.rh-wrap, .rh-page { max-width: 42rem; margin: 0 auto; }
+.rh-wrap, .rh-page { max-width: var(--main-width); margin: 0 auto; }
 
 /* ---------- the masthead ---------- */
 
@@ -99,7 +99,7 @@ body #theme-toggle { display: none; }
 
 /* ---------- the foreword: Adam's own introduction, set in type for reading length ---------- */
 
-.rh-foreword { margin: 0 0 2.2rem; max-width: 38rem; }
+.rh-foreword { margin: 0 0 2.2rem; max-width: var(--main-width); }
 .rh-foreword h2 {
   font-size: .74rem; letter-spacing: .13em; text-transform: uppercase;
   color: var(--rh-muted); margin: 0 0 .9rem; font-weight: 600;
@@ -393,7 +393,7 @@ p[id^="a"]:target, a.rh-mark:target {
 }
 
 .rh-player {
-  position: sticky; bottom: 0; z-index: 50; margin: 2.2rem -1rem 0;
+  position: sticky; bottom: 0; z-index: 50; margin: 2.2rem max(-1rem, calc(-1 * var(--gap))) 0;
   display: flex; align-items: center; gap: .95rem; flex-wrap: wrap;
   padding: .75rem 1.1rem;
   padding-bottom: calc(.75rem + env(safe-area-inset-bottom, 0px));

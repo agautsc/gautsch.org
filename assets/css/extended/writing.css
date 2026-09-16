@@ -1,3 +1,5 @@
+:root { --main-width: 800px; }
+
 /* Shared essay chrome that must not live in a post's own style.css — every
    weekly post gets a fresh bundle stylesheet, and this has to survive that. */
 

@@ -34,3 +34,11 @@
 .print-sources a { color: var(--rh-ink); text-decoration: underline; text-underline-offset: .15em; }
 .print-sources a:hover { color: var(--rh-ink-deep); }
 .print-sources a:focus-visible { outline: 2px solid var(--rh-ink); outline-offset: 3px; }
+
+/* Let desktop diagrams use the margins while preserving mobile gutters. */
+@media screen and (min-width: 848px) {
+  .rh-body .print-timeline {
+    width: min(1000px, calc(100vw - 2 * var(--gap)));
+    margin-inline: calc(50% - min(500px, calc(50vw - var(--gap))));
+  }
+}
