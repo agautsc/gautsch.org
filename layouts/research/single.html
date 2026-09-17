@@ -8,7 +8,11 @@
 <div class="rh-conversation-layout">
 <article class="rh-page">
   <header class="rh-header">
-    <p class="rh-kicker"><a href="/research/{{ with .Params.transcript_anchor }}#{{ . }}{{ end }}">&larr; Back to the transcript</a></p>
+    {{- /* Position uses the same Title sort as the /research list and the bottom bar. */ -}}
+    {{- $holes := sort (where site.RegularPages "Section" "research") "Title" }}
+    {{- $here := 0 }}
+    {{- range $i, $p := $holes }}{{ if eq $p $ }}{{ $here = add $i 1 }}{{ end }}{{ end }}
+    <p class="rh-kicker"><a href="/research/{{ with .Params.transcript_anchor }}#{{ . }}{{ end }}">&larr; Back to the transcript</a><span class="rh-kicker-sep" aria-hidden="true">|</span><a href="/research/#rabbit-holes">{{ $here }} of {{ len $holes }} Rabbit Holes</a></p>
     <h1 class="rh-title">{{ .Title }}</h1>
   </header>
 
