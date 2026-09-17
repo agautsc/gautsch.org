@@ -25,7 +25,7 @@ This is the decisive question of the segment. Acemoglu has said nondomination an
 
 **Acemoglu's answer** is that the conversion itself needs a rulebook — *"Who decides how to compare, how to turn things into utils?"* — so utilitarianism doesn't escape the problem, it relocates it. See [The Book Problem](/research/the-book-problem/).
 
-**Worth knowing:** Sidgwick is also the origin of the "government house utilitarianism" charge — that a utilitarian elite might rationally conclude the public should be taught a simpler morality than the true one. That connects directly to [The Straussian View](/research/the-straussian-view/), which Cowen raises a few minutes earlier. **The same worry appears twice in this conversation under two names.**
+**Worth knowing:** Sidgwick is also the origin of the "government house utilitarianism" charge — that a utilitarian elite might rationally conclude the public should be taught a simpler morality than the true one. That connects to [The Straussian View](/research/the-straussian-view/), which Cowen raises **later** in the conversation. ⚠ **The connection is this site's reading, not something either man draws.** Esoteric morality is never raised in the Sidgwick exchange; what the interview contains is two separate passages that this page is putting side by side.
 
 ## Reading
 - Sidgwick, *[The Methods of Ethics](https://www.gutenberg.org/ebooks/46743)* (1874) — Book IV is the utilitarian core
@@ -35,7 +35,7 @@ This is the decisive question of the segment. Acemoglu has said nondomination an
 ---
 
 ## Working notes
-Short by design — Adam asked "who is." The genuinely interesting thread is the Sidgwick→Strauss link on esoteric morality, which I've flagged above and would develop if it interests you.
+Short by design — Adam asked "who is." The genuinely interesting thread is the Sidgwick→Strauss link on esoteric morality — which is my connection rather than one the interview makes, and which I'd develop if it interests you.
 
 **Checked against the book: Sidgwick is not in it.** Neither is the dualism of practical reason, nor any sustained treatment of utilitarianism — *utilitarian* does not occur anywhere in *What Happened to Liberal Democracy?*, and Bentham and Mill appear only as classical liberals criticized for defining liberty as non-interference. So this page and the utils exchange in [The Book Problem](/research/the-book-problem/) rest entirely on the conversation. Cowen supplied Sidgwick; Acemoglu answered live. Worth knowing before the Sidgwick→Strauss thread gets developed — it would be building on the interview, not on the book.
 

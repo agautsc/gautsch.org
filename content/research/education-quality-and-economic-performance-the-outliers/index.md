@@ -1,8 +1,8 @@
 ---
 title: "Education Quality and Economic Performance - The Outliers"
-description: "Test scores, not years of schooling, track economic growth. The outliers are resource-rich states and places whose skills can't reach a market."
+description: "Test scores, not years of schooling, track economic growth. Which countries sit off the line, and why the candidates here are illustrations rather than a measured result."
 short_version: |
-  There is a strong cross-country relationship between how much students actually *know* (test scores) and how fast an economy grows. Hanushek and Woessmann call this "knowledge capital," and their central finding is that once you use test scores instead of years of schooling, most famous puzzles stop being puzzles — the East Asian miracle and the Latin American growth disappointment both fall onto the line. The countries left off the line divide into two clean groups: **resource-rich states that out-earn their skills** (the Gulf), and **states whose skills cannot reach a market** — landlocked, blockaded, or badly governed. Armenia, which prompted the question, is the second kind, and it is close to the archetype.
+  There is a strong cross-country relationship between how much students actually *know* (test scores) and how fast an economy grows. Hanushek and Woessmann call this "knowledge capital," and their central finding is that once you use test scores instead of years of schooling, most famous puzzles stop being puzzles — the East Asian miracle and the Latin American growth disappointment both fall onto the line. Two mechanisms are usually offered for the countries that stay off the line: **resource rents that out-earn a country's skills** (the Gulf), and **skills that cannot reach a market** — landlocked, blockaded, or badly governed. ⚠ The country lists on this page are illustrations of those mechanisms, not the output of a residual analysis; nobody here has fitted the model and ranked what falls out of it. Armenia, which prompted the question, is offered as a case of the second mechanism on that basis.
 asked: "What are the outliers for education to economic performance? Meaning what countries are under and over performing economically compared to the educational quality."
 transcript_anchor: "a22"
 models: ["Claude", "Codex"]
@@ -21,13 +21,15 @@ Eric Hanushek and Ludger Woessmann, *[The Knowledge Capital of Nations](https://
 - Years of schooling turns out to be a poor proxy. Two countries can each average 11 years and differ enormously in what students learn — Armenia is a case in point, see below.
 - Their headline claim: the "Latin American growth puzzle" and the "East Asian miracle" both **dissolve** once you condition on skills. Neither was mysterious; both regions grew about as fast as their knowledge capital predicted.
 
-That last point reframes Adam's question. The interesting outliers are not "who over- and under-performs" in general — most countries are near the line. The interesting outliers are the ones that **stay** off it after conditioning.
+That last point reframes Adam's question. The interesting cases are not "who over- and under-performs" in general, but the ones that would **stay** off the line after conditioning on skills.
 
-## The two kinds of outlier
+⚠ **Two cautions before the lists below.** First, "grew about as fast as knowledge capital predicts" is a statement about *growth conditional on initial income*, while "income above what skills predict" is a statement about the *level* of GDP per person. They are different questions and a country can be off one line and on the other. Second, calling a country an outlier is an empirical claim that requires a stated outcome, period, sample, model and a reproducible residual calculation. None of that has been done here, so what follows is a guide to mechanisms.
+
+## Two patterns to look for
 
 {{< research-figure "education-outliers" >}}
 
-**Over-performers — income above what skills predict**
+**Pattern 1 — mechanisms that can put income above what measured skills would predict.** The examples are illustrative candidates, not classified outliers.
 
 | Type | Examples | Mechanism |
 |---|---|---|
@@ -35,7 +37,7 @@ That last point reframes Adam's question. The interesting outliers are not "who 
 | Financial and legal entrepôts | Luxembourg, Switzerland, Singapore (partly) | Institutions and location capture returns beyond domestic human capital. Singapore also genuinely tops the tests. |
 | Historical capital stock | Italy, parts of southern Europe | Accumulated wealth and industrial base sustain income as measured skills soften |
 
-**Under-performers — income below what skills predict**
+**Pattern 2 — mechanisms that can hold income below what measured skills would predict.** Same caveat: candidates, not classifications. Note that several of these entries lean on *schooling or literacy* (“high literacy and universities”, “formal education inheritance”) rather than measured cognitive skills — which is the very substitution Hanushek and Woessmann argue against, and a reason to treat them as hypotheses to test rather than findings.
 
 | Type | Examples | Mechanism |
 |---|---|---|

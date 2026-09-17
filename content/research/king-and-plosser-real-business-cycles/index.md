@@ -3,7 +3,7 @@ title: "King and Plosser - Real Business Cycles"
 description: "Who King and Plosser are, and why Cowen's real-business-cycle jab at Acemoglu, a left-leaning economist, lands."
 short_version: |
   Adam asked "Who?" and, separately, what Tyler is getting at. **Who:** Robert King and Charles Plosser, two of the founders of real business cycle theory; John Long and Plosser wrote its 1983 founding paper. **What Tyler is getting at:** he is accusing Acemoglu — a left-leaning economist who has spent his career on market failures — of having quietly adopted the macro of the freshwater right. And the accusation lands, which is why the exchange is fun.
-asked: "I'd love a little rabbit hole expanding on this paragraph. Explain what Tyler is getting at.'* and *'Who?"
+asked: "I'd love a little rabbit hole expanding on this paragraph. Explain what Tyler is getting at.” and “Who?"
 transcript_anchor: "a19"
 models: ["Claude"]
 draft: false
@@ -60,7 +60,7 @@ Three moves, and they're worth separating:
 2. **He supplies his own ancestor instead:** *"Habakkuk was the first one who was about this."* See [Induced Innovation and the Habakkuk Thesis](/research/induced-innovation-and-the-habakkuk-thesis/). This is him saying: my lineage is 19th-century economic history, not 1980s Minnesota macro.
 3. **He half-accepts the charge:** *"I never saw myself as a traditional Keynesian… and I never understood the new Keynesian models very well."* But he keeps a demand channel — *"there are episodes in which aggregate demand shortages create problems"* — and argues the fertility decline is too slow-acting to produce one.
 
-**The honest bit:** *"I'm also finding these results surprising. We've checked them so many times, and that's why we've done them so many different ways, but it seems to be there in the data."* He is reporting a result he didn't want.
+**The honest bit:** *"I'm also finding these results surprising. We've checked them so many times, and that's why we've done them so many different ways, but it seems to be there in the data."* He presents it as a result that surprised him and survived repeated re-checking. What he wanted the answer to be is not something the transcript establishes.
 
 ## Reading
 - Long & Plosser, "Real Business Cycles," *JPE* 1983 — the founding paper

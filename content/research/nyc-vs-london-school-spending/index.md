@@ -69,18 +69,18 @@ The interesting thing for you: the CBC's framing is literally *"Highest Costs, M
 
 ## From the book
 
-The interview's NYC-versus-London comparison is Cowen's, and it is not in *What Happened to Liberal Democracy?*. What the book has is **the same argument at national scale**, in Chapter 1, as part of the case that liberal democracy stopped delivering:
+The NYC-versus-London comparison is **Adam's question**, not the interview's: Cowen raises only New York City's per-student spending, and London appears nowhere in the transcript. It is not in *What Happened to Liberal Democracy?* either. What the book has is **the same argument at national scale**, in Chapter 1, as part of the case that liberal democracy stopped delivering:
 
 > *"Building schools is expensive, but it's much easier than increasing the quality of education once the buildings are there… Many indicators point to worsening educational performance over the last decades, even as inflation-adjusted spending per pupil rose from around $6,500 in the 1970s to almost $17,000 in 2019, both in 2022–23 dollars. By the late 2010s, only a third of fourth-grade students could read at the proficient level expected for their grade."*
 
-**A 2.6× real increase in per-pupil spending, against a third of fourth-graders reading at grade level.** That is the shape of the claim this page is testing, sourced to a figure Acemoglu himself publishes, and it does the job the "3.8×" ratio was going to do — without the London estimate the working notes below say not to publish.
+**A 2.6× real increase in per-pupil spending, against a third of fourth-graders clearing the reading-proficiency threshold he cites.** ⚠ "Proficient" is not the same as reading at grade level: NCES states that [NAEP Proficient](https://nces.ed.gov/nationsreportcard/about/achieve.aspx) "does not signify meeting grade level expectations, which are set through state assessments." Which assessment, year and threshold his figure refers to is not established by the quotation and needs confirming against the print edition. That is the shape of the claim this page is testing, sourced to a figure Acemoglu himself publishes, and it does the job the "3.8×" ratio was going to do — without the London estimate the working notes below say not to publish.
 
 Two things worth noting about how he uses it:
 
 - **It is deliberately not a story about schools.** The passage sits inside a longer list — health spending three times France's or Japan's against lower life expectancy, one in four Americans without a primary care physician — and the conclusion drawn is about **public services in general** failing to convert money into outcomes. Education is one instance of *"the crisis of drains and dole"* he names in Chapter 10, not the subject.
-- **He does not blame teachers' unions**, in the book or, notably, anywhere the transcript reaches. The causes offered are that the low-hanging fruit was picked, that American schools serve a harder population, and that the pandemic made it worse. Cowen's framing of the exchange invites the union answer; Acemoglu doesn't take it.
+- **Teachers' unions are not his explanation — but he does criticize them when Cowen raises them.** In the transcript he is "in general… in favor of unions because labor needs to be represented," and in the same breath says "teacher unions, right now, I think they need to be reconstituted because they no longer serve children's interest." That is a criticism of the existing unions, not of unions as such, and it is a concession to Cowen's framing rather than the cause he offers. His own causes are that the low-hanging fruit was picked, that American schools serve a harder population, and that the pandemic made it worse. In the book I found no union argument — but see the limits of that check in the working notes below; it is a machine transcript of the audiobook, not a full-text search of the print edition.
 
-The book supplies no international comparison of school spending, so nothing above needs re-sourcing to it — and the NAEP-style outcome data the working notes ask for is exactly what his "only a third of fourth-grade students" figure is.
+The book supplies no international comparison of school spending, so nothing above needs re-sourcing to it — and his "only a third of fourth-grade students" figure is reaching for the same outcome pairing the working notes ask for, on an assessment this page has not yet identified.
 
 ---
 

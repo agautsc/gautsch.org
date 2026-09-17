@@ -62,7 +62,7 @@ Yes, and more so now than when Rorty was writing. Worth knowing:
 
 ## From the book
 
-**Rorty is not in it.** Neither is Sidgwick, neither is Parfit, and there is no chapter, section or passage on moral realism, moral progress, or the standing of ethical claims. The comparison is Cowen's, supplied live, and Acemoglu accepted the frame without having worked in it. That absence is the finding, and it is more interesting than a quotation would have been: **the exchange Cowen forces is one Acemoglu has not had in print.**
+**Rorty is not in it.** Neither is Sidgwick, neither is Parfit, and there is no chapter, section or passage on moral realism, moral progress, or the standing of ethical claims. The comparison is Cowen's, supplied live, and Acemoglu accepts the frame. That absence is the finding, and it is more interesting than a quotation would have been: **the exchange Cowen forces is one this book never has.** What he has or has not worked on elsewhere is outside what was checked here.
 
 What the book has instead, in the place where a foundation would go, is an epistemic premise:
 
@@ -99,7 +99,7 @@ Whether that dissolves Cowen's question or relocates it is the live issue. Nothi
 
 **The strongest thing on this page** is the observation that Acemoglu uses a science-convergence analogy and then denies having a standard, and that these do not sit together. Draft 1 flagged this as unestablished and wanted it checked against the book, on the grounds that he may well address it in print.
 
-**Checked. He does not address it in print** — there is no treatment of moral realism, moral progress or the grounding of values anywhere in the book. So it is not a compression artifact of a spoken interview; the gap is real. What the book supplies instead is a Peircean fallibilism plus a stated premise that wrong beliefs tend to fade, both of which are about knowledge rather than about values and neither of which is defended. That makes the observation stronger than draft 1 assumed, and it also makes it less of a gotcha: he is not dodging a question he has answered elsewhere, he is working without a net in a place where his book never needed one.
+**Checked. He does not address it in this book** — there is no treatment of moral realism, moral progress or the grounding of values anywhere in it. So it is not a compression artifact of a spoken interview; the gap is real. What the book supplies instead is a Peircean fallibilism plus a stated premise that wrong beliefs tend to fade, both of which are about knowledge rather than about values and neither of which is defended. That makes the observation stronger than draft 1 assumed, and it also makes it less of a gotcha: he is not dodging a question this book answers elsewhere in its pages, he is working without a net in a place where it never needed one.
 
 **Rorty on "why believe what you believe."** Cowen's follow-up ("Then why believe in what you believe?") is the classic anti-pragmatist challenge, and Rorty had a well-known answer Acemoglu doesn't reach for: *because I was raised in this tradition and I am not ashamed of it.* Rorty thought demanding a deeper reason was the mistake. Acemoglu instead reaches for individual freedom as a starting point, which is a more conventional liberal move.
 

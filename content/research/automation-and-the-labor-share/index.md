@@ -2,7 +2,7 @@
 title: "Automation and the Labor Share"
 description: "Acemoglu's claim isn't mass unemployment. Automation moves displaced workers into lower-paid work and shrinks labor's share of income."
 short_version: |
-  Adam's reading is correct. Acemoglu is *not* claiming automation causes mass unemployment. He is claiming displaced workers land in other work at lower pay, and that the pie slice going to workers as a whole shrinks and does not come back. "First-order impact" is the technical way of saying: *the mechanical, immediate effect, before any offsetting reactions.* When a task moves from a person to a machine, labor's share of income falls immediately and by arithmetic. Everything else — new hiring, cheaper goods, new jobs — is second-order, and second-order effects may or may not be big enough to undo it.
+  Adam's reading is correct. Acemoglu is *not* claiming automation causes mass unemployment. He is claiming displaced workers land in other work at lower pay, and that the pie slice going to workers as a whole shrinks and does not come back. "First-order impact" is the technical way of saying: *the direct effect, before any offsetting reaction.* When a task moves from a person to a machine, labor's share of income falls by arithmetic. The offsetting channels — cheaper output and expanded demand for the tasks people still do, and wholly new tasks — are real and operate alongside it rather than in a later stage; his claim is that they do not add up to enough to undo it.
 asked: "This might be too much to ask, but I'd really like to go down a rabbit hole on this. I'd love to see some chart showing this. If I understand what he's saying it's that people might get another job, but it's not as well paid. I'd love some references on that. Also, the 'first-order impact' is something I'd like to be explained more as well. What is he describing when he's saying that."
 transcript_anchor: "a12"
 models: ["Claude", "Codex"]
@@ -15,17 +15,19 @@ draft: false
 
 ## What "first-order impact" means
 
-Economists decompose an effect into orders. The first order is the direct arithmetic consequence; higher orders are the adjustments the system makes in response.
+"First order" names the *direct* effect: what follows by arithmetic when a task moves from labor to capital, before anything else adjusts. It is not stage one of a sequence in time. The other channels are not "higher orders" that arrive later — they can operate at the same time, and new-task creation has direct effects of its own.
 
 **The labor share** is compensation to workers divided by total output. Suppose a factory produces $100 of output, pays $60 in wages and $40 to capital. Labor share is 60%.
 
 Now automate a task that had been done by a worker earning $10.
 
-- **First order:** that $10 moves from the wage bill to the capital bill. $50 of $100 → labor share 50%. Nothing else has happened yet. This is what Acemoglu means by *"That has a first-order impact on the labor share because fewer things are done by labor."* It is not a prediction, it is bookkeeping.
-- **Second order:** production is cheaper, so the firm expands. Demand rises for the tasks still done by people. Some of the $10 comes back.
-- **Third order:** new products and new jobs appear that did not exist. More comes back.
+- **Direct displacement** — the *displacement effect* in Acemoglu and Restrepo's terms. That $10 moves from the wage bill to the capital bill: $50 of $100 → labor share 50%. This is what Acemoglu means by *"That has a first-order impact on the labor share because fewer things are done by labor."* It is not a prediction; it is what the arithmetic gives you under the assumptions below.
+- **Productivity response** — production is cheaper, so output can expand and demand rises for the tasks people still do. Some of the $10 comes back.
+- **New-task creation** — the *reinstatement effect*: new products and new tasks appear where labor has the comparative advantage. More comes back, and this channel raises labor demand in its own right rather than only as an echo of the first.
 
-His claim, in one sentence: *"there could be enough demand from nonautomated tasks for labor, but that would never come back to increase the wage enough to restore the labor share to where it is."* The second-order effects are real; they are just not complete.
+⚠ **The fixed $100 is an assumption, not a proof.** Holding output constant is exactly what makes the first line pure arithmetic — and it is the assumption the other two channels break. The example shows what *first-order* means; it cannot establish that the labor share ends lower. That is an empirical claim, and it rests on the evidence below rather than on this bookkeeping. The [task-framework diagram](/research/acemoglu-and-restrepo-the-task-framework/) sets out the same three forces acting together, with the outcome depending on their relative strength rather than on moving from one box to the next.
+
+His claim, in one sentence: *"there could be enough demand from nonautomated tasks for labor, but that would never come back to increase the wage enough to restore the labor share to where it is."* The offsetting channels are real; his claim is that they are not complete.
 
 ## Your reading, checked: do displaced workers earn less?
 

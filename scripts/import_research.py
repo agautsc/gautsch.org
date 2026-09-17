@@ -181,6 +181,24 @@ def render_para(md, wrap, aid=None):
                 f'{m.group(2)}</p>')
     return f"<p{idattr}>{s}</p>"
 
+def clean_asked(text):
+    """Render a two-part question readably in the `asked:` front matter.
+
+    A body line like  **Adam asked:** *"First?"* and *"Second?"*  captures as
+    First?"* and *"Second?  -- the emphasis markers and the inner straight quotes
+    both survive. Drop the markers and turn the inner quotes into curly ones,
+    alternating closing/opening because the capture starts inside a quotation.
+    """
+    out, inside = [], True
+    for ch in text.replace("*", ""):
+        if ch == '"':
+            out.append("\u201d" if inside else "\u201c")
+            inside = not inside
+        else:
+            out.append(ch)
+    return "".join(out)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--vault", default="/home/agautsc/Documents/ARG Full")
@@ -245,7 +263,7 @@ def main():
         if p["short"]:
             f.write("short_version: |\n  " + p["short"].replace("\n", "\n  ") + "\n")
         if p["asked"]:
-            f.write(f'asked: "{p["asked"].replace(chr(34), chr(39))}"\n')
+            f.write(f'asked: "{clean_asked(p["asked"])}"\n')
         if p.get("anchor"):
             f.write(f'transcript_anchor: "{p["anchor"]}"\n')
         models = ['Claude', 'Codex'] if p['slug'] in figures else ['Claude']

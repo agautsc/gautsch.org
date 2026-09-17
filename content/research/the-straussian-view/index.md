@@ -3,7 +3,7 @@ title: "The Straussian View"
 description: "What a Straussian reading is, and why Cowen asks whether elite rule is fine as long as it stays out of view, and how Acemoglu answers."
 short_version: |
   Leo Strauss (1899–1973) argued that philosophers throughout history wrote on two levels: a surface teaching safe for general readers, and a hidden one for those who could handle it. "Straussian" has since come to mean any position holding that some truths are socially destabilizing and are better left unstated. Cowen's *"we want to cover up the role of the elite to some extent, right?"* is that move applied to this conversation: **maybe elite rule is fine, and the thing to manage is that people notice it.** Acemoglu's one-word joke — *"if you cover it up really well"* — is a refusal, and the substance follows.
-asked: "Go deeper into what the Straussian view would be and why'* and *'Cover it up? Explain this concept"
+asked: "Go deeper into what the Straussian view would be and why” and “Cover it up? Explain this concept"
 transcript_anchor: "a09"
 models: ["Claude"]
 draft: false
@@ -48,7 +48,7 @@ That distinction is his real position, and it is not anti-expertise. He is a Nob
 
 ## The connection Cowen doesn't make
 
-The Straussian worry appears **twice** in this interview under different names. Here, and earlier as [Henry Sidgwick](/research/henry-sidgwick/) — whose utilitarianism generated the charge of "government house utilitarianism," the idea that an enlightened elite might rationally teach the public a simpler morality than the true one. Same structure, different century, different vocabulary. Acemoglu declines it both times.
+⚠ **On this site's reading** — not a link either man makes — the same worry surfaces twice under different names. Here, and earlier as [Henry Sidgwick](/research/henry-sidgwick/), whose utilitarianism generated the charge of "government house utilitarianism": the idea that an enlightened elite might rationally teach the public a simpler morality than the true one. Same structure, different century, different vocabulary. The Sidgwick exchange comes first and the Strauss exchange follows it; esoteric morality is named in neither, which is why the pairing is an interpretation rather than a second issue raised and rejected.
 
 ## Reading
 - Strauss, *Persecution and the Art of Writing* (1952)
