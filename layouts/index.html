@@ -16,7 +16,7 @@
     <h1 class="rh-title">{{ .Title }}</h1>
     {{- /* .Params.summary, not .Summary — see writing-article.html. The deck is
            Adam talking about his own piece, so it takes the handwritten register. */}}
-    {{- with .Params.summary }}<p class="rh-deck">{{ . }}</p>{{ end }}
+    {{- if not .Params.hide_deck }}{{ with .Params.summary }}<p class="rh-deck">{{ . }}</p>{{ end }}{{ end }}
   </header>
   <div class="rh-home-body">
     {{ .Content }}

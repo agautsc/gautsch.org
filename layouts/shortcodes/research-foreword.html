@@ -1,0 +1,14 @@
+{{- /* Adam's /research foreword, rendered from data/research/foreword.yaml so the
+       essay and the homepage can never drift from /research. In-page anchors
+       (#transcript, #rabbit-holes) point at /research/ from here, and "below"
+       becomes "on the research page" since the list is not below. */ -}}
+{{- with hugo.Data.research.foreword }}
+<section class="rabbit-intro rh-foreword" aria-labelledby="rabbit-foreword-title">
+<h2 id="rabbit-foreword-title" class="rabbit-label rh-section-label">{{ .title }}</h2>
+{{- range .paragraphs }}
+{{- $p := replace . "](#rabbit-holes) below" "](#rabbit-holes) on the research page" }}
+<p>{{ replace $p "](#" "](/research/#" | $.Page.RenderString }}</p>
+{{- end }}
+<p class="rabbit-credit">Original conversation: <a href="https://conversationswithtyler.com/episodes/daron-acemoglu-2/">Tyler Cowen and Daron Acemoglu, <em>Conversations with Tyler</em>, Ep. 286</a>. Annotations by Adam Gautsch and his robots.</p>
+</section>
+{{- end }}

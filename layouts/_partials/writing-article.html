@@ -11,7 +11,7 @@
     <h1 class="wc-title">{{ $page.Title }}</h1>
     {{- /* .Params.summary, not .Summary — the latter auto-generates a full
            paragraph when unset. This is the same line the projects/list pages use. */}}
-    {{- with $page.Params.summary }}<p class="wc-deck">{{ . }}</p>{{ end }}
+    {{- if not $page.Params.hide_deck }}{{ with $page.Params.summary }}<p class="wc-deck">{{ . }}</p>{{ end }}{{ end }}
   </header>
   <div class="wc-body">
     {{ $page.Content }}

@@ -131,6 +131,8 @@ body #theme-toggle { display: none; }
   font-weight: 600; color: var(--rh-muted); margin-bottom: .9rem;
 }
 .rh-home-body .rabbit-credit { font-size: .92rem; line-height: 1.62; color: var(--rh-muted); }
+/* The foreword shortcode: same label and type as on /research. */
+.rh-home-body .rh-foreword h2 { color: var(--rh-accent-ink); margin: 0 0 .9rem; line-height: 1.62; }
 .rh-home .wc-permalink { border-top-color: var(--rh-rule); color: var(--rh-muted); }
 
 /* ---------- the contents block: the notebook's own index page ---------- */

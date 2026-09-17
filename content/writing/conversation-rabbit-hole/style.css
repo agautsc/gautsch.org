@@ -38,6 +38,8 @@
   text-transform: uppercase;
 }
 .rabbit-credit { color: var(--secondary); font-size: 0.9rem; }
+h2.rabbit-label { margin: 0 0 1.1rem; line-height: 1.4; }
+.rabbit-intro a { text-decoration: underline; text-underline-offset: 0.15em; }
 
 .writing-custom:has(.rabbit-intro) .wc-body > h2 {
   border-top: 1px solid var(--border);
