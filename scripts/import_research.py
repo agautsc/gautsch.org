@@ -219,7 +219,8 @@ def main():
     tbody = "\n".join(p["html"] for p in paras)
     idx = io.open(os.path.join(root, "_index.md"), "w", encoding="utf-8")
     idx.write("---\n")
-    idx.write('title: "A Conversation Rabbit Hole"\n')
+    idx.write('title: "An Economic Robotic Rabbit Hole"\n')
+    # Search/share description only; the page no longer shows it (Adam, 2026-09-17).
     idx.write('description: "Tyler Cowen and Daron Acemoglu, annotated. The highlighted passages open the places I stopped to learn more."\n')
     idx.write("layout: transcript\n")
     idx.write(f'source_url: "{EPISODE_URL}"\n')

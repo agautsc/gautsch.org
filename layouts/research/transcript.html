@@ -6,16 +6,14 @@
 {{- with resources.Get "css/research.css" }}<style>{{ .Content | safeCSS }}</style>{{ end }}
 <div class="rh-wrap">
   <header class="rh-header">
-    <p class="rh-kicker">A reader's edition</p>
     <h1 class="rh-title">{{ .Title }}</h1>
-    {{- with .Params.description }}<p class="rh-deck">{{ . }}</p>{{ end }}
     <p class="rh-credit">
       Original conversation:
       <a href="{{ .Params.source_url }}" rel="nofollow">Tyler Cowen and Daron Acemoglu,
       <em>Conversations with Tyler</em>, Ep.&nbsp;286</a>. Recorded July&nbsp;15,&nbsp;2026.
       Reproduced with attribution and a link, following
       <a href="https://x.com/tylercowen/status/2090483143736492125" rel="nofollow">Tyler Cowen's
-      stated reuse guidance</a>. Annotations by Adam Gautsch.
+      stated reuse guidance</a>. Annotations by Adam Gautsch and his robots.
     </p>
   </header>
 
@@ -23,7 +21,7 @@
          because the importer rewrites _index.md on every run. */ -}}
   {{- with hugo.Data.research.foreword }}
   <section class="rh-foreword" aria-labelledby="rh-foreword-title">
-    <h2 id="rh-foreword-title">{{ .title }}</h2>
+    <h2 id="rh-foreword-title" class="rh-section-label">{{ .title }}</h2>
     {{- range .paragraphs }}
     <p>{{ . | $.RenderString }}</p>
     {{- end }}
@@ -62,7 +60,10 @@
     {{- $summary := .Params.short_version | markdownify | strings.TrimSpace | strings.TrimPrefix "<p>" | strings.TrimSuffix "</p>" }}
     {{- $transcript = replaceRE $pattern (printf "${1}%s${2}" (replace $summary "$" "$$")) $transcript }}
   {{- end }}
-  <div id="transcript">{{ $transcript | safeHTML }}</div>
+  <div id="transcript">
+    <h2 class="rh-section-label">Transcript</h2>
+    {{ $transcript | safeHTML }}
+  </div>
 </div>
 
 {{- /* Cut 3. Play-while-highlighting. Timings come from data/research/timings.json,

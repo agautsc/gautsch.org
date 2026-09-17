@@ -100,11 +100,14 @@ body #theme-toggle { display: none; }
 /* ---------- the foreword: Adam's own introduction, set in type for reading length ---------- */
 
 .rh-foreword { margin: 0 0 2.2rem; max-width: var(--main-width); }
-.rh-foreword h2 {
+.rh-foreword h2,
+.rh-section-label {
   font-size: .74rem; letter-spacing: .13em; text-transform: uppercase;
-  color: var(--rh-muted); margin: 0 0 .9rem; font-weight: 600;
+  color: var(--rh-accent-ink); margin: 0 0 .9rem; font-weight: 600;
 }
-.rh-foreword p { font-size: 1.12rem; line-height: 1.68; color: var(--rh-text); margin: 0 0 1rem; }
+/* Adam's own words, set a step above the transcript and a shade darker. */
+.rh-foreword p { font-size: 1.32rem; line-height: 1.66; color: #15110E; margin: 0 0 1rem; }
+@media (max-width: 640px) { .rh-foreword p { font-size: 1.22rem; } }
 .rh-foreword a { color: var(--rh-ink); text-decoration: underline; text-underline-offset: .15em; }
 .rh-foreword a:hover { color: var(--rh-ink-deep); }
 .rh-foreword a:focus-visible { outline: 2px solid var(--rh-ink); outline-offset: 3px; }

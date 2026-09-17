@@ -1,5 +1,5 @@
 ---
-title: "A Conversation Rabbit Hole"
+title: "An Economic Robotic Rabbit Hole"
 description: "Tyler Cowen and Daron Acemoglu, annotated. The highlighted passages open the places I stopped to learn more."
 layout: transcript
 source_url: "https://conversationswithtyler.com/episodes/daron-acemoglu-2/"
