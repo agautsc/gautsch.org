@@ -36,7 +36,7 @@ The task framework's core move: **technology does not augment workers, it reallo
 | 2019 | ["Automation and New Tasks"](https://www.aeaweb.org/articles?id=10.1257/jep.33.2.3) (*JEP* 33:2) | The readable one. **Start here if you read only one.** |
 | 2020 | ["Robots and Jobs: Evidence from US Labor Markets"](https://www.journals.uchicago.edu/doi/abs/10.1086/705716) (*JPE* 128:6) | The empirical anchor. See numbers below. |
 | 2022 | ["Tasks, Automation, and the Rise in US Wage Inequality"](https://economics.mit.edu/sites/default/files/2022-10/Tasks%20Automation%20and%20the%20Rise%20in%20US%20Wage%20Inequality.pdf) (*Econometrica* 90:5) | Attributes 50–70% of the change in US wage structure 1980–2016 to task displacement |
-| 2022 | ["Demographics and Automation"](https://www.nber.org/papers/w24421) (*ReStud*) | The flip side: aging *causes* automation, and that's fine |
+| 2018 / 2022 | ["Demographics and Automation"](https://www.nber.org/papers/w24421) (NBER working paper 2018; *ReStud* 2022) | The flip side: aging leads to more automation, and robots substitute for middle-aged workers. Aggregate productivity effects are ambiguous in theory; productivity rises and labor's share falls relatively in the industries most open to automation |
 | 2024 | ["The Simple Macroeconomics of AI"](https://www.nber.org/papers/w32487) | Applies the framework to AI → see [AI Growth Forecasts - Whose Timeline](/research/ai-growth-forecasts-whose-timeline/) |
 | 2026 | Acemoglu, Autor, Beirne & Scott, ["Baby Busts and Growth Booms"](https://www.nber.org/papers/w35401) | The optimistic turn Cowen presses him on |
 
@@ -53,8 +53,8 @@ Reported ranges across specifications: **−0.18 to −0.34 pp** on employment, 
 This is the part worth noticing, because it is not a straight line.
 
 1. **2011–2018 — building the machine.** Establish that tasks are the right unit and that displacement is real.
-2. **2018–2022 — the pessimistic empirical phase.** Robots lower wages. Task displacement explains most of rising inequality. This is the Acemoglu most people know.
-3. **2022 onward — the conditional turn.** *Demographics and Automation* shows automation triggered by labor scarcity is good. The 2026 *Baby Busts* paper finds falling birth rates associated with **higher** GDP growth per working-age adult, via labor-saving innovation. Cowen catches this and asks whether it contradicts the Restrepo work. Acemoglu says no, and he is right: both use the same framework. The framework was always conditional. **Automation responding to scarcity is a different animal from automation replacing available workers.**
+2. **2018–2022 — the pessimistic empirical phase.** Robots lower wages. Task displacement explains most of rising inequality. This is the Acemoglu most people know. But the demographic strand is not a later turn: *Demographics and Automation* first circulated as an NBER working paper in **2018**, alongside the robots-and-wages work, and was published in 2022. It finds that aging induces automation, and treats the productivity and distributional consequences as conditional rather than good or bad.
+3. **2026 — the optimistic emphasis.** The *Baby Busts* paper finds falling birth rates associated with **higher** GDP growth per working-age adult, via labor-saving innovation. That is a new result, but on a strand that has run in parallel since 2018, not a change of mind. Cowen catches this and asks whether it contradicts the Restrepo work. Acemoglu says no, and he is right: both use the same framework. The framework was always conditional. **Automation responding to scarcity is a different animal from automation replacing available workers.**
 
 That is why he can say "I am not, 100 percent not, against automation" without contradiction, and why he sounds pessimistic anyway. The model is neutral. His read of *current conditions* is not.
 
@@ -96,6 +96,8 @@ The core of it holds, and is stronger than the interview version because the com
 ---
 
 ## Working notes
+
+**Corrected 2026-09-18.** "How the position evolved" used to date a "conditional turn" to 2022 on the strength of *Demographics and Automation*, and summarize that paper as showing scarcity-induced automation "is good." The paper was a 2018 working paper, published in 2022, and it reports ambiguous aggregate productivity effects with conditional distributional ones.
 
 **Confidence.** The framework, the paper list, and the robots coefficients are solid and checkable. The 50–70% figure is from the *Econometrica* abstract. The 40–50% new-tasks figure is Acemoglu's spoken number in this interview, attributed partly to Autor's [*The Work of the Future*](https://mitpress.mit.edu/9780262547307/the-work-of-the-future/) — I have **not** verified it against a printed source and it should not be quoted as precise.
 

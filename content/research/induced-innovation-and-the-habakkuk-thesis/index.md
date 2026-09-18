@@ -32,7 +32,7 @@ Acemoglu's own line — *"The models that I've been working on for the last 25 y
 
 If technology is exogenous, fewer young workers simply means less output and a shrinking economy — the demographic panic.
 
-If technology is **directed**, scarcity of young workers raises their relative price, which pushes innovation toward labor-saving methods, which raises output per worker. The demographic shock partly answers itself.
+If technology is **directed**, scarcity of young workers raises their relative price, which pushes innovation toward labor-saving methods, which can raise output per worker. The demographic shock may partly answer itself — though *Demographics and Automation* is careful that, once technology responds, the aggregate productivity effect of aging is ambiguous in theory; what it finds clearly is more automation, with productivity rising and labor's share falling relatively in the industries most open to it.
 
 That is precisely what [*Baby Busts and Growth Booms*](https://www.nber.org/papers/w35401) claims to find empirically: regions and countries with fewer young workers show **more labor-saving patents, more high-tech activity, and higher TFP growth.**
 
@@ -46,7 +46,7 @@ and, on choice:
 
 > *"In both papers, you also see the element of choice. You have to do the technology, and not every society does that technology in the same way. We could get that wrong."*
 
-**This is the load-bearing connection to the rest of his work.** Induced innovation is a tendency, not a law. Automation that responds to genuine scarcity is good; the same automation deployed where labor is abundant is the displacement story of [Automation and the Labor Share](/research/automation-and-the-labor-share/). Same mechanism, opposite welfare consequence, depending on conditions.
+**This is the load-bearing connection to the rest of his work.** Induced innovation is a tendency, not a law. Automation that responds to genuine scarcity can raise productivity where there are fewer workers to displace; the same automation deployed where labor is abundant is the displacement story of [Automation and the Labor Share](/research/automation-and-the-labor-share/). Same mechanism, different consequences, depending on conditions. That is a conditional claim, not a verdict that scarcity-induced automation is good: the demographic paper finds its aggregate productivity implications ambiguous and its distributional effects dependent on which workers and industries it touches.
 
 It is also why the Habakkuk framing is a better fit for him than the RBC framing Cowen offered. RBC says the economy self-corrects. Habakkuk-via-Acemoglu says the economy *responds to incentives*, and whether the response is good depends on what the incentives are — which leaves plenty of room for policy and for getting it wrong.
 
@@ -59,6 +59,8 @@ It is also why the Habakkuk framing is a better fit for him than the RBC framing
 ---
 
 ## Working notes
+**Corrected 2026-09-18.** This page used to say scarcity-induced automation "is good" and that it "raises output per worker." *Demographics and Automation* ([NBER w24421](https://www.nber.org/papers/w24421), 2018; *ReStud* 2022) finds the aggregate productivity implications of aging ambiguous once technology responds, with productivity gains and labor-share declines concentrated in the industries most open to automation. Both claims are now conditional.
+
 **Habakkuk's thesis is contested** and I should say so plainly: economic historians have pushed back for sixty years, notably on whether American labor really was that much scarcer once you account for skill mix, and on whether British firms were as unmechanized as the story requires. Peter Temin and others have argued the wage-gap evidence is weaker than Habakkuk claimed. Acemoglu calls it "intriguing," which is doing some work. **Draft 2 should give the counter-literature a proper paragraph** rather than the sentence it has here.
 
 **Checked against the book: Habakkuk is not in it**, and neither is the nineteenth-century labor-scarcity literature. The book's version of "technology responds to conditions" is contemporary and institutional rather than historical — Chapter 6 on German versus American robot adoption, where the difference is union bargaining and apprenticeship rather than relative wages, and Chapter 9 on why business models and AGI ideology push AI toward automation. That is induced innovation with the inducement coming from institutions and beliefs instead of factor prices, which is a meaningfully different claim and arguably a more defensible one. Worth noting in draft 2 alongside the counter-literature: Acemoglu calls Habakkuk "intriguing" on air and builds on something else in print.

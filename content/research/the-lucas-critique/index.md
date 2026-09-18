@@ -1,8 +1,8 @@
 ---
 title: "The Lucas Critique"
-description: "The Lucas critique says historical relationships break when conditions change, so Acemoglu's evidence from past labor shortages may not carry over."
+description: "The Lucas critique says estimated relationships can shift when policy and expectations change. Why Acemoglu's evidence from past labor shortages may not carry over."
 short_version: |
-  Robert Lucas's 1976 argument: relationships you observe in historical data are not stable laws. They are the product of how people behaved *under the policies and conditions that prevailed at the time*. Change the regime and people change their behavior, so the old relationship stops holding — which means you cannot use historical correlations to predict what a genuinely new situation will do. Applied here: Acemoglu found that past declines in young workers produced labor-saving innovation and higher growth. Cowen's objection is that **every one of those episodes was local and temporary, and the coming one is global and permanent** — so the historical relationship may simply not carry over.
+  Robert Lucas's 1976 argument: relationships estimated from historical data reflect how people behaved *given the policy regime they expected*. Change the regime and expectations change, so behavior changes and the estimated relationship can shift — which means you cannot simply assume a correlation estimated under one policy will hold under another. It is not a claim that history teaches nothing; it is a demand to estimate what should stay fixed, such as preferences and technology, rather than relationships that depend on expectations. Applied here: Acemoglu found that past declines in young workers went with labor-saving innovation and higher growth. Cowen's objection is that **every one of those episodes was local and temporary, and the coming one is global, persistent and anticipated**. The anticipated, persistent part is a Lucas problem in the strict sense; the global part is a broader question of general-equilibrium effects and external validity. Either way, the historical relationship may not carry over.
 asked: "Please explain what a Lucas critique objection to this would be. Start by explain the Lucas critique"
 transcript_anchor: "a21"
 models: ["Claude"]
@@ -46,7 +46,12 @@ Unpacked, three distinct differences between the historical episodes and now:
 | **Temporary** — followed by a baby boom; everyone expected recovery | **Ongoing and expected to persist**, possibly to fall further |
 | **Unanticipated** — a war shock | **Anticipated** — firms and governments can see it coming for decades |
 
-Each breaks the extrapolation in its own way. If the shortage is global there is no elsewhere to import labor or capital from, so general-equilibrium effects differ. If it is permanent and anticipated, investment and family behavior adjust in advance in ways the historical data never contained. **That is a textbook Lucas critique: the estimated response to labor scarcity was conditional on a regime that is ending.**
+Each breaks the extrapolation in its own way, and they are not all the same kind of problem:
+
+- **Anticipated and persistent** (rows two and three) is the Lucas critique in its original sense. If firms, workers and governments see a lasting decline coming, investment and family behavior adjust in advance in ways the historical data never contained, so the estimated response was conditional on expectations that no longer hold.
+- **Global** (row one) is a different problem: general equilibrium and external validity. If every country loses young workers at once there is no elsewhere to import labor or capital from, so a result estimated from one country's shock may not scale to the world. That would be true even if nobody's expectations changed.
+
+Lucas's paper is about evaluating *policy* changes. Cowen borrows its name for the wider family, which is common usage and fair, but the distinction matters for what would answer him. A model built on parameters that do not shift with expectations answers the first problem. It does not by itself answer the second, which needs evidence or modelling of what happens when the shock is worldwide. Acemoglu's own concession, below, is mostly about the second.
 
 ## Acemoglu's answer — he concedes it
 
@@ -66,6 +71,8 @@ His one counter is that another thing is changing simultaneously: people are liv
 ---
 
 ## Working notes
+**Corrected 2026-09-18.** The short version used to say the critique means "you cannot use historical correlations to predict what a genuinely new situation will do," and the body called Cowen's whole objection "a textbook Lucas critique." Lucas's argument is narrower — estimated relationships are not invariant to changes in policy regime and expectations — and part of Cowen's objection (global versus local) is a general-equilibrium and external-validity problem rather than an expectations one. Both are now separated. Checked against Lucas (1976) as cited above.
+
 The framing of the three differences (local/global, temporary/permanent, unanticipated/anticipated) is my unpacking of a compressed question — Cowen gestures at all three but only states them loosely. I think it's a faithful expansion, but it's an expansion.
 
 **Checked against the book: not there.** No Lucas critique, no rational-expectations discussion, no macroeconomic methodology at all. This exchange is two economists talking shop, and the book is not a macro book — its argument about technology runs through institutions and choices rather than through model stability. Nothing on this page needs revising against it, and nobody needs to search it again.
