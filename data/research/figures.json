@@ -287,9 +287,9 @@
     "kind": "lineage",
     "kicker": "A map of arguments · not a chain of succession",
     "title": "Change the starting point. Change the agreement.",
-    "intro": "These thinkers use different kinds of agreement to answer different questions. Read across each entry: the premise helps explain the conclusion.",
+    "intro": "These thinkers use different kinds of agreement — express, tacit or hypothetical, and in Nozick's case none at all — to answer different questions. Read across each entry: the premise helps explain the conclusion.",
     "takeaway": "The question behind Acemoglu’s objection: when does an argument about what people would accept become a substitute for asking actual people?",
-    "source_mermaid": "timeline\n    title The social contract lineage\n    1651 : Hobbes, Leviathan : Absolute sovereign; the alternative is war of all against all\n    1689 : Locke, Two Treatises : Government by consent; rights precede the state; revolution permitted\n    1762 : Rousseau, Du contrat social : The general will; \"forced to be free\"\n    1785 : Kant : The contract as a regulative idea, not a historical event\n    1971 : Rawls, A Theory of Justice : Original position, veil of ignorance\n    1974 : Nozick, Anarchy State and Utopia : Minimal state from the same starting point\n    1986 : Gauthier, Morals by Agreement : Contract from rational bargaining\n    1998 : Scanlon, What We Owe to Each Other : Principles nobody could reasonably reject",
+    "source_mermaid": "timeline\n    title The social contract lineage\n    1651 : Hobbes, Leviathan : Absolute sovereign; the alternative is war of all against all\n    1689 : Locke, Two Treatises : Government by consent; rights precede the state; revolution permitted\n    1762 : Rousseau, Du contrat social : The general will; \"forced to be free\"\n    1785 : Kant : The contract as a regulative idea, not a historical event\n    1971 : Rawls, A Theory of Justice : Original position, veil of ignorance\n    1974 : Nozick, Anarchy State and Utopia : Minimal state by an invisible hand, justified by rights not consent\n    1986 : Gauthier, Morals by Agreement : Contract from rational bargaining\n    1998 : Scanlon, What We Owe to Each Other : Principles nobody could reasonably reject",
     "groups": [
       {
         "title": "Political authority and public law",
@@ -333,7 +333,7 @@
             "date": "1974",
             "title": "Nozick · Anarchy, State, and Utopia",
             "premise": "Individual rights constrain what others and the state may do.",
-            "result": "A minimal state; a rival to Rawls, not the same contract argument."
+            "result": "A minimal state that arises without violating rights, not by agreement: a rival to Rawls and to the contract tradition."
           },
           {
             "date": "1986",
@@ -370,6 +370,10 @@
       [
         "Scanlon, What We Owe to Each Other",
         "https://philosophy.fas.harvard.edu/publications/what-we-owe-each-other"
+      ],
+      [
+        "Nozick, Anarchy, State, and Utopia (SEP overview)",
+        "https://plato.stanford.edu/entries/nozick-political/"
       ]
     ]
   }

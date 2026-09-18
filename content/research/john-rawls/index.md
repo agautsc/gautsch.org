@@ -29,7 +29,7 @@ The priority rules exclude trading basic liberties for greater income and put fa
 
 Chapter 3 explains the objection: a philosopher's account of what people would agree to cannot stand in for their actual participation and consent. The earlier draft guessed that Acemoglu meant Rawls's ordering of principles. The book review corrected that guess; the hypothetical agreement is what is at issue.
 
-**Rawls vs. Nozick**, if you want the other half: Robert Nozick's *Anarchy, State, and Utopia* (1974) accepts the contractarian starting point and derives a minimal state, arguing that redistribution violates rights that people hold prior to any distribution. The two books are usually taught together.
+**Rawls vs. Nozick**, if you want the other half: Robert Nozick's *Anarchy, State, and Utopia* (1974) is a rival to Rawls, not a variation on his contract. Nozick starts from a Lockean state of nature but not from an agreement. Individual rights constrain what anyone, including the state, may do; a dominant protective agency emerges by an invisible-hand process and becomes a minimal state without violating anyone's rights, which is where its legitimacy comes from — not from anyone's consent, actual or hypothetical (chapters 2–6). Chapter 7 then argues that justice in holdings depends on how they were acquired and transferred, not on whether the resulting distribution fits a pattern such as the difference principle, so redistribution to achieve one violates people's entitlements. The two books are usually taught together. See [Social Contract Theory and Its Critics](/research/social-contract-theory-and-its-critics/) for where each sits in the family.
 
 ## From the book
 
@@ -61,7 +61,7 @@ By the end of the chapter this has become his positive proposal: political philo
 - Rawls, *A Theory of Justice* (1971) — §§1–4, 11–17 give you the argument without the whole book
 - Rawls, *Political Liberalism* (1993) — the overlapping-consensus move
 - [SEP: John Rawls](https://plato.stanford.edu/entries/rawls/)
-- Nozick, *Anarchy, State, and Utopia* (1974) — the standard counterweight
+- Nozick, *Anarchy, State, and Utopia* (1974) — the standard counterweight; chapters 5–6 for the state, 7 for the reply to Rawls. [SEP overview](https://plato.stanford.edu/entries/nozick-political/)
 
 ---
 
@@ -69,6 +69,8 @@ By the end of the chapter this has become his positive proposal: political philo
 **Resolved against the book, and my reading was wrong.** Draft 1 guessed that "goes into that direction" meant Rawls's *lexical priority* rule, and called checking it the single highest-value verification on the whole rabbit-hole list. It was — and it came back negative. The words *lexical* and *lexicographic* do not occur anywhere in the book, the priority ordering is never discussed as an ordering, and the objection Chapter 3 actually makes is the looser one I listed as the alternative: that contractarian reasoning derives principles philosophically instead of democratically, so nobody is ever actually asked. The **From the book** section above replaces the guess.
 
 That resolution propagates. [Social Contract Theory and Its Critics](/research/social-contract-theory-and-its-critics/) and [The Book Problem](/research/the-book-problem/) were both waiting on this answer, and both were leaning on the same wrong reading.
+
+**Corrected 2026-09-18.** This page used to say Nozick "accepts the contractarian starting point." He does not: his minimal state is justified by arising without rights violations, not by agreement, which is how the social-contract figure already placed him. Checked against *Anarchy, State, and Utopia*, chapters 5–7 and 9.
 
 **Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter rather than page. Quotations are transcribed speech and may differ from the printed text in punctuation; they should be re-checked against print before being quoted as exact. A negative result — "the book never says *lexical*" — is weaker evidence from a transcript than from a printed index, though a rule that is never discussed in twelve hours of text is not a rule he is arguing against.
 
