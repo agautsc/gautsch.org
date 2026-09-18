@@ -13,13 +13,23 @@ draft: false
 
 ---
 
-## Three positions, cleanly separated
+## Three approaches, and where they overlap
 
-| Position | Are there moral facts? | What settles disagreement? | Representative |
+The exchange is usually drawn as three camps. A table helps, as long as you read it as three kinds of answer to **different questions**, not three boxes that every philosopher fits into exactly one of:
+
+| Approach | The question it mainly answers | Its answer | Representative |
 |---|---|---|---|
-| **Moral realism / objectivism** | Yes, independent of belief | Getting the facts right | Parfit, Nagel, Sidgwick |
-| **Pragmatism** | Wrong question | Nothing outside the conversation; solidarity, not objectivity | Rorty, Dewey |
-| **Constructivism** | They're built by a procedure | Whether the procedure was followed | Rawls, Scanlon, Korsgaard |
+| **Moral realism / objectivism** | Metaethics: are there moral truths independent of what anyone believes? | Yes | Parfit, Nagel, Sidgwick |
+| **Pragmatism** | Does liberal practice need a philosophical foundation at all? | No; ask for solidarity, not objectivity | Rorty, Dewey |
+| **Constructivism** | How are principles justified? | By what a specified procedure or standpoint would yield — for some, all of normativity; for others, one part of it | Korsgaard (broad); Rawls (political principles only); Scanlon (right and wrong only) |
+
+The rows overlap, and the overlaps are where the interesting positions are:
+
+- **Contractualism can sit alongside realism.** Scanlon's contractualism (*What We Owe to Each Other*, 1998) says an act is wrong if it would be disallowed by principles no one could reasonably reject. That is a procedure — but it is an account of one part of morality, what we owe to each other, and it runs on reasons it does not construct. In [*Being Realistic About Reasons*](https://philosophy.fas.harvard.edu/publications/being-realistic-about-reasons) (2014) he defends what he calls reasons fundamentalism: there are irreducibly normative truths about reasons, independent of us. He rejects constructivism as a general account of those truths, because a procedure that produced reasons would already need reasons to get started. So Scanlon is a constructivist about wrongness and a realist, of a deliberately modest kind, about reasons. He is not an example of moral facts created by a procedure.
+- **Rawls's constructivism is political.** In *Political Liberalism* (1993), political constructivism explains how citizens with different worldviews can reason about justice from a shared standpoint. It does not claim that the principles of justice are *true*, or that moral facts in general are constructed; questions of truth are left to each citizen's own comprehensive doctrine, which may well be realist ([SEP](https://plato.stanford.edu/entries/rawls/#OriPosPolCon)).
+- **Pragmatism is partly a refusal of the first row's question.** Rorty does not answer "are there moral facts?" with no; he declines to make politics wait on the answer. A pragmatist and a political constructivist can therefore agree about a great deal of practice.
+
+That matters for Acemoglu. Cowen's question is metaethical: is there a standard? Acemoglu's "consensus" is a view about how a society should *settle* political questions — which, like Rawls's political constructivism, is compatible with either answer. See [Constructivism in Metaethics](https://plato.stanford.edu/entries/constructivism-metaethics/) for the longer map.
 
 **Note on the word.** "Objectivism" here means moral realism. It is *not* Ayn Rand's Objectivism, which is a specific ethical egoism plus a metaphysics and a politics. Cowen means the first. Acemoglu answers the first.
 
@@ -92,6 +102,8 @@ Whether that dissolves Cowen's question or relocates it is the live issue. Nothi
 | [SEP: Moral Anti-Realism](https://plato.stanford.edu/entries/moral-anti-realism/) | The other side |
 | Parfit, *On What Matters* vol. 1, part 6 | The convergence argument |
 | Street, "A Darwinian Dilemma for Realist Theories of Value" (2006) | The best objection |
+| Scanlon, [*Being Realistic About Reasons*](https://philosophy.fas.harvard.edu/publications/being-realistic-about-reasons) (2014) | How a contractualist about right and wrong can also be a realist about reasons |
+| [SEP: Constructivism in Metaethics](https://plato.stanford.edu/entries/constructivism-metaethics/) | Where Korsgaard, Rawls and Scanlon actually differ |
 
 ---
 
@@ -104,6 +116,8 @@ Whether that dissolves Cowen's question or relocates it is the live issue. Nothi
 **Rorty on "why believe what you believe."** Cowen's follow-up ("Then why believe in what you believe?") is the classic anti-pragmatist challenge, and Rorty had a well-known answer Acemoglu doesn't reach for: *because I was raised in this tradition and I am not ashamed of it.* Rorty thought demanding a deeper reason was the mistake. Acemoglu instead reaches for individual freedom as a starting point, which is a more conventional liberal move.
 
 **Answered:** the book contains no engagement with Rorty — no mention at all — so the second branch is the one that obtains. Cowen supplied the comparison and Acemoglu accepted the frame without having worked in it. Written up above.
+
+**Corrected 2026-09-18.** This page used to open with "Three positions, cleanly separated," a table that filed Scanlon under moral facts "built by a procedure," separate from realism, and mixed metaethics, political justification and normative ethics as if they were rival answers to one question. Scanlon defends irreducible normative truths in *Being Realistic About Reasons* and restricts his constructivism to right and wrong; Rawls's political constructivism deliberately makes no claim about moral truth. The table now says which question each approach answers, and the prose below it covers the overlaps. Checked against the SEP entries on constructivism in metaethics (§4.1, Scanlon) and on Rawls (§4.10), and Bruce Russell's *Notre Dame Philosophical Reviews* review of *Being Realistic About Reasons* (2014.07.36). Not checked against the book itself.
 
 **Source and its limits.** Checked against the audiobook edition (Penguin Random House Audio, narrated by John Lee), machine-transcribed, so references are by chapter and quotations are transcribed speech. This page leans harder than the others on an *absence* — no Rorty, no Sidgwick, no section on moral realism — which a machine transcript establishes less firmly than a printed index would, particularly for a proper noun a transcriber could mangle. What is not in doubt is the positive finding: where a grounding argument would sit, the book puts fallibilism and an instrumental justification of rights.
 
