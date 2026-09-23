@@ -325,7 +325,7 @@ const TRACK_TOP = 298, TRACK_BOT = 458;
 const laneY = l => 318 + l * 40;
 const BIKE_SX = 250, G = 900, L = 22000;
 const DIM = { croc: { w: 56, h: 64 }, toast: { w: 40, h: 34 }, bandit: { w: 92, h: 66 }, cone: { w: 34, h: 44 }, hotdog: { w: 56, h: 26 }, gz: { w: 80, h: 150 } };
-const HEAD = { croc: -64, toast: -44, bandit: -80, cone: -54, hotdog: -32, gz: -218 };
+const HEAD = { croc: -76, toast: -44, bandit: -80, cone: -54, hotdog: -32, gz: -218 };
 
 const RAMPS = {
   small:  [[0, 0], [70, 40], [120, 0]],
@@ -856,27 +856,88 @@ function boneShape(x, y, s = 1, rot = 0) {
   ctx.restore();
 }
 
+// Chomp Croc, traced by hand from Murphy's p7 splash page. Points are in that drawing's pixels.
+// a zigzag of spikes standing on a base polyline, tips pushed out along the left-hand normal
+function spikes(base, n, len, flipN = 1) {
+  const L = [0]; for (let i = 1; i < base.length; i++) L.push(L[i - 1] + Math.hypot(base[i][0] - base[i - 1][0], base[i][1] - base[i - 1][1]));
+  const at = d => { let i = 1; while (i < base.length - 1 && L[i] < d) i++; const f = (d - L[i - 1]) / (L[i] - L[i - 1]);
+    const A = base[i - 1], B = base[i], dx = B[0] - A[0], dy = B[1] - A[1], m = Math.hypot(dx, dy);
+    return { p: [A[0] + dx * f, A[1] + dy * f], nx: dy / m * flipN, ny: -dx / m * flipN }; };
+  const out = [], tot = L[L.length - 1];
+  for (let i = 0; i <= n * 2; i++) {
+    const s = at(tot * i / (n * 2));
+    out.push(i % 2 ? [s.p[0] + s.nx * len * (0.8 + 0.4 * ((i * 7) % 5) / 4), s.p[1] + s.ny * len * (0.8 + 0.4 * ((i * 7) % 5) / 4)] : s.p);
+  }
+  return out;
+}
+
+const CB = [[350, 375], [400, 400], [450, 425], [510, 460], [560, 505], [600, 560], [635, 620], [655, 690], [700, 720], [760, 740]];
+TR.croc = {
+  tail:  [[600, 700], [700, 725], [790, 745], [845, 790], [800, 850], [700, 845], [612, 815]],
+  body:  [[330, 300], [350, 370], [400, 400], [450, 425], [510, 460], [560, 505], [600, 560], [635, 620], [655, 690], [640, 740],
+          [600, 760], [520, 780], [440, 790], [385, 790], [330, 770], [290, 740], [250, 700], [210, 640], [185, 580], [160, 530],
+          [145, 480], [140, 420], [150, 370], [165, 340], [210, 335], [260, 320]],
+  spikes: spikes(CB, 11, 62, 1),
+  belly: [[185, 580], [240, 585], [270, 640], [300, 700], [330, 765], [290, 740], [250, 700], [210, 640]],
+  stripes: [[[198, 610], [250, 600]], [[220, 652], [280, 640]], [[245, 695], [302, 690]], [[272, 730], [322, 745]]],
+  leg:   [[385, 790], [392, 740], [420, 705], [470, 688], [530, 688], [580, 705], [605, 745], [610, 800], [595, 860], [590, 930],
+          [570, 985], [520, 1025], [440, 1040], [370, 1040], [345, 1000], [352, 962], [410, 950], [438, 895], [425, 840]],
+  toes:  [[352, 962], [322, 968], [346, 982], [318, 992], [350, 1002], [324, 1016], [358, 1024], [338, 1040], [370, 1040]],
+  arm:   [[150, 495], [205, 498], [225, 525], [215, 550], [180, 555], [130, 570], [80, 582], [45, 585], [40, 568], [60, 555], [100, 530], [135, 505]],
+  claws: [[[48, 588], [22, 628]], [[50, 592], [38, 652]], [[62, 594], [70, 660]], [[80, 590], [98, 645]]],
+  head:  [[40, 150], [55, 140], [80, 135], [120, 128], [160, 120], [200, 95], [220, 65], [245, 45], [275, 38], [310, 45], [345, 52],
+          [370, 70], [392, 95], [402, 140], [405, 190], [400, 235], [385, 262], [360, 288], [330, 300], [290, 300], [250, 285],
+          [225, 265], [212, 210], [205, 158], [150, 160], [100, 163], [60, 165], [42, 162]],
+  topTeeth: [[58, 164], [68, 225], [85, 166], [100, 215], [110, 165], [125, 210], [135, 164], [150, 210], [160, 161], [175, 205],
+             [185, 160], [200, 210], [206, 158]],
+  jaw:   [[60, 255], [62, 285], [75, 312], [110, 330], [160, 340], [210, 335], [260, 322], [300, 305], [250, 290], [222, 272], [150, 272], [100, 270]],
+  lowTeeth: [[64, 272], [80, 238], [95, 271], [110, 225], [125, 271], [140, 245], [155, 271], [165, 218], [180, 271], [195, 235],
+             [208, 271], [218, 222], [222, 272]],
+  hinge: [300, 305],
+  nostrils: [[52, 153], [75, 152]],
+  eyes:  [{ c: [275, 90], rx: 20, ry: 13, pupil: [286, 94], brow: [[236, 62], [300, 99]] },
+          { c: [326, 76], rx: 17, ry: 22, pupil: [316, 88], brow: [[340, 42], [318, 99]] }],
+  scales: [[240, 150], [272, 150], [318, 186], [262, 244], [298, 238], [266, 268], [210, 386], [218, 414], [228, 442], [272, 420],
+           [300, 466], [272, 512], [312, 380], [386, 456], [396, 550], [420, 596], [466, 516], [498, 516], [476, 636], [504, 582],
+           [382, 690], [456, 770], [522, 800], [522, 880], [440, 975], [480, 1000], [506, 960], [690, 780]],
+};
+
+function squig(F, x, y, w = 1.3) {
+  const p = []; for (let i = 0; i <= 6; i++) p.push([x - 15 + i * 5, y + (i % 2 ? -4 : 4)]);
+  stroke(poly(tmap(F, p), false, .2), w);
+}
+// standing croc: faces left, feet on the ground line (y = 0). Line weight and detail thin out
+// at small sizes so the teeth and scales stay readable as an in-lane enemy.
 function drawCroc(e) {
-  const open = e.dazed ? .15 : (Math.sin(e.t * 7 + e.ph) > 0 ? 1 : .25);
-  const wk = Math.sin(e.t * 8) * 3;
-  shape(poly([[14, -22], [34, -14], [50, -2], [40, 0], [12, -8]]), C.croc);
-  shape(poly([[4, -16], [2 + wk, 0], [16 + wk, 0], [16, -14]]), C.croc);
-  shape(blob(8, -30, 18, 20, 1.1, 10), C.croc);
-  for (let k = 0; k < 3; k++) stroke(line(-9, -38 + k * 7, -3, -36 + k * 7, .4), 1.4);
-  for (let k = 0; k < 3; k++) stroke(poly([[5 + k * 6, -28 + (k % 2) * 7], [7 + k * 6, -31 + (k % 2) * 7], [9 + k * 6, -28 + (k % 2) * 7]], false, .3), 1.2);
-  stroke(poly([[16, -46], [24, -51], [22, -42], [31, -44], [26, -35], [35, -36], [28, -27]], false, .7), 2);
-  stroke(poly([[-6, -30], [-16, -28], [-19, -23]], false), 2.4);
-  ctx.save(); ctx.translate(-4, -48);
-  ctx.save(); ctx.rotate(open * .35);
-  shape(poly([[4, 0], [-30, 2], [-30, 8], [2, 9]]), C.croc);
-  stroke(poly([[-28, 2], [-25, -3], [-22, 2], [-19, -3], [-16, 2], [-13, -3], [-10, 2]], false, .3), 1.4);
-  ctx.restore();
-  shape(poly([[8, -14], [-4, -19], [-32, -11], [-36, -4], [-32, 0], [4, 0], [10, -6]]), C.croc);
-  stroke(poly([[-30, 0], [-27, 5], [-24, 0], [-21, 5], [-18, 0], [-15, 5], [-12, 0], [-9, 5], [-6, 0]], false, .3), 1.5);
-  dot(-32, -8, 1.4); dot(-28, -9, 1.4);
-  if (!e.dazed) { shape(blob(-6, -12, 4, 3.5, .4, 7), null, 2); dot(-7, -12, 1.7); }
-  stroke(line(-13, -19, -1, -14, .4), 2.6);
-  ctx.restore();
+  const C0 = TR.croc, F = { k: e.k || .072, ox: 440, oy: 1040, flip: 1 };
+  const L = Math.max(.55, Math.min(1, F.k / .22)), small = F.k < .15;
+  const open = e.dazed ? .05 : (Math.sin((e.t || 0) * 5 + (e.ph || 0)) * .5 + .5);
+  const sway = Math.sin((e.t || 0) * 2.4) * .035;
+  const step = e.dazed ? 0 : Math.abs(Math.sin((e.t || 0) * 8)) * 12;
+  const P = pts => tmap(F, pts.map(([x, y]) => [x, y - (y < 900 ? step : 0)]));
+  shape(poly(P(trot(C0.tail, [610, 760], sway)), true, 1 * L), C.croc, 2.8 * L);
+  shape(poly(P(C0.body), true, 1.2 * L), C.croc, 3 * L);
+  stroke(poly(P(C0.spikes), false, .6 * L), 2.4 * L);
+  shape(poly(P(C0.belly), true, .8 * L), '#dfe8a8', 2.2 * L);
+  for (const s of C0.stripes) stroke(poly(P(s), false, .4 * L), 1.8 * L);
+  shape(poly(P(C0.leg), true, 1.2 * L), C.croc, 3 * L);
+  stroke(poly(P(C0.toes), false, .4 * L), 2.2 * L);
+  // lower jaw drops open around the hinge (source faces left: opening is counter-clockwise)
+  const jaw = trot(C0.jaw, C0.hinge, -open * .28), low = trot(C0.lowTeeth, C0.hinge, -open * .28);
+  shape(poly(P(jaw), true, 1 * L), C.croc, 2.8 * L);
+  shape(poly(P(low), true, .3 * L), null, 1.8 * L);
+  shape(poly(P(C0.head), true, 1.2 * L), C.croc, 3 * L);
+  shape(poly(P(C0.topTeeth), true, .3 * L), null, 1.8 * L);
+  shape(poly(P(C0.arm), true, 1 * L), C.croc, 2.6 * L);
+  for (const c of C0.claws) stroke(poly(P(c), false, .4 * L), 2 * L);
+  for (const [x, y] of C0.nostrils) { const [gx, gy] = P([[x, y]])[0]; dot(gx + .5, gy, 1.1 * L); }
+  for (const ey of C0.eyes) {
+    const [cx, cy] = P([ey.c])[0];
+    shape(blob(cx, cy, Math.max(2.4, ey.rx * F.k), Math.max(2.4, ey.ry * F.k), .3 * L, 9), null, 2 * L);
+    if (!e.dazed) { const [px, py] = P([ey.pupil])[0]; dot(px, py, 1.6 * L); }
+    stroke(poly(P(ey.brow), false, .3 * L), 3 * L);
+  }
+  C0.scales.forEach(([x, y], i) => { if (!small || i % 2 === 0) squig(F, x, y - (y < 900 ? step : 0), small ? .9 : 1.3); });
 }
 function drawToast(e) {
   const fl = Math.sin(e.t * 16 + e.ph);
