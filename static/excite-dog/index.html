@@ -325,7 +325,7 @@ const TRACK_TOP = 298, TRACK_BOT = 458;
 const laneY = l => 318 + l * 40;
 const BIKE_SX = 250, G = 900, L = 22000;
 const DIM = { croc: { w: 56, h: 64 }, toast: { w: 40, h: 34 }, bandit: { w: 66, h: 66 }, cone: { w: 34, h: 44 }, hotdog: { w: 56, h: 26 }, gz: { w: 80, h: 150 } };
-const HEAD = { croc: -76, toast: -44, bandit: -78, cone: -54, hotdog: -32, gz: -214 };
+const HEAD = { croc: -92, toast: -44, bandit: -78, cone: -54, hotdog: -32, gz: -214 };
 
 const RAMPS = {
   small:  [[0, 0], [70, 40], [120, 0]],
@@ -777,27 +777,46 @@ function frame(now) {
 }
 
 // ---------- drawing: characters ----------
-function wheel(wx, o) {
-  const p = blob(wx, -13, 13, 13, 1.2, 9); paper(p); stroke(p, 2.8);
-  scribble(wx, -13, 9, 9, 2, 1.2);
-  const a = o.wheel;
-  stroke(line(wx - Math.cos(a) * 11, -13 - Math.sin(a) * 11, wx + Math.cos(a) * 11, -13 + Math.sin(a) * 11, .4), 2);
-  dot(wx, -13, 2.6);
+// Traced characters share TR: point sets placed by hand over Murphy's drawings.
+const TR = {};
+// ---- The Hog (p6, dog-faced vehicle; the bunny riders are left off) ---------
+TR.hog = {
+  fin:   [[2, 128], [46, 168], [40, 198], [8, 190]],
+  finHatch: [[[10, 150], [20, 192]], [[20, 158], [30, 195]], [[30, 164], [38, 196]]],
+  hull:  [[46, 168], [250, 128], [395, 82], [440, 92], [485, 100], [560, 58], [575, 62], [560, 110], [545, 125], [505, 150],
+          [480, 165], [485, 190], [480, 230], [410, 212], [330, 216], [210, 222], [100, 212], [40, 198]],
+  panels: [[[250, 128], [228, 222]], [[250, 128], [335, 216]], [[395, 82], [356, 212]], [[395, 82], [438, 140]], [[46, 168], [100, 212]]],
+  window: { c: [272, 190], rx: 26, ry: 12 },
+  ear:   { pts: [[400, 84], [392, 58], [384, 30], [390, 20], [400, 24], [414, 46], [430, 80]], pivot: [415, 84] },
+  nose:  [572, 54],
+  freckles: [[528, 88], [541, 94], [532, 104]],
+  mouth: [[500, 128], [522, 118], [550, 124], [542, 142], [506, 148]],
+  teeth: [[504, 132], [510, 142], [516, 128], [522, 140], [530, 126], [536, 138], [544, 128]],
+  wheels: [{ c: [226, 258], r: 30 }, { c: [386, 254], r: 30 }],
+};
+function hogWheel(x, y, r, a) {
+  const p = blob(x, y, r, r, .5, 9); paper(p); stroke(p, 2.4);
+  scribble(x, y, r * .8, r * .8, 3, 1.2);
+  stroke(line(x - Math.cos(a) * r * .8, y - Math.sin(a) * r * .8, x + Math.cos(a) * r * .8, y + Math.sin(a) * r * .8, .3), 1.8);
 }
+// origin = ground under the seat; faces right like the motorcycle it replaces
 function drawHog(o) {
-  if (o.turbo) { const f = poly([[-40, -26], [-58 - R() * 10, -24], [-50, -21], [-62 - R() * 8, -18], [-40, -18]]); crayon(f, C.hot); stroke(f, 1.8); }
-  shape(poly([[-42, -25], [-24, -27], [-24, -19], [-42, -18]]), C.grey, 2.2);
-  wheel(-26, o); wheel(28, o);
-  shape(poly([[-36, -22], [-14, -37], [20, -37], [41, -25], [30, -14], [-22, -14]]), C.hog, 2.8);
-  stroke(poly([[-22, -16], [-12, -32], [-2, -16], [8, -32], [18, -16], [26, -28]], false, .7), 1.5);
-  stroke(line(28, -13, 23, -35), 2.6);
-  stroke(line(21, -36, 27, -51), 2.6);
-  stroke(line(24, -51, 34, -52), 3.4);
-  shape(blob(41, -31, 4, 5, .5, 7), '#fff3a8', 2);
+  const H = TR.hog, F = { k: .22, ox: 235, oy: 288, flip: 1 }, P = pts => tmap(F, pts);
+  if (o.turbo) { const f = poly([[-50, -30], [-68 - R() * 10, -28], [-60, -24], [-72 - R() * 8, -20], [-50, -21]]); crayon(f, C.hot); stroke(f, 1.8); }
+  const fin = poly(P(H.fin), true, .4); shape(fin, C.grey, 2.2);
+  for (const h of H.finHatch) stroke(poly(P(h), false, .2), 1.2);
+  for (const w of H.wheels) { const [x, y] = P([w.c])[0]; hogWheel(x, y, w.r * F.k, o.wheel || 0); }
+  shape(poly(P(H.hull), true, .8), C.hog, 2.8);
+  for (const l of H.panels) stroke(poly(P(l), false, .4), 1.6);
+  const [wx, wy] = P([H.window.c])[0]; shape(blob(wx, wy, H.window.rx * F.k, H.window.ry * F.k, .3, 8), null, 1.8);
+  shape(poly(P(trot(H.ear.pts, H.ear.pivot, -(o.ear || 0) * .25)), true, .4), null, 2.2);
+  const [nx, ny] = P([H.nose])[0]; dot(nx, ny, 3.2);
+  for (const f of H.freckles) { const [x, y] = P([f])[0]; dot(x, y, 1.3); }
+  const m = poly(P(H.mouth), true, .3); paper(m); stroke(m, 1.8);
+  stroke(poly(P(H.teeth), false, .2), 1.2);
 }
 // Dog Hog, traced by hand from Murphy's p9 "How to draw the dog" (step 10).
 // Points are in that drawing's own pixels; each part moves on its own.
-const TR = {};
 function tmap(F, pts) { return pts.map(([x, y]) => [(x - F.ox) * F.k * F.flip, (y - F.oy) * F.k]); }
 function trot(pts, [px, py], a) {
   const c = Math.cos(a), s = Math.sin(a);
@@ -822,7 +841,7 @@ TR.dog = {
 function drawDog(o) {
   const D = TR.dog, F = { k: .75, ox: 72, oy: 80, flip: -1 };
   const bob = Math.sin(o.t * 9) * .6;
-  const P = pts => tmap(F, pts).map(([x, y]) => [x + 1, y - 33 + bob]);
+  const P = pts => tmap(F, pts).map(([x, y]) => [x - 14, y - 33 + bob]); // seat mid-hull, where the p6 riders sit
   const ear = Math.min(.9, o.ear || 0), flap = o.flap || 0;
   const wag = Math.sin(o.t * 14) * .35 * (.3 + flap);
   const swing = Math.sin(o.t * 11) * .18 * flap;
@@ -909,7 +928,7 @@ function squig(F, x, y, w = 1.3) {
 // standing croc: faces left, feet on the ground line (y = 0). Line weight and detail thin out
 // at small sizes so the teeth and scales stay readable as an in-lane enemy.
 function drawCroc(e) {
-  const C0 = TR.croc, F = { k: e.k || .072, ox: 440, oy: 1040, flip: 1 };
+  const C0 = TR.croc, F = { k: e.k || .09, ox: 440, oy: 1040, flip: 1 };
   const L = Math.max(.55, Math.min(1, F.k / .22)), small = F.k < .15;
   const open = e.dazed ? .05 : (Math.sin((e.t || 0) * 5 + (e.ph || 0)) * .5 + .5);
   const sway = Math.sin((e.t || 0) * 2.4) * .035;
