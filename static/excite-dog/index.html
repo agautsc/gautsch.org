@@ -205,7 +205,7 @@
         <li>Dog Hog <span>· p.9</span></li>
         <li>Chomp Croc <span>· p.7</span></li>
         <li>Toast Bats <span>· p.1</span></li>
-        <li>Bone Bandit <span>· p.2</span></li>
+        <li>Bandit <span>· p.2</span></li>
         <li>GODZILLA <span>· p.9</span></li>
         <li>Cone Gremlin <span>· new</span></li>
         <li>Hot Dog Bandit <span>· new</span></li>
@@ -324,8 +324,8 @@ function swirl(x, y) {
 const TRACK_TOP = 298, TRACK_BOT = 458;
 const laneY = l => 318 + l * 40;
 const BIKE_SX = 250, G = 900, L = 22000;
-const DIM = { croc: { w: 56, h: 64 }, toast: { w: 40, h: 34 }, bandit: { w: 92, h: 66 }, cone: { w: 34, h: 44 }, hotdog: { w: 56, h: 26 }, gz: { w: 80, h: 150 } };
-const HEAD = { croc: -76, toast: -44, bandit: -80, cone: -54, hotdog: -32, gz: -218 };
+const DIM = { croc: { w: 56, h: 64 }, toast: { w: 40, h: 34 }, bandit: { w: 66, h: 66 }, cone: { w: 34, h: 44 }, hotdog: { w: 56, h: 26 }, gz: { w: 80, h: 150 } };
+const HEAD = { croc: -76, toast: -44, bandit: -78, cone: -54, hotdog: -32, gz: -214 };
 
 const RAMPS = {
   small:  [[0, 0], [70, 40], [120, 0]],
@@ -939,36 +939,67 @@ function drawCroc(e) {
   }
   C0.scales.forEach(([x, y], i) => { if (!small || i % 2 === 0) squig(F, x, y - (y < 900 ? step : 0), small ? .9 : 1.3); });
 }
+// ---- Toast Bat (p1, top-left flyer) -----------------------------------------
+TR.toast = {
+  wingL: { pts: [[80, 70], [40, 85], [22, 74], [9, 80], [8, 95], [20, 99], [27, 94], [15, 123], [40, 110], [46, 98], [52, 111],
+                 [58, 97], [64, 112], [70, 97], [80, 108]], pivot: [80, 90] },
+  wingR: { pts: [[143, 48], [165, 47], [182, 52], [200, 45], [225, 38], [222, 48], [198, 58], [220, 60], [218, 66], [195, 72],
+                 [182, 68], [178, 62], [170, 74], [158, 84], [145, 80]], pivot: [143, 62] },
+  body:  [[79, 62], [143, 36], [144, 137], [89, 157]],
+  hair:  [[80, 86], [85, 64], [92, 84], [98, 70], [104, 86], [110, 68], [117, 82], [124, 62], [131, 76], [137, 50], [143, 40]],
+  eyes:  [[[97, 97], [104, 97], [104, 112], [97, 112]], [[121, 94], [127, 94], [127, 108], [121, 108]]],
+  mouth: [[94, 129], [96, 137], [127, 129], [126, 120]],
+  legs:  [[[92, 157], [97, 168], [84, 172]], [[129, 148], [130, 160], [145, 155]]],
+};
 function drawToast(e) {
-  const fl = Math.sin(e.t * 16 + e.ph);
-  stroke(poly([[-7, 0], [-8, 9], [-12, 10]], false), 2);
-  stroke(poly([[7, 0], [8, 9], [12, 10]], false), 2);
-  for (const s of [-1, 1]) shape(poly([[s * 14, -24], [s * 30, -34 - fl * 9], [s * 41, -30 - fl * 9], [s * 33, -24 - fl * 5], [s * 42, -20 - fl * 4], [s * 30, -16], [s * 15, -14]]), null, 2.2);
-  shape(poly([[-15, -34], [15, -35], [16, 0], [-15, 1]]), C.toast);
-  stroke(poly([[-15, -34], [-12, -41], [-8, -34], [-5, -41], [-1, -34], [3, -41], [6, -34], [10, -41], [15, -35]], false, .5), 2);
-  if (!e.dazed) {
-    stroke(poly([[-10, -26], [-5, -26], [-5, -19], [-10, -19]], true, .3), 1.8); dot(-8, -22, 1.6);
-    stroke(poly([[2, -26], [7, -26], [7, -19], [2, -19]], true, .3), 1.8); dot(4, -22, 1.6);
-  }
-  stroke(line(-7, -9, 5, -10, .4), 2);
+  const T = TR.toast, F = { k: e.k || .32, ox: 114, oy: 172, flip: 1 }, P = pts => tmap(F, pts);
+  const fl = Math.sin((e.t || 0) * 16 + (e.ph || 0)) * .45;
+  for (const l of T.legs) stroke(poly(P(l), false, .4), 2);
+  shape(poly(P(trot(T.wingL.pts, T.wingL.pivot, fl)), true, .5), null, 2.2);
+  shape(poly(P(trot(T.wingR.pts, T.wingR.pivot, -fl)), true, .5), null, 2.2);
+  shape(poly(P(T.body), true, .6), C.toast, 2.6);
+  stroke(poly(P(T.hair), false, .4), 2);
+  if (!e.dazed) for (const ey of T.eyes) { const p = poly(P(ey), true, .2); ctx.fillStyle = C.ink; ctx.fill(p); }
+  stroke(poly(P(T.mouth), false, .3), 2);
 }
+
+// ---- Bandit (p2, on foot with cape and sack) --------------------------------
+TR.bandit = {
+  cape:  { pts: [[62, 60], [14, 58], [20, 85], [24, 128], [52, 130], [70, 140], [90, 153], [115, 160], [135, 152], [172, 93],
+                 [140, 78], [120, 72]], pivot: [92, 72] },
+  legL:  { pts: [[40, 140], [64, 132], [63, 170], [46, 168]], pivot: [54, 136], foot: [[46, 166], [28, 180]] },
+  legR:  { pts: [[84, 130], [108, 140], [108, 152], [92, 158]], pivot: [96, 134], foot: [[88, 157], [100, 180]] },
+  arm:   [[68, 74], [45, 80], [32, 85]],
+  head:  { c: [95, 42], rx: 42, ry: 40 },
+  band:  [[53, 32], [136, 42], [137, 50], [128, 60], [60, 52], [52, 44]],
+  eye:   { c: [95, 41], r: 11, pupil: [94, 40] },
+  sack:  { c: [72, 115], rx: 24, ry: 16, loops: [[[52, 104], [40, 98], [34, 110], [48, 116]], [[92, 104], [104, 97], [110, 108], [96, 114]]],
+           face: [[[68, 108], [74, 104], [78, 110], [72, 115]], [[66, 118], [68, 122]]] },
+};
 function drawBandit(e) {
-  const flap = Math.sin(e.t * 15) * 4;
-  shape(poly([[-8, -46], [-32, -42 + flap], [-28, -26 + flap], [-6, -30]]), C.hot, 2.4);
-  wheel(-28, { wheel: e.t * 12 }); wheel(28, { wheel: e.t * 12 });
-  shape(poly([[-44, -12], [-40, -33], [14, -35], [34, -27], [47, -14], [40, -8], [-40, -8]]), C.grey, 2.8);
-  stroke(poly([[-32, -28], [-20, -28], [-20, -17], [-32, -17]], true, .6), 1.6);
-  stroke(poly([[-12, -30], [2, -30], [2, -20], [-12, -20]], true, .6), 1.6);
-  stroke(poly([[31, -15], [34, -21], [37, -15], [40, -21], [43, -15]], false, .3), 1.6);
-  dot(31, -27, 2.2);
-  shape(blob(-4, -42, 10, 10, .8, 9), null, 2.4);
-  shape(blob(-2, -61, 12, 12, .8, 10), null, 2.6);
-  const mask = poly([[-14, -66], [10, -67], [10, -57], [-14, -56]], true, .5);
-  ctx.fillStyle = C.ink; ctx.fill(mask);
-  if (!e.dazed) { const g = blob(4, -61.5, 4, 3.6, .3, 7); paper(g); stroke(g, 1.6); dot(5, -61.5, 1.6); }
-  stroke(poly([[-6, -52], [0, -51], [5, -53]], false, .4), 1.8);
-  boneShape(12, -46, .8, -.6);
+  const B = TR.bandit, F = { k: e.k || .42, ox: 92, oy: 180, flip: 1 }, P = pts => tmap(F, pts);
+  const run = e.dazed ? 0 : Math.sin((e.t || 0) * 15), bob = Math.abs(run) * 6;
+  const Pb = pts => P(pts.map(([x, y]) => [x, y - bob]));
+  shape(poly(Pb(trot(B.cape.pts, B.cape.pivot, run * .08)), true, .6), C.hot, 2.4);
+  for (const [L, s] of [[B.legL, 1], [B.legR, -1]]) {
+    const a = run * .35 * s;
+    shape(poly(P(trot(L.pts, L.pivot, a)), true, .4), C.grey, 2.2);
+    stroke(poly(P(trot(L.foot, L.pivot, a)), false, .3), 2.4);
+  }
+  stroke(poly(Pb(B.arm), false, .4), 2.2);
+  const [hx, hy] = Pb([B.head.c])[0];
+  shape(blob(hx, hy, B.head.rx * F.k, B.head.ry * F.k, .6, 10), null, 2.6);
+  shape(poly(Pb(B.band), true, .4), C.ink, 2);
+  for (let i = 0; i < 9; i++) { const x = 60 + i * 9; if (x > 82 && x < 108) continue; stroke(poly(Pb([[x, 38 + i], [x + 1, 50 + i]]), false, .2), 1.2, C.paper); }
+  const [ex, ey] = Pb([B.eye.c])[0];
+  shape(blob(ex, ey, B.eye.r * F.k * 1.1, B.eye.r * F.k * 1.3, .2, 8), null, 2);
+  if (!e.dazed) { const [px, py] = Pb([B.eye.pupil])[0]; dot(px, py, 1.7); }
+  const [sx, sy] = Pb([B.sack.c])[0];
+  for (const l of B.sack.loops) stroke(poly(Pb(l), true, .3), 1.8);
+  shape(blob(sx, sy, B.sack.rx * F.k, B.sack.ry * F.k, .5, 9), '#d9c08a', 2.2);
+  for (const f of B.sack.face) stroke(poly(Pb(f), false, .2), 1.5);
 }
+
 function drawCone(e) {
   if (e.z > 2) { stroke(line(-6, 0, -9, 8), 2.2); stroke(line(6, 0, 9, 8), 2.2); }
   shape(poly([[-21, -5], [21, -5], [21, 1], [-21, 1]]), C.orange, 2.4);
@@ -993,26 +1024,57 @@ function drawHotdog(e) {
   if (!e.dazed) { const g = blob(-25, -19, 2.6, 2.6, .2, 7); paper(g); dot(-26, -19, 1.2); }
   if (!e.dazed) for (let k = 0; k < 3; k++) stroke(line(36, -20 + k * 6, 46 + R() * 6, -20 + k * 6, .4), 1.4);
 }
+// ---- GODZILLA (p9, "How to draw the dog" page) ------------------------------
+TR.gz = {
+  armL:  [[205, 392], [110, 420], [80, 440], [40, 500], [30, 560], [35, 660], [55, 700], [120, 712], [150, 690], [150, 640],
+          [120, 620], [105, 560], [140, 470], [205, 440]],
+  clawL: [[40, 655], [52, 700], [70, 670], [85, 720], [100, 680], [120, 720], [128, 690]],
+  armR:  [[410, 372], [530, 365], [590, 400], [640, 460], [650, 520], [640, 600], [610, 625], [560, 620], [540, 600], [560, 560],
+          [540, 500], [470, 450], [412, 440]],
+  legL:  [[190, 850], [245, 822], [300, 814], [300, 860], [280, 880], [270, 950], [262, 1040], [255, 1110], [238, 1225], [210, 1235],
+          [200, 1195], [188, 1130], [180, 1080], [200, 1000], [200, 920]],
+  toesL: [[196, 1085], [180, 1100], [200, 1120], [182, 1140], [204, 1165], [186, 1188], [210, 1205], [200, 1232]],
+  legR:  [[330, 802], [430, 792], [470, 802], [470, 900], [480, 960], [500, 1000], [520, 1050], [520, 1120], [500, 1172],
+          [460, 1172], [420, 1162], [380, 1120], [360, 1000], [350, 900], [322, 822]],
+  toesR: [[505, 1005], [528, 1030], [510, 1050], [530, 1080], [512, 1100], [530, 1130], [505, 1165]],
+  body:  [[205, 370], [330, 365], [420, 372], [405, 800], [300, 812], [210, 820], [200, 600]],
+  bodyDark: [[205, 370], [330, 365], [330, 812], [210, 820], [200, 600]],
+  head:  { c: [262, 295], r: 72 },
+  eyes:  [[[200, 272], [215, 262], [218, 278]], [[240, 262], [255, 258], [252, 272]]],
+  mouth: [[196, 305], [206, 296], [214, 312], [224, 298], [232, 314], [242, 300], [252, 316], [262, 302], [274, 318], [270, 326], [200, 322]],
+  hat:   [[185, 110], [240, 40], [530, 20], [535, 70], [520, 160], [505, 200], [480, 250], [480, 320], [420, 330], [370, 300],
+          [380, 240], [355, 210], [300, 205], [250, 210], [215, 230], [210, 290], [170, 290], [160, 190], [165, 150]],
+  hatTeeth: [[205, 150], [225, 95], [245, 140], [265, 90], [285, 130], [305, 95], [330, 125], [355, 95], [380, 120], [405, 90],
+             [430, 130], [450, 108], [475, 150], [495, 128]],
+  hatEyes: [[[288, 58], [308, 26], [322, 58]], [[418, 46], [470, 34], [452, 70]]],
+  letters: [['G', 190, 215], ['O', 262, 186], ['D', 318, 190], ['Z', 364, 206], ['I', 398, 224], ['L', 420, 246], ['L', 436, 270], ['A', 440, 298]],
+};
+function gzHatch(p, F, box, n) { const [x0, y0, x1, y1] = box.map((v, i) => i % 2 ? (v - F.oy) * F.k : (v - F.ox) * F.k); hatch(p, x0, y0, x1, y1, n, 1.1); }
 function drawGz(e) {
   ctx.translate(0, -Math.abs(Math.sin(e.t * 2.2)) * 6);
-  const legL = poly([[-30, -62], [-8, -62], [-8, -4], [-30, -4]]); shape(legL, null, 2.8);
-  stroke(poly([[-34, -4], [-30, 2], [-26, -4], [-22, 2], [-18, -4], [-14, 2], [-10, -4], [-6, 2]], false, .3), 1.8);
-  const legR = poly([[8, -62], [30, -62], [32, -4], [8, -4]]); shape(legR, null, 2.8); hatch(legR, 8, -64, 32, -2, 14);
-  stroke(poly([[6, -4], [10, 2], [14, -4], [18, 2], [22, -4], [26, 2], [30, -4], [34, 2]], false, .3), 1.8);
-  const armR = poly([[36, -124], [54, -110], [58, -84], [46, -82], [42, -104], [34, -112]]); shape(armR, null, 2.6); hatch(armR, 34, -126, 60, -80, 10);
-  const body = poly([[-36, -130], [36, -132], [34, -58], [-34, -58]]); shape(body, null, 3); hatch(body, 0, -134, 36, -56, 22);
-  shape(poly([[-36, -124], [-54, -110], [-58, -84], [-46, -82], [-42, -104], [-34, -112]]), null, 2.6);
-  stroke(poly([[-60, -84], [-62, -76], [-56, -80], [-54, -73], [-50, -80], [-46, -75]], false, .3), 1.6);
-  const head = blob(0, -150, 22, 21, 1.1, 11); shape(head, null, 2.8); hatch(head, 0, -172, 22, -128, 12);
-  const mouth = poly([[-15, -145], [12, -145], [8, -136], [-12, -136]]); paper(mouth); stroke(mouth, 2);
-  stroke(poly([[-14, -145], [-11, -139], [-8, -145], [-5, -139], [-2, -145], [1, -139], [4, -145], [7, -139], [10, -145]], false, .3), 1.4);
-  if (!e.dazed) { stroke(poly([[-13, -160], [-5, -157], [-12, -154]], true, .3), 2); dot(-10, -157, 1.6); }
-  const hat = poly([[-48, -160], [-42, -208], [44, -212], [52, -158], [30, -164], [0, -160], [-28, -164]], true, 1.4);
-  shape(hat, null, 3);
-  stroke(poly([[-40, -188], [-32, -180], [-24, -189], [-16, -180], [-8, -189], [0, -180], [8, -189], [16, -180], [24, -189], [32, -180], [42, -188]], false, .5), 1.8);
-  stroke(poly([[-22, -202], [-12, -198], [-20, -194]], true, .3), 2);
-  stroke(poly([[12, -199], [22, -203], [18, -195]], true, .3), 2);
-  hand('GODZILLA', 2, -170, 17, 'center', C.ink, -.04);
+  const G = TR.gz, F = { k: e.k || .176, ox: 340, oy: 1235, flip: 1 }, P = pts => tmap(F, pts);
+  const sw = e.dazed ? 0 : Math.sin((e.t || 0) * 2.2) * .06;
+  const al = poly(P(trot(G.armL, [205, 410], sw)), true, .8); shape(al, null, 2.6); gzHatch(al, F, [20, 380, 210, 730], 26);
+  stroke(poly(P(trot(G.clawL, [205, 410], sw)), false, .3), 1.8);
+  const ar = poly(P(trot(G.armR, [410, 390], -sw)), true, .8); shape(ar, null, 2.6); gzHatch(ar, F, [400, 350, 660, 640], 30);
+  shape(poly(P(G.legL), true, .8), null, 2.8);
+  stroke(poly(P(G.toesL), false, .3), 1.8);
+  const lr = poly(P(G.legR), true, .8); shape(lr, null, 2.8); gzHatch(lr, F, [320, 780, 530, 1180], 44);
+  stroke(poly(P(G.toesR), false, .3), 1.8);
+  shape(poly(P(G.body), true, 1), null, 3);
+  const bd = poly(P(G.bodyDark), true, 1); gzHatch(bd, F, [195, 360, 335, 825], 64);
+  const [hx, hy] = P([G.head.c])[0], hr = G.head.r * F.k;
+  const head = blob(hx, hy, hr, hr, .8, 11); shape(head, null, 2.8);
+  // Murphy's split face: one half scribbled dark
+  const half = new Path2D(); half.rect(hx, hy - hr - 2, hr + 2, hr * 2 + 4);
+  ctx.save(); ctx.clip(head); hatch(half, hx, hy - hr, hx + hr, hy + hr, 16, 1.1); ctx.restore();
+  stroke(line(hx, hy - hr, hx, hy + hr, .4), 2);
+  const m = poly(P(G.mouth), true, .3); paper(m); stroke(m, 1.6);
+  if (!e.dazed) for (const ey of G.eyes) stroke(poly(P(ey), true, .2), 1.8);
+  shape(poly(P(G.hat), true, 1.2), null, 3);
+  stroke(poly(P(G.hatTeeth), false, .4), 2);
+  for (const ey of G.hatEyes) { const p = poly(P(ey), true, .2); paper(p); stroke(p, 1.8); }
+  for (const [ch, x, y] of G.letters) { const [lx, ly] = P([[x, y]])[0]; hand(ch, lx, ly, Math.max(15, 46 * F.k * 1.4), 'center', C.ink, ((x * 7) % 5 - 2) * .06); }
 }
 
 function drawEnemy(e) {
