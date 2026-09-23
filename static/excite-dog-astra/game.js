@@ -1,0 +1,1074 @@
+
+(() => {
+'use strict';
+const cv = document.getElementById('game');
+const ctx = cv.getContext('2d');
+let W = 960; const H = 540;
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const C = {
+  paper: '#fffefa', ink: '#1b1a1f', soft: '#57534a',
+  hog: '#f4b81c', hot: '#e6452e', cool: '#3d7fe0',
+  croc: '#6cb24f', toast: '#dfa565', dirt: '#c8a370', grey: '#a19d93',
+  orange: '#f07c2a', mustard: '#f2c91d', bun: '#e3a35c', sausage: '#c8553d',
+  mountain: '#aebbd0', goggle: '#bfe3ff', lab: '#9fd7c7'
+};
+
+// ---------- canvas sizing ----------
+function resize() {
+  const r = cv.getBoundingClientRect();
+  W = r.width < 580 ? 640 : 960;
+  cv.style.aspectRatio = `${W} / ${H}`;
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = Math.max(320, Math.round(r.width * dpr));
+  cv.height = Math.round(cv.width * H / W);
+}
+addEventListener('resize', resize);
+resize();
+
+// ---------- deterministic "pen" so lines boil like hand-drawn animation ----------
+function mulberry(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const hash = (i, s = 0) => mulberry(i * 374761 + s * 668265 + 12345)();
+let R = Math.random, boil = 0;
+const pen = id => { R = mulberry(id * 9973 + boil * 7919); };
+const J = a => (R() - 0.5) * 2 * a;
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+function poly(pts, closed = true, a = 1.1) {
+  const p = new Path2D();
+  const q = pts.map(v => [v[0] + J(a), v[1] + J(a)]);
+  p.moveTo(q[0][0], q[0][1]);
+  const n = q.length, lim = closed ? n : n - 1;
+  for (let i = 0; i < lim; i++) {
+    const A = q[i], B = q[(i + 1) % n];
+    p.quadraticCurveTo((A[0] + B[0]) / 2 + J(a * .8), (A[1] + B[1]) / 2 + J(a * .8), B[0], B[1]);
+  }
+  if (closed) p.closePath();
+  return p;
+}
+function blob(cx, cy, rx, ry, a = 1.1, n = 10, rot = 0) {
+  const pts = [];
+  for (let i = 0; i < n; i++) { const t = i / n * Math.PI * 2 + rot; pts.push([cx + Math.cos(t) * rx + J(a), cy + Math.sin(t) * ry + J(a)]); }
+  const p = new Path2D(), m = (A, B) => [(A[0] + B[0]) / 2, (A[1] + B[1]) / 2];
+  const s = m(pts[n - 1], pts[0]); p.moveTo(s[0], s[1]);
+  for (let i = 0; i < n; i++) { const e = m(pts[i], pts[(i + 1) % n]); p.quadraticCurveTo(pts[i][0], pts[i][1], e[0], e[1]); }
+  p.closePath();
+  return p;
+}
+const line = (x1, y1, x2, y2, a = 1.1) => poly([[x1, y1], [x2, y2]], false, a);
+function stroke(p, w = 2.6, col = C.ink) { ctx.lineWidth = w; ctx.strokeStyle = col; ctx.stroke(p); }
+function paper(p) { ctx.fillStyle = C.paper; ctx.fill(p); }
+
+const patCache = {};
+function crayonPattern(color) {
+  if (patCache[color]) return patCache[color];
+  const S = 48, c = document.createElement('canvas'); c.width = c.height = S;
+  const g = c.getContext('2d'); g.strokeStyle = color; g.lineCap = 'round';
+  const r = mulberry(color.length * 97 + color.charCodeAt(1) * 13 + color.charCodeAt(3));
+  for (let i = 0; i < 60; i++) {
+    const x = r() * S, y = r() * S, dx = 9 + r() * 9, dy = -(9 + r() * 9), a = .3 + r() * .5, w = 1 + r() * 2.4;
+    for (const ox of [-S, 0, S]) for (const oy of [-S, 0, S]) {
+      g.globalAlpha = a; g.lineWidth = w; g.beginPath(); g.moveTo(x + ox, y + oy); g.lineTo(x + ox + dx, y + oy + dy); g.stroke();
+    }
+  }
+  return (patCache[color] = ctx.createPattern(c, 'repeat'));
+}
+function crayon(p, color, alpha = 1) {
+  ctx.save(); ctx.translate(J(2.2), J(2.2));
+  const ga = ctx.globalAlpha;
+  ctx.globalAlpha = ga * .3 * alpha; ctx.fillStyle = color; ctx.fill(p);
+  ctx.globalAlpha = ga * alpha; ctx.fillStyle = crayonPattern(color); ctx.fill(p);
+  ctx.restore();
+}
+function shape(p, color, w = 2.6) { paper(p); if (color) crayon(p, color); stroke(p, w); }
+function dot(x, y, r = 2.4, col = C.ink) { ctx.fillStyle = col; ctx.beginPath(); ctx.arc(x + J(.4), y + J(.4), r, 0, 7); ctx.fill(); }
+function scribble(cx, cy, rx, ry, loops = 5, w = 1.5) {
+  const p = new Path2D(); let a = R() * 6;
+  p.moveTo(cx + Math.cos(a) * rx, cy + Math.sin(a) * ry);
+  for (let i = 0; i < loops * 8; i++) { a += .8 + R() * .35; const k = .45 + R() * .55; p.lineTo(cx + Math.cos(a) * rx * k, cy + Math.sin(a) * ry * k); }
+  stroke(p, w);
+}
+function hatch(clip, x0, y0, x1, y1, n = 14, w = 1.3) {
+  ctx.save(); ctx.clip(clip);
+  const p = new Path2D();
+  for (let i = 0; i < n; i++) { const x = x0 + R() * (x1 - x0); p.moveTo(x + J(3), y0); p.lineTo(x + J(7), y1); }
+  stroke(p, w); ctx.restore();
+}
+function hand(str, x, y, size = 28, align = 'center', color = C.ink, rot = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
+  ctx.font = `700 ${size}px Gaegu, "Comic Sans MS", cursive`;
+  ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillStyle = color; ctx.fillText(str, 0, 0);
+  ctx.restore();
+}
+function swirl(x, y) {
+  const pts = []; for (let i = 0; i < 16; i++) { const a = i * .75 + t * 6, r = 1 + i * .45; pts.push([x + Math.cos(a) * r, y + Math.sin(a) * r * .6]); }
+  stroke(poly(pts, false, .3), 1.6);
+}
+
+// ---------- world geometry ----------
+const TRACK_TOP = 298, TRACK_BOT = 458;
+const laneY = l => 318 + l * 40;
+const BIKE_SX = 250, G = 900, L = 14500;
+const DIM = { croc: { w: 74, h: 103 }, toast: { w: 40, h: 34 }, bandit: { w: 92, h: 66 }, cone: { w: 34, h: 44 }, hotdog: { w: 56, h: 26 }, gz: { w: 112, h: 186 } };
+const HEAD = { croc: -64, toast: -44, bandit: -80, cone: -54, hotdog: -32, gz: -218 };
+
+const RAMPS = {
+  small:  [[0, 0], [70, 40], [120, 0]],
+  medium: [[0, 0], [100, 68], [130, 68], [330, 0]],
+  kicker: [[0, 0], [90, 70], [92, 0]],
+  double: [[0, 0], [80, 50], [150, 0], [230, 55], [330, 0]],
+  table:  [[0, 0], [90, 60], [300, 60], [440, 0]],
+  big:    [[0, 0], [140, 105], [180, 105], [420, 0]],
+  launch: [[0, 0], [120, 130], [122, 0]]
+};
+
+let mode = 'ride', monsterName = 'Big Scribble', springReady = 0, chapter = -1;
+let inventions = 0, jumpBuffer = 0;
+const chapters = ['Dogs Avenue', 'The very experimental lab', 'One enormous problem'];
+try { monsterName = localStorage.getItem('doghog.astra.monster')?.slice(0,24) || monsterName; } catch (_) {}
+const art = {};
+for (const n of [1,7,9]) { const im = new Image(); im.src = `assets/page-${n}.png`; art[n] = im; }
+// Display clipped portions of the unchanged inked page. No redrawing or raster edits.
+function scan(n, box, dest, outline) {
+  const im = art[n]; if (!im.complete || !im.naturalWidth) return false;
+  ctx.save(); ctx.translate(dest[0],dest[1]); ctx.scale(dest[2]/box[2],dest[3]/box[3]);
+  if (outline) { ctx.beginPath(); outline.forEach(([x,y],i)=>i ? ctx.lineTo(x-box[0],y-box[1]) : ctx.moveTo(x-box[0],y-box[1])); ctx.closePath(); ctx.clip(); }
+  ctx.drawImage(im,...box,0,0,box[2],box[3]); ctx.restore(); return true;
+}
+let world;
+function buildTrack(seed) {
+  const r = mulberry(seed);
+  const ri = (a, b) => a + Math.floor(r() * (b - a + 1));
+  const pick = a => a[Math.floor(r() * a.length)];
+  const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const w = { ramps: [], enemies: [], bones: [], muds: [], cools: [], signs: [] };
+  let id = 1;
+  const E = (type, x, lane, extra = {}) => { const d = DIM[type]; w.enemies.push({ id: id++, type, x, lane, z: 0, t: 0, ph: r() * 6, w: d.w, h: d.h, ...extra }); };
+  const addRamp = (x, type) => { const pts = RAMPS[type]; const rw = pts[pts.length - 1][0]; w.ramps.push({ x, w: rw, pts, type }); return rw; };
+  const boneRow = (x, lane, n) => { for (let i = 0; i < n; i++) w.bones.push({ x: x + i * 44, lane, z: 24 }); };
+
+  const gzAt = [L - 1500];
+  let x = 1400;
+  while (x < L - 1200) {
+    const g = gzAt.find(g => x > g - 1300 && x < g + 650);
+    if (g) { x = g + 650; continue; }
+    const roll = r();
+    if (roll < .34) {
+      const type = pick(['small', 'small', 'medium', 'kicker', 'double', 'table', 'big']);
+      const rw = addRamp(x, type), pts = RAMPS[type];
+      const cx = x + pts[1][0], hc = pts[1][1], vz = hc / pts[1][0] * 320, lane = ri(0, 3);
+      for (let i = 1; i <= 5; i++) { const tt = i * .1; w.bones.push({ x: cx + 320 * tt, lane, z: hc + vz * tt - 450 * tt * tt + 30 }); }
+      x += rw + ri(380, 560);
+    } else if (roll < .74) {
+      const n = r() < .45 ? 1 : r() < .7 ? 2 : 3;
+      const lanes = shuffle([0, 1, 2, 3]);
+      let ex = x;
+      for (let k = 0; k < n; k++) {
+        const type = pick(['croc', 'toast', 'toastHigh', 'bandit']);
+        if (type === 'toastHigh') E('toast', ex, lanes[k], { high: true });
+        else E(type, ex, lanes[k]);
+        ex += ri(60, 170);
+      }
+      if (n < 3 && r() < .6) boneRow(x + 40, lanes[3], 4);
+      x = ex + ri(420, 620);
+    } else if (roll < .88) {
+      const len = ri(160, 280), lanes = shuffle([0, 1, 2, 3]);
+      w.muds.push({ x, lane: lanes[0], len });
+      if (r() < .5) w.muds.push({ x: x + ri(0, 80), lane: lanes[1], len: ri(140, 220) });
+      boneRow(x + 20, lanes[3], 5);
+      x += len + ri(380, 480);
+    } else {
+      const lanes = shuffle([0, 1, 2, 3]);
+      w.cools.push({ x, lane: lanes[0] }, { x: x + 40, lane: lanes[1] });
+      boneRow(x + 120, lanes[2], 3);
+      x += ri(320, 420);
+    }
+  }
+  for (const g of gzAt) {
+    addRamp(g - 230, 'launch');
+    E('gz', g, 1.5);
+    for (let l = 0; l < 4; l++) w.cools.push({ x: g - 820, lane: l });
+    w.signs.push({ x: g - 1180, text: mode === 'ride' ? 'E = SPRING JUMP!' : 'TURBO NOW!', color: C.hot }, { x: g - 620, text: monsterName.toUpperCase() + '!' , color: C.croc });
+    for (let i = -1; i <= 1; i++) w.bones.push({ x: g + i * 44, lane: 1 + (i + 1) % 2 * 1, z: 185 });
+  }
+  w.ramps.sort((a, b) => a.x - b.x);
+  return w;
+}
+
+function terrain(x) {
+  let h = 0;
+  for (const r of world.ramps) {
+    if (x <= r.x || x >= r.x + r.w) continue;
+    const p = r.pts;
+    for (let i = 0; i < p.length - 1; i++) {
+      const a = r.x + p[i][0], b = r.x + p[i + 1][0];
+      if (x >= a && x <= b) { const k = (x - a) / ((b - a) || 1); h = Math.max(h, p[i][1] + (p[i + 1][1] - p[i][1]) * k); break; }
+    }
+  }
+  return h;
+}
+const slopeAt = x => (terrain(x + 4) - terrain(x - 4)) / 8;
+
+// ---------- state ----------
+let state = 'title', paused = false, muted = false;
+let bike, raceT = 0, countT = 0, finT = 0, score = 0, stats, camX = 0, t = 0, shake = 0;
+let popups = [], parts = [], big = null, last = 0, result = null;
+
+function newBike() { return { x: 120, z: 0, vz: 0, prevZ: 0, speed: 0, lane: 2, tLane: 2, ang: 0, grounded: true, air: 0, wheel: 0, heat: 0, inv: 0, stallT: 0, crashT: 0, crashV: 0, spin: 0, dog: null }; }
+function resetWorld() {
+  world = buildTrack(20260923);
+  bike = newBike();
+  stats = { bones: 0, jumps: 0, bonks: 0, sweet: 0, crashes: 0 };
+  score = 0; raceT = 0; springReady = 0; inventions = 0; chapter = -1; jumpBuffer = 0; popups = []; parts = []; big = null;
+}
+resetWorld();
+bike.speed = 300;
+bike.x = 1100;
+
+let best = null;
+try { const v = localStorage.getItem('doghog.astra.best.arcade'); if (v) best = JSON.parse(v); } catch (e) { /* storage unavailable */ }
+
+// ---------- helpers ----------
+function popup(text, color = C.ink) { popups.push({ text, color, x: bike.x, z: bike.z, lane: bike.lane, t: 0 }); }
+function bigText(text, dur = 1, color = C.ink) { big = { text, t: 0, dur, color }; }
+function fmt(s) { const m = Math.floor(s / 60); return m + ':' + (s % 60).toFixed(1).padStart(4, '0'); }
+function inMud(b) {
+  if (!b.grounded) return false;
+  for (const m of world.muds) if (Math.abs(m.lane - b.lane) < .6 && b.x > m.x && b.x < m.x + m.len) return true;
+  return false;
+}
+function puff(x, z, lane, vx, vz, life, kind, r = 4) { parts.push({ x, z, lane, vx, vz, life, max: life, kind, r, id: (Math.random() * 1e6) | 0 }); }
+
+// ---------- bike physics ----------
+function crash() {
+  const b = bike;
+  if (b.inv > 0 || b.crashT > 0) return;
+  b.crashT = mode === 'ride' ? .75 : 1.9; b.crashV = Math.max(b.speed, 120); b.speed = 0; b.spin = 0;
+  b.dog = { x: 0, z: b.z + 50, vx: b.crashV * .5 + 60, vz: 330, rot: 0 };
+  stats.crashes++; shake = .35; sfx('crash');
+  popup(['screech', 'OOF!', 'KA-BONK'][stats.crashes % 3], C.hot);
+}
+
+function updateBike(dt, c, ghost) {
+  const b = bike;
+  if (c.laneUp) b.tLane = Math.max(0, b.tLane - 1);
+  if (c.laneDown) b.tLane = Math.min(3, b.tLane + 1);
+  const dl = b.tLane - b.lane; b.lane += Math.sign(dl) * Math.min(Math.abs(dl), 5.5 * dt);
+  b.inv = Math.max(0, b.inv - dt);
+
+  if (b.crashT > 0) {
+    b.crashT -= dt;
+    b.crashV = Math.max(0, b.crashV - 520 * dt);
+    b.x += b.crashV * dt;
+    const h = terrain(b.x);
+    if (b.z > h + .5) { b.vz -= G * dt; b.z = Math.max(h, b.z + b.vz * dt); } else { b.z = h; b.vz = 0; }
+    b.spin += b.crashV * dt * .035;
+    const d = b.dog;
+    d.vz -= G * dt; d.x += d.vx * dt; d.z += d.vz * dt; d.vx = Math.max(0, d.vx - 120 * dt);
+    const hd = terrain(b.x + d.x) + 20;
+    if (d.z < hd) { d.z = hd; d.vz = Math.abs(d.vz) > 120 ? -d.vz * .35 : 0; d.vx *= .6; }
+    d.rot += d.vx * dt * .05;
+    if (b.crashT <= 0) {
+      b.x += d.x * .5; b.dog = null; b.spin = 0; b.z = terrain(b.x); b.vz = 0;
+      b.ang = Math.atan(slopeAt(b.x)); b.grounded = true; b.inv = 1.6; b.speed = 60;
+    }
+    return;
+  }
+
+  // throttle
+  const turbo = !!c.turbo && b.stallT <= 0;
+  let target = mode === 'ride' ? 270 : 320;
+  if (b.grounded) { if (c.right) target = 360; if (c.left) target = 180; } else target = b.speed;
+  if (turbo) target = 490;
+  if (inMud(b)) { target = Math.min(target, 130); if (Math.random() < .5) puff(b.x - 20, b.z + 4, b.lane, -60, 90 + Math.random() * 60, .45, 'mud', 2); }
+  if (c.coast) target = b.x > L + 300 ? 0 : 200;
+  if (b.stallT > 0) {
+    target = 0; b.stallT -= dt; b.heat = Math.max(0, b.heat - 45 * dt);
+    if (Math.random() < .25) puff(b.x - 10, b.z + 34, b.lane, -20, 60, 1, 'smoke', 6);
+    if (b.stallT <= 0) b.heat = Math.min(b.heat, 20);
+  }
+  b.speed += (target - b.speed) * Math.min(1, (target > b.speed ? 1.5 : 3.2) * dt);
+
+  if (turbo) b.heat = Math.min(mode === 'ride' ? 85 : 101, b.heat + 24 * dt);
+  else if (b.stallT <= 0) b.heat = Math.max(0, b.heat - (b.grounded ? 15 : 9) * dt);
+  if (b.heat >= 100 && b.stallT <= 0) { b.stallT = 2.4; popup('TOO HOT!', C.hot); sfx('hot'); }
+
+  // motion
+  b.prevZ = b.z;
+  const nx = b.x + b.speed * dt, hN = terrain(nx);
+  if (b.grounded) {
+    if (c.hop) { b.vz = Math.max(b.vz, 0) + 420; b.grounded = false; b.air = 0; b.ang += .14; sfx('hop'); }
+    else {
+      const zb = b.z + b.vz * dt - .5 * G * dt * dt;
+      if (zb > hN + .6) { b.grounded = false; b.air = 0; }
+      else { b.vz = (hN - b.z) / dt; b.z = hN; b.ang += (Math.atan(slopeAt(nx)) - b.ang) * Math.min(1, 14 * dt); }
+    }
+  }
+  if (!b.grounded) {
+    b.vz -= G * dt; b.z += b.vz * dt; b.air += dt;
+    const lean = mode === 'arcade' ? (c.leanLeft ? 1 : 0) - (c.leanRight ? 1 : 0) : 0;
+    if (lean) b.ang += lean * 3.2 * dt;
+    else { const tg = Math.atan(slopeAt(nx + b.speed * .25)); b.ang += Math.sign(tg - b.ang) * Math.min(Math.abs(tg - b.ang), (mode === 'ride' ? 4.5 : 1.8) * dt); }
+    b.ang = clamp(b.ang, -1.3, 1.3);
+    if (b.z <= hN) {
+      const sa = Math.atan(slopeAt(nx)), diff = Math.abs(b.ang - sa);
+      b.z = hN; b.grounded = true; b.x = nx;
+      if (mode === 'arcade' && diff > .72 && b.air > .12 && !ghost) { crash(); return; }
+      if (!ghost && diff < .16 && b.air > .45) { stats.sweet++; score += 150; popup('SWEET LANDING!', C.cool); b.speed = Math.max(b.speed, 390); sfx('sweet'); }
+      else if (b.air > .2) sfx('land');
+      if (b.air > .2) for (let i = 0; i < 6; i++) puff(nx + (Math.random() - .5) * 40, hN + 2, b.lane, (Math.random() - .5) * 120, 60 + Math.random() * 80, .5, 'dust', 4);
+      b.vz = 0; b.ang = sa;
+    }
+  }
+  b.x = nx;
+  b.wheel += b.speed * dt / 13;
+  if (b.grounded && b.speed > 200 && Math.random() < .35) puff(b.x - 30, b.z + 3, b.lane, -50, 40 + Math.random() * 40, .45, 'dust', 3);
+}
+
+// ---------- enemies & pickups ----------
+function updateEnemies(dt, ghost) {
+  const b = bike;
+  for (const e of world.enemies) {
+    const rel = e.x - b.x;
+    if (rel > 1300 || rel < -700) continue;
+    e.t += dt;
+    if (e.squashed) { e.sq += dt; continue; }
+    switch (e.type) {
+      case 'croc': if (!e.dazed) e.x -= 35 * dt; break;
+      case 'toast': e.x -= 55 * dt; e.z = (e.high ? 108 : 16) + Math.sin(e.t * 3 + e.ph) * 9; break;
+      case 'bandit': if (!e.dazed) e.x += 150 * dt; break;
+      case 'cone': e.z = e.dazed ? 0 : Math.max(0, Math.sin(e.t * 3.4 + e.ph)) * 80; break;
+      case 'hotdog': if (!e.dazed) e.x -= 120 * dt; break;
+      case 'gz': {
+        if (rel < 1000 && !e.roared) { e.roared = true; if (!ghost) { bigText('GOOOM!!!', 1.1); sfx('roar'); shake = .3; } }
+        const ph = Math.floor(e.t / 1.4); if (ph !== e.lastStomp) { e.lastStomp = ph; if (!ghost && !e.dazed && rel < 900 && rel > -100) shake = Math.max(shake, .12); }
+        break;
+      }
+    }
+    if (ghost || b.crashT > 0 || e.dazed) continue;
+
+    const laneHit = e.type === 'gz' || Math.abs(b.lane - e.lane) < .6;
+    const ez0 = terrain(e.x) + e.z, ez1 = ez0 + e.h;
+    if (laneHit && Math.abs(b.x - e.x) < 20 + e.w / 2) {
+      if (b.z < ez1 && b.z + 62 > ez0 && b.inv <= 0) {
+        if (b.vz < 0 && b.prevZ >= ez1 - 12) {
+          e.squashed = e.type !== 'gz'; e.sq = 0; if (e.type === 'gz') e.dazed = true;
+          b.vz = 380; b.grounded = false; b.air = 0;
+          const pts = e.type === 'gz' ? 1000 : 200; score += pts; stats.bonks++;
+          popup(e.type === 'gz' ? 'BONK! ' + monsterName : 'BONK! +' + pts, C.hot); sfx('stomp'); shake = .12;
+        } else { e.dazed = true; crash(); }
+        continue;
+      }
+    }
+    if (!e.passed && b.x > e.x + e.w / 2 + 20) {
+      e.passed = true;
+      if (laneHit) {
+        if (!b.grounded && b.z > ez0 + e.h * .5) {
+          const pts = e.type === 'gz' ? 500 : 100; stats.jumps++; score += pts;
+          popup(e.type === 'gz' ? 'OVER ' + monsterName.toUpperCase() + '!' : 'JUMPED! +100', C.ink); sfx('jump');
+        } else if (e.type === 'toast' && e.high && b.z + 62 < ez0) { score += 50; popup('UNDER! +50'); }
+      }
+    }
+  }
+}
+
+function collect() {
+  const b = bike; if (b.crashT > 0) return;
+  for (const o of world.bones) {
+    if (o.got || Math.abs(o.lane - b.lane) > .6 || Math.abs(o.x - b.x) > 26) continue;
+    if (o.z > b.z - 4 && o.z < b.z + 70) { o.got = true; stats.bones++; score += 50; sfx('bone'); popups.push({ text: '+50', color: C.soft, x: o.x, z: o.z - 60, lane: o.lane, t: 0 }); }
+  }
+  for (const c of world.cools) {
+    if (c.used || !b.grounded || Math.abs(c.lane - b.lane) > .6 || Math.abs(c.x - b.x) > 26) continue;
+    c.used = true; if (b.heat > 5) { b.heat = 0; popup('COOL!', C.cool); sfx('cool'); }
+  }
+}
+
+function aiCtl() {
+  const b = bike, c = {};
+  for (const e of world.enemies) {
+    if (e.dazed || e.squashed) continue;
+    const d = e.x - b.x;
+    if (d < 30 || d > 150) continue;
+    if (e.type !== 'gz' && Math.abs(e.lane - b.lane) > .6) continue;
+    if (e.type === 'toast' && e.high) continue;
+    if (b.grounded && d < 115) c.hop = true;
+  }
+  for (const m of world.muds) {
+    const d = m.x - b.x;
+    if (d > 0 && d < 260 && Math.abs(m.lane - b.tLane) < .6) { if (b.tLane > 0) c.laneUp = true; else c.laneDown = true; }
+  }
+  return c;
+}
+
+// ---------- game flow ----------
+const ovTitle = document.getElementById('ovTitle'), ovPause = document.getElementById('ovPause'), ovResults = document.getElementById('ovResults');
+function showBest() {
+  document.getElementById('bestLine').textContent = 'You steer. Dog Hog keeps riding.';
+}
+showBest();
+
+function startRace() {
+  audioInit();
+  mode = document.querySelector('input[name=mode]:checked').value;
+  monsterName = document.getElementById('monsterName').value.trim().slice(0,24) || 'Big Scribble';
+  try { localStorage.setItem('doghog.astra.monster',monsterName); } catch (_) {}
+  for (const k in held) held[k] = 0; for (const k in pressed) delete pressed[k];
+  resetWorld();
+  document.getElementById('modeLabel').textContent = mode === 'ride' ? 'Just Ride · assisted landings' : 'Arcade · beat your time';
+  document.getElementById('springStatus').textContent = 'Spring ready';
+  state = 'count'; countT = 1.5; paused = false;
+  ovTitle.hidden = true; ovResults.hidden = true; ovPause.hidden = true;
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  sfx('beep');
+}
+function finishRace() {
+  const timeBonus = Math.max(0, Math.round((150 - raceT) * 20));
+  const total = score + timeBonus;
+  const isBest = !best || raceT < best.time;
+  result = { time: raceT, timeBonus, total, isBest };
+  if (isBest && mode === 'arcade') { best = { time: raceT, score: total }; try { localStorage.setItem('doghog.astra.best.arcade', JSON.stringify(best)); } catch (e) { /* ignore */ } }
+  score = total;
+  sfx('finish');
+  bigText('FINISH!', 1.6);
+}
+function showResults() {
+  document.getElementById('resTitle').textContent = mode === 'ride' ? 'The end. For now!' : result.isBest ? 'New best time!' : 'What a ride!';
+  document.getElementById('resEyebrow').textContent = 'A Dog Hog adventure';
+  const table = document.getElementById('resTable'); table.replaceChildren();
+  const rows = mode === 'ride'
+    ? [['The hero', 'Dog Hog'], ['The big problem', monsterName], ['The invention', 'Spring-o-matic!']]
+    : [['Time', fmt(result.time)], ['Bones', stats.bones], ['Bonks', stats.bonks], ['Score', result.total]];
+  for (const row of rows) { const tr = document.createElement('tr'); for (const cell of row) { const td = document.createElement('td'); td.textContent = cell; tr.append(td); } table.append(tr); }
+  document.getElementById('ending').textContent = inventions ? 'The invention worked. Mostly. What should Dog Hog invent next?' : 'Dog Hog made it home. What should happen in the next issue?';
+  ovResults.hidden = false;
+  document.getElementById('btnAgain').focus({ preventScroll: true });
+}
+function setPaused(p) {
+  if (!(state === 'race' || state === 'count')) return;
+  paused = p; ovPause.hidden = !p;
+  if (p) document.getElementById('btnResume').focus({ preventScroll: true });
+  else if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  for (const k in held) held[k] = 0;
+  for (const k in pressed) delete pressed[k];
+  document.getElementById('btnPause').textContent = p ? 'Resume' : 'Pause';
+}
+document.getElementById('btnStart').addEventListener('click', startRace);
+document.getElementById('btnAgain').addEventListener('click', startRace);
+document.getElementById('btnResume').addEventListener('click', () => setPaused(false));
+document.addEventListener('visibilitychange', () => { if (document.hidden) setPaused(true); });
+
+// ---------- input ----------
+const held = { spring: 0, leanLeft: 0, leanRight: 0, up: 0, down: 0, left: 0, right: 0, hop: 0, turbo: 0 }, pressed = {};
+const KEYMAP = { KeyE: 'spring', ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down', ArrowLeft: 'left', KeyA: 'leanLeft', ArrowRight: 'right', KeyD: 'leanRight', Space: 'hop', KeyX: 'hop', KeyK: 'hop', KeyZ: 'turbo', KeyJ: 'turbo', ShiftLeft: 'turbo', ShiftRight: 'turbo' };
+addEventListener('keydown', e => {
+  if (/INPUT|TEXTAREA|SELECT|BUTTON/.test(e.target.tagName)) return;
+  if (e.repeat && ['Enter','KeyP','Escape','KeyM'].includes(e.code)) return;
+  if (e.code === 'Enter' && (state === 'title' || state === 'results')) { e.preventDefault(); startRace(); return; }
+  if (e.code === 'KeyP' || e.code === 'Escape') { setPaused(!paused); return; }
+  if (e.code === 'KeyM') { toggleSound(); return; }
+  const k = KEYMAP[e.code];
+  if (k && (state === 'race' || state === 'count')) { e.preventDefault(); if (!held[k]) pressed[k] = true; held[k] = 1; }
+});
+addEventListener('keyup', e => { const k = KEYMAP[e.code]; if (k) held[k] = 0; });
+addEventListener('blur', () => { for (const k in held) held[k] = 0; setPaused(true); });
+for (const btn of document.querySelectorAll('.pad button')) {
+  const k = btn.dataset.k;
+  const down = ev => { ev.preventDefault(); if (paused || state !== 'race') return; audioInit(); if (!held[k]) pressed[k] = true; held[k] = 1; try { btn.setPointerCapture(ev.pointerId); } catch (e) { /* ignore */ } };
+  const up = () => { held[k] = 0; };
+  btn.addEventListener('pointerdown', down);
+  btn.addEventListener('pointerup', up);
+  btn.addEventListener('pointercancel', up);
+  btn.addEventListener('lostpointercapture', up);
+}
+
+// ---------- sound ----------
+let AC = null, eng = null, noiseBuf = null;
+function audioInit() {
+  if (AC) { if (AC.state === 'suspended') AC.resume(); return; }
+  try {
+    AC = new (window.AudioContext || window.webkitAudioContext)();
+    const o = AC.createOscillator(), f = AC.createBiquadFilter(), g = AC.createGain();
+    o.type = 'sawtooth'; f.type = 'lowpass'; f.frequency.value = 650; g.gain.value = 0;
+    o.connect(f).connect(g).connect(AC.destination); o.start();
+    eng = { o, g };
+  } catch (e) { AC = null; }
+}
+function engineTick() {
+  if (!eng) return;
+  const on = (state === 'race' || state === 'count' || state === 'finish') && !muted && !paused && bike.crashT <= 0;
+  const now = AC.currentTime;
+  eng.g.gain.setTargetAtTime(on ? .03 : 0, now, .06);
+  eng.o.frequency.setTargetAtTime(48 + bike.speed * .2 + (held.turbo ? 25 : 0) + (bike.grounded ? 0 : 12), now, .06);
+}
+function tone(f0, f1, dur, type = 'square', vol = .1, delay = 0) {
+  const t0 = AC.currentTime + delay, o = AC.createOscillator(), g = AC.createGain();
+  o.type = type; o.frequency.setValueAtTime(f0, t0); if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t0 + dur);
+  g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+  o.connect(g).connect(AC.destination); o.start(t0); o.stop(t0 + dur + .03);
+}
+function noise(dur, vol = .2, freq = 1200) {
+  if (!noiseBuf) { noiseBuf = AC.createBuffer(1, AC.sampleRate, AC.sampleRate); const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+  const s = AC.createBufferSource(), f = AC.createBiquadFilter(), g = AC.createGain(), t0 = AC.currentTime;
+  s.buffer = noiseBuf; f.type = 'lowpass'; f.frequency.value = freq;
+  g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+  s.connect(f).connect(g).connect(AC.destination); s.start(t0); s.stop(t0 + dur);
+}
+function sfx(k) {
+  if (!AC || muted) return;
+  try {
+    switch (k) {
+      case 'hop': tone(260, 620, .16, 'square', .07); break;
+      case 'land': noise(.12, .14, 600); break;
+      case 'bone': tone(988, 988, .07, 'triangle', .12); tone(1319, 1319, .12, 'triangle', .12, .07); break;
+      case 'stomp': tone(420, 90, .2, 'square', .1); break;
+      case 'crash': noise(.55, .28, 900); tone(160, 40, .5, 'sawtooth', .1); break;
+      case 'roar': tone(110, 50, 1.1, 'sawtooth', .13); noise(.9, .16, 380); break;
+      case 'cool': tone(500, 1300, .25, 'sine', .12); break;
+      case 'beep': tone(440, 440, .14, 'square', .08); break;
+      case 'go': tone(880, 880, .35, 'square', .08); break;
+      case 'jump': tone(700, 950, .09, 'triangle', .08); break;
+      case 'hot': [0, .15, .3].forEach(d => tone(200, 200, .1, 'square', .08, d)); break;
+      case 'sweet': [523, 659, 784].forEach((f, i) => tone(f, f, .1, 'triangle', .1, i * .07)); break;
+      case 'finish': [523, 659, 784, 1047].forEach((f, i) => tone(f, f, .16, 'square', .07, i * .12)); break;
+    }
+  } catch (e) { /* audio is optional */ }
+}
+
+// ---------- main loop ----------
+function update(dt) {
+  const ghost = state !== 'race';
+  let c = {};
+  if (state === 'race') {
+    springReady = Math.max(0,springReady-dt);
+    jumpBuffer = pressed.hop ? .16 : Math.max(0,jumpBuffer-dt);
+    c = { laneUp: pressed.up, laneDown: pressed.down, hop: jumpBuffer > 0 && bike.grounded, left: held.left, right: held.right, turbo: held.turbo, leanLeft: held.leanLeft, leanRight: held.leanRight };
+    if (c.hop) jumpBuffer = 0;
+    if (pressed.spring && springReady <= 0 && bike.crashT <= 0) {
+      bike.vz = 640; bike.grounded = false; bike.air = 0; bike.inv = Math.max(bike.inv,1.1);
+      springReady = 4; inventions++; c.hop = false; popup('SCIENCE!', C.cool); sfx('sweet');
+    }
+    document.getElementById('btnSpring').disabled = springReady > 0;
+    document.getElementById('springStatus').textContent = springReady > 0 ? `Recharging · ${Math.ceil(springReady)}s` : 'Spring ready';
+    const ch = bike.x < 4500 ? 0 : bike.x < 9500 ? 1 : 2;
+    if (ch !== chapter) { chapter = ch; document.getElementById('chapterLabel').textContent = `${ch+1} / 3 · ${chapters[ch]}`; if(ch>0) bigText(ch === 1 ? 'TIME FOR SCIENCE!' : 'UH-OH...',1.5); }
+  }
+  else if (state === 'title') c = aiCtl();
+  else if (state === 'finish' || state === 'results') c = { coast: true };
+
+  if (state === 'count') {
+    const prev = Math.ceil(countT); countT -= dt; const now = Math.ceil(countT);
+    if (now !== prev && now > 0) sfx('beep');
+    if (pressed.up) bike.tLane = Math.max(0, bike.tLane - 1);
+    if (pressed.down) bike.tLane = Math.min(3, bike.tLane + 1);
+    bike.lane += Math.sign(bike.tLane - bike.lane) * Math.min(Math.abs(bike.tLane - bike.lane), 5.5 * dt);
+    if (countT <= 0) { state = 'race'; bigText('GO!', .8); sfx('go'); }
+  } else updateBike(dt, c, ghost);
+
+  updateEnemies(dt, ghost);
+  if (state === 'race') {
+    raceT += dt; collect();
+    if (bike.x >= L) { state = 'finish'; finT = 0; finishRace(); }
+  } else if (state === 'finish') { finT += dt; if (finT > 1.8) { state = 'results'; showResults(); } }
+  else if (state === 'title' && bike.x > L - 600) { resetWorld(); bike.speed = 300; }
+
+  camX = bike.x - Math.min(BIKE_SX,W*.26);
+  for (const p of parts) { p.life -= dt; p.x += p.vx * dt; p.z += p.vz * dt; p.vz -= (p.kind === 'smoke' ? -20 : 300) * dt; }
+  parts = parts.filter(p => p.life > 0);
+  for (const p of popups) p.t += dt;
+  popups = popups.filter(p => p.t < 1.2);
+  if (big) { big.t += dt; if (big.t > big.dur) big = null; }
+  shake = Math.max(0, shake - dt);
+}
+
+function frame(now) {
+  const dt = Math.min(.033, (now - last) / 1000 || 0); last = now;
+  if (!paused) { t += dt; update(dt); }
+  boil = reduceMotion ? 0 : Math.floor(now / 125);
+  render();
+  engineTick();
+  for (const k in pressed) delete pressed[k];
+  requestAnimationFrame(frame);
+}
+
+// ---------- drawing: characters ----------
+function wheel(wx, o) {
+  const p = blob(wx, -13, 13, 13, 1.2, 9); paper(p); stroke(p, 2.8);
+  scribble(wx, -13, 9, 9, 2, 1.2);
+  const a = o.wheel;
+  stroke(line(wx - Math.cos(a) * 11, -13 - Math.sin(a) * 11, wx + Math.cos(a) * 11, -13 + Math.sin(a) * 11, .4), 2);
+  dot(wx, -13, 2.6);
+}
+function drawHog(o) {
+  if (o.turbo) { const f = poly([[-40, -26], [-58 - R() * 10, -24], [-50, -21], [-62 - R() * 8, -18], [-40, -18]]); crayon(f, C.hot); stroke(f, 1.8); }
+  shape(poly([[-42, -25], [-24, -27], [-24, -19], [-42, -18]]), C.grey, 2.2);
+  wheel(-26, o); wheel(28, o);
+  shape(poly([[-36, -22], [-14, -37], [20, -37], [41, -25], [30, -14], [-22, -14]]), C.hog, 2.8);
+  stroke(poly([[-22, -16], [-12, -32], [-2, -16], [8, -32], [18, -16], [26, -28]], false, .7), 1.5);
+  stroke(line(28, -13, 23, -35), 2.6);
+  stroke(line(21, -36, 27, -51), 2.6);
+  stroke(line(24, -51, 34, -52), 3.4);
+  shape(blob(41, -31, 4, 5, .5, 7), '#fff3a8', 2);
+}
+function ear(x, y, a) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(a);
+  shape(blob(0, -14, 5, 15, .8, 10), null, 2.4);
+  stroke(line(0, -5, 0, -22, .5), 1.4);
+  ctx.restore();
+}
+function fallback_drawDog(o) {
+  const f = Math.sin(o.t * 18) * 4 * o.flap;
+  shape(poly([[-6, -42], [-28 - o.flap * 8, -46 + f], [-36 - o.flap * 10, -31 + f * 1.3], [-12, -28]]), null, 2.4);
+  shape(blob(-2, -44, 13, 14, 1, 9), null, 2.6);
+  stroke(line(-1, -56, 4, -33, .7), 1.5);
+  stroke(poly([[-2, -34], [6, -24], [4, -18]], false), 2.6);
+  stroke(line(2, -18, 10, -18), 3);
+  stroke(poly([[4, -48], [16, -48], [27, -51]], false), 2.6);
+  ear(1, -74, -.3 - o.ear);
+  ear(8, -77, -.1 - o.ear * .9);
+  shape(poly([[-6, -64], [-4, -75], [6, -80], [16, -75], [31, -65], [22, -58], [8, -55], [-3, -58]], true, .9), null, 2.6);
+  dot(31, -65, 3.3);
+  dot(21, -63, 1.3); dot(24, -60, 1.3); dot(18, -60, 1.3);
+  shape(blob(10, -70, 5.5, 5, .5, 8), C.goggle, 2.2); dot(11, -70, 1.8);
+  stroke(line(4, -71, -5, -70, .5), 2);
+  stroke(poly([[13, -60], [18, -58], [24, -61]], false, .5), 2);
+}
+function miniDog(x, y, s = 1, face = 1) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s * face, s);
+  shape(blob(-3, -14, 2.6, 8, .5, 8), null, 2);
+  shape(blob(3, -15, 2.6, 8, .5, 8), null, 2);
+  shape(blob(0, 0, 8, 7, .6, 9), null, 2.2);
+  shape(poly([[4, -3], [12, 0], [4, 4]], true, .4), null, 2);
+  dot(12, 0, 1.6); dot(1, -2, 1.3);
+  ctx.restore();
+}
+function boneShape(x, y, s = 1, rot = 0) {
+  ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.scale(s, s);
+  for (const [cx, cy] of [[-10, -3.5], [-10, 3.5], [10, -3.5], [10, 3.5]]) { const k = blob(cx, cy, 4.2, 4.2, .4, 8); paper(k); stroke(k, 2); }
+  paper(poly([[-10, -3], [10, -3], [10, 3], [-10, 3]], true, .2));
+  stroke(line(-8, -3.2, 8, -3.2, .3), 2); stroke(line(-8, 3.2, 8, 3.2, .3), 2);
+  ctx.restore();
+}
+
+function fallback_drawCroc(e) {
+  const open = e.dazed ? .15 : (Math.sin(e.t * 7 + e.ph) > 0 ? 1 : .25);
+  const wk = Math.sin(e.t * 8) * 3;
+  shape(poly([[14, -22], [34, -14], [50, -2], [40, 0], [12, -8]]), C.croc);
+  shape(poly([[4, -16], [2 + wk, 0], [16 + wk, 0], [16, -14]]), C.croc);
+  shape(blob(8, -30, 18, 20, 1.1, 10), C.croc);
+  for (let k = 0; k < 3; k++) stroke(line(-9, -38 + k * 7, -3, -36 + k * 7, .4), 1.4);
+  for (let k = 0; k < 3; k++) stroke(poly([[5 + k * 6, -28 + (k % 2) * 7], [7 + k * 6, -31 + (k % 2) * 7], [9 + k * 6, -28 + (k % 2) * 7]], false, .3), 1.2);
+  stroke(poly([[16, -46], [24, -51], [22, -42], [31, -44], [26, -35], [35, -36], [28, -27]], false, .7), 2);
+  stroke(poly([[-6, -30], [-16, -28], [-19, -23]], false), 2.4);
+  ctx.save(); ctx.translate(-4, -48);
+  ctx.save(); ctx.rotate(open * .35);
+  shape(poly([[4, 0], [-30, 2], [-30, 8], [2, 9]]), C.croc);
+  stroke(poly([[-28, 2], [-25, -3], [-22, 2], [-19, -3], [-16, 2], [-13, -3], [-10, 2]], false, .3), 1.4);
+  ctx.restore();
+  shape(poly([[8, -14], [-4, -19], [-32, -11], [-36, -4], [-32, 0], [4, 0], [10, -6]]), C.croc);
+  stroke(poly([[-30, 0], [-27, 5], [-24, 0], [-21, 5], [-18, 0], [-15, 5], [-12, 0], [-9, 5], [-6, 0]], false, .3), 1.5);
+  dot(-32, -8, 1.4); dot(-28, -9, 1.4);
+  if (!e.dazed) { shape(blob(-6, -12, 4, 3.5, .4, 7), null, 2); dot(-7, -12, 1.7); }
+  stroke(line(-13, -19, -1, -14, .4), 2.6);
+  ctx.restore();
+}
+function fallback_drawToast(e) {
+  const fl = Math.sin(e.t * 16 + e.ph);
+  stroke(poly([[-7, 0], [-8, 9], [-12, 10]], false), 2);
+  stroke(poly([[7, 0], [8, 9], [12, 10]], false), 2);
+  for (const s of [-1, 1]) shape(poly([[s * 14, -24], [s * 30, -34 - fl * 9], [s * 41, -30 - fl * 9], [s * 33, -24 - fl * 5], [s * 42, -20 - fl * 4], [s * 30, -16], [s * 15, -14]]), null, 2.2);
+  shape(poly([[-15, -34], [15, -35], [16, 0], [-15, 1]]), C.toast);
+  stroke(poly([[-15, -34], [-12, -41], [-8, -34], [-5, -41], [-1, -34], [3, -41], [6, -34], [10, -41], [15, -35]], false, .5), 2);
+  if (!e.dazed) {
+    stroke(poly([[-10, -26], [-5, -26], [-5, -19], [-10, -19]], true, .3), 1.8); dot(-8, -22, 1.6);
+    stroke(poly([[2, -26], [7, -26], [7, -19], [2, -19]], true, .3), 1.8); dot(4, -22, 1.6);
+  }
+  stroke(line(-7, -9, 5, -10, .4), 2);
+}
+function drawBandit(e) {
+  const flap = Math.sin(e.t * 15) * 4;
+  shape(poly([[-8, -46], [-32, -42 + flap], [-28, -26 + flap], [-6, -30]]), C.hot, 2.4);
+  wheel(-28, { wheel: e.t * 12 }); wheel(28, { wheel: e.t * 12 });
+  shape(poly([[-44, -12], [-40, -33], [14, -35], [34, -27], [47, -14], [40, -8], [-40, -8]]), C.grey, 2.8);
+  stroke(poly([[-32, -28], [-20, -28], [-20, -17], [-32, -17]], true, .6), 1.6);
+  stroke(poly([[-12, -30], [2, -30], [2, -20], [-12, -20]], true, .6), 1.6);
+  stroke(poly([[31, -15], [34, -21], [37, -15], [40, -21], [43, -15]], false, .3), 1.6);
+  dot(31, -27, 2.2);
+  shape(blob(-4, -42, 10, 10, .8, 9), null, 2.4);
+  shape(blob(-2, -61, 12, 12, .8, 10), null, 2.6);
+  const mask = poly([[-14, -66], [10, -67], [10, -57], [-14, -56]], true, .5);
+  ctx.fillStyle = C.ink; ctx.fill(mask);
+  if (!e.dazed) { const g = blob(4, -61.5, 4, 3.6, .3, 7); paper(g); stroke(g, 1.6); dot(5, -61.5, 1.6); }
+  stroke(poly([[-6, -52], [0, -51], [5, -53]], false, .4), 1.8);
+  boneShape(12, -46, .8, -.6);
+}
+function drawCone(e) {
+  if (e.z > 2) { stroke(line(-6, 0, -9, 8), 2.2); stroke(line(6, 0, 9, 8), 2.2); }
+  shape(poly([[-21, -5], [21, -5], [21, 1], [-21, 1]]), C.orange, 2.4);
+  shape(poly([[-17, -4], [-5, -46], [5, -46], [17, -4]]), C.orange, 2.8);
+  const s1 = poly([[-12, -14], [12, -14], [10, -19], [-10, -19]], true, .4); paper(s1); stroke(s1, 1.8);
+  const s2 = poly([[-7, -32], [7, -32], [5.5, -37], [-5.5, -37]], true, .4); paper(s2); stroke(s2, 1.8);
+  if (!e.dazed) {
+    const e1 = blob(-6, -25, 4.4, 4.4, .4, 8), e2 = blob(5, -26, 4, 4, .4, 8);
+    paper(e1); stroke(e1, 2); paper(e2); stroke(e2, 2);
+    dot(-8, -25, 1.8); dot(3, -26, 1.8);
+  }
+  stroke(poly([[-8, -8], [-5, -11], [-2, -8], [1, -11], [4, -8], [7, -11]], false, .3), 1.8);
+}
+function drawHotdog(e) {
+  const run = Math.sin(e.t * 22) * 4;
+  stroke(line(-10, -4, -12 + run, 1), 2.2); stroke(line(10, -4, 8 - run, 1), 2.2);
+  shape(blob(0, -10, 28, 8, 1, 12), C.bun);
+  shape(blob(0, -18, 31, 7, 1, 12), C.sausage);
+  stroke(poly([[-18, -19], [-12, -22], [-6, -17], [0, -22], [6, -17], [12, -22], [18, -18]], false, .4), 3, C.mustard);
+  const m = poly([[-31, -23], [-17, -25], [-17, -14], [-31, -13]], true, .4);
+  ctx.fillStyle = C.ink; ctx.fill(m);
+  if (!e.dazed) { const g = blob(-25, -19, 2.6, 2.6, .2, 7); paper(g); dot(-26, -19, 1.2); }
+  if (!e.dazed) for (let k = 0; k < 3; k++) stroke(line(36, -20 + k * 6, 46 + R() * 6, -20 + k * 6, .4), 1.4);
+}
+function fallback_drawGz(e) {
+  ctx.translate(0, -Math.abs(Math.sin(e.t * 2.2)) * 6);
+  const legL = poly([[-30, -62], [-8, -62], [-8, -4], [-30, -4]]); shape(legL, null, 2.8);
+  stroke(poly([[-34, -4], [-30, 2], [-26, -4], [-22, 2], [-18, -4], [-14, 2], [-10, -4], [-6, 2]], false, .3), 1.8);
+  const legR = poly([[8, -62], [30, -62], [32, -4], [8, -4]]); shape(legR, null, 2.8); hatch(legR, 8, -64, 32, -2, 14);
+  stroke(poly([[6, -4], [10, 2], [14, -4], [18, 2], [22, -4], [26, 2], [30, -4], [34, 2]], false, .3), 1.8);
+  const armR = poly([[36, -124], [54, -110], [58, -84], [46, -82], [42, -104], [34, -112]]); shape(armR, null, 2.6); hatch(armR, 34, -126, 60, -80, 10);
+  const body = poly([[-36, -130], [36, -132], [34, -58], [-34, -58]]); shape(body, null, 3); hatch(body, 0, -134, 36, -56, 22);
+  shape(poly([[-36, -124], [-54, -110], [-58, -84], [-46, -82], [-42, -104], [-34, -112]]), null, 2.6);
+  stroke(poly([[-60, -84], [-62, -76], [-56, -80], [-54, -73], [-50, -80], [-46, -75]], false, .3), 1.6);
+  const head = blob(0, -150, 22, 21, 1.1, 11); shape(head, null, 2.8); hatch(head, 0, -172, 22, -128, 12);
+  const mouth = poly([[-15, -145], [12, -145], [8, -136], [-12, -136]]); paper(mouth); stroke(mouth, 2);
+  stroke(poly([[-14, -145], [-11, -139], [-8, -145], [-5, -139], [-2, -145], [1, -139], [4, -145], [7, -139], [10, -145]], false, .3), 1.4);
+  if (!e.dazed) { stroke(poly([[-13, -160], [-5, -157], [-12, -154]], true, .3), 2); dot(-10, -157, 1.6); }
+  const hat = poly([[-48, -160], [-42, -208], [44, -212], [52, -158], [30, -164], [0, -160], [-28, -164]], true, 1.4);
+  shape(hat, null, 3);
+  stroke(poly([[-40, -188], [-32, -180], [-24, -189], [-16, -180], [-8, -189], [0, -180], [8, -189], [16, -180], [24, -189], [32, -180], [42, -188]], false, .5), 1.8);
+  stroke(poly([[-22, -202], [-12, -198], [-20, -194]], true, .3), 2);
+  stroke(poly([[12, -199], [22, -203], [18, -195]], true, .3), 2);
+  hand('GODZILLA', 2, -170, 17, 'center', C.ink, -.04);
+}
+
+function drawEnemy(e) {
+  const sx = e.x - camX;
+  if (sx < -160 || sx > W + 160) return;
+  if (e.squashed && e.sq > 1.2) return;
+  const base = terrain(e.x), sy = laneY(e.type === 'gz' ? 1.5 : e.lane) - base;
+  pen(e.id * 31);
+  ctx.save(); ctx.translate(sx, sy);
+  if (e.z > 1) { ctx.fillStyle = 'rgba(27,26,31,.13)'; ctx.beginPath(); ctx.ellipse(0, 0, e.w / 2, 4, 0, 0, 7); ctx.fill(); }
+  ctx.translate(0, -e.z);
+  if (e.squashed) { ctx.globalAlpha = Math.max(0, 1 - e.sq / 1.2); ctx.scale(1.3, .35); }
+  switch (e.type) {
+    case 'croc': drawCroc(e); break;
+    case 'toast': drawToast(e); break;
+    case 'bandit': drawBandit(e); break;
+    case 'cone': drawCone(e); break;
+    case 'hotdog': drawHotdog(e); break;
+    case 'gz': drawGz(e); break;
+  }
+  if (e.dazed && !e.squashed) { swirl(-8, HEAD[e.type]); swirl(8, HEAD[e.type] - 4); }
+  ctx.restore();
+}
+
+function drawBikeAll() {
+  const b = bike, sx = b.x - camX, gy = laneY(b.lane), sy = gy - b.z;
+  pen(7);
+  ctx.fillStyle = 'rgba(27,26,31,.13)'; ctx.beginPath(); ctx.ellipse(sx, gy - terrain(b.x), 36, 5, 0, 0, 7); ctx.fill();
+  ctx.save();
+  if (b.inv > 0 && Math.floor(t * 14) % 2) ctx.globalAlpha = .45;
+  const o = { t, wheel: b.wheel, ear: Math.min(.9, b.speed / 560), flap: Math.min(1, b.speed / 400), turbo: state === 'race' && held.turbo && b.stallT <= 0 && b.crashT <= 0 };
+  if (b.dog) {
+    ctx.save(); ctx.translate(sx, sy - 20); ctx.rotate(-b.spin); ctx.translate(0, 20); drawHog(o); ctx.restore();
+    const d = b.dog;
+    ctx.save(); ctx.translate(sx + d.x, gy - d.z); ctx.rotate(d.rot); ctx.translate(0, 50); drawDog({ ...o, flap: .3 }); ctx.restore();
+  } else {
+    ctx.save(); ctx.translate(sx, sy); ctx.rotate(-b.ang); drawHog(o); drawDog(o); ctx.restore();
+    if (o.turbo) for (let k = 0; k < 3; k++) stroke(line(sx - 60 - R() * 30, sy - 20 - k * 16, sx - 90 - R() * 40, sy - 20 - k * 16, .5), 1.4);
+  }
+  ctx.restore();
+}
+function drawBone(o) {
+  if (o.got) return;
+  const sx = o.x - camX; if (sx < -30 || sx > W + 30) return;
+  pen(o.x | 0);
+  boneShape(sx, laneY(o.lane) - o.z - Math.sin(t * 4 + o.x) * 3, 1, Math.sin(t * 3 + o.x) * .3);
+}
+
+function drawDog(o) {
+  // Keep the fork's bike/rider body, replace its face with Murphy's page-1 face.
+  shape(poly([[-8,-52],[-18,-28],[6,-26],[13,-48]]),null,2);
+  stroke(poly([[0,-29],[9,-19],[16,-19]],false),2.5);
+  stroke(poly([[7,-47],[18,-43],[27,-51]],false),2.5);
+  if (!scan(1,[98,286,84,104],[-20,-113,55,68],[[105,344],[99,322],[99,303],[108,296],[117,305],[126,335],[129,312],[131,292],[141,287],[148,295],[145,325],[142,336],[151,350],[165,350],[168,345],[176,343],[181,350],[175,372],[165,381],[143,389],[120,383],[105,373]])) fallback_drawDog(o);
+}
+function drawCroc(e) {
+  ctx.save(); ctx.translate(0,Math.sin(e.t*6)*2);
+  if(!scan(7,[235,451,810,1040],[-38,-112,87,112],[[276,477],[570,451],[671,522],[652,629],[728,692],[810,660],[805,755],[1003,885],[1044,946],[1044,1146],[921,1203],[910,1372],[1000,1422],[1000,1487],[533,1487],[496,1284],[379,1213],[408,1020],[347,1016],[235,943],[243,878],[407,817],[387,759],[263,688],[252,566]])) fallback_drawCroc(e);
+  ctx.restore();
+}
+function drawToast(e) {
+  ctx.save(); ctx.rotate(Math.sin(e.t*8)*.09);
+  if(!scan(1,[166,158,230,130],[-40,-48,80,46],[[166,189],[246,167],[283,158],[296,174],[379,159],[396,179],[361,202],[292,210],[295,267],[249,287],[223,253],[204,250],[211,217],[174,226]])) fallback_drawToast(e);
+  ctx.restore();
+}
+function drawGz(e) {
+  ctx.save(); ctx.rotate(e.dazed ? -.14 : Math.sin(e.t*2)*.015);
+  if(!scan(9,[186,171,694,1265],[-60,-220,121,220],[[327,176],[642,171],[704,210],[672,339],[616,433],[775,522],[880,635],[865,802],[796,805],[749,682],[706,665],[727,931],[769,1276],[664,1436],[626,1405],[590,1201],[540,1134],[484,1052],[444,1161],[428,1343],[317,1358],[303,1290],[352,1166],[309,1075],[355,1053],[408,887],[375,777],[397,667],[338,659],[303,826],[186,831],[198,695],[220,492],[307,455],[287,334]])) fallback_drawGz(e);
+  ctx.restore();
+}
+// ---------- drawing: scenery ----------
+const BOARDS = [['DOGS', C.hog], ['DOG HOG', C.cool], ['SCIENCE!', C.lab], ['screech', C.paper], ['BOOM!!!', C.orange], ['GO DOG GO', C.croc], ['MURPHY COMICS', C.hog], ['Gooom!!!', C.grey]];
+function drawSky() {
+  pen(1);
+  const sun = blob(826, 96, 34, 34, 1.2, 11); crayon(sun, C.hog, .8); stroke(sun, 2.6);
+  // zigzag mountains, like page 3
+  const off = camX * .12, seg = 95, i0 = Math.floor(off / seg) - 1, pts = [];
+  for (let i = i0; i < i0 + 13; i++) pts.push([i * seg - off, i % 2 ? 214 : 138 + hash(i, 3) * 50]);
+  pen(2);
+  const m = poly(pts.concat([[pts[pts.length - 1][0], 240], [pts[0][0], 240]]), true, 1.4);
+  paper(m); crayon(m, C.mountain, .55); stroke(poly(pts, false, 1.4), 2.4);
+  // scribble clouds, like page 2
+  const co = camX * .2, cs = 430, c0 = Math.floor(co / cs) - 1;
+  for (let i = c0; i < c0 + 4; i++) {
+    if (hash(i, 5) < .3) continue;
+    const cx = i * cs - co + hash(i, 6) * 120, cy = 70 + hash(i, 7) * 40;
+    pen(100 + i);
+    const cl = [];
+    for (let k = 0; k < 12; k++) { const a = k / 12 * Math.PI * 2, rr = k % 2 ? 1 : 1.25; cl.push([cx + Math.cos(a) * 56 * rr, cy + Math.sin(a) * 20 * rr]); }
+    const cp = poly(cl, true, 1.4); paper(cp); stroke(cp, 2.2);
+  }
+}
+function drawBuildings() {
+  const off = camX * .42, sw = 200, i0 = Math.floor(off / sw) - 1, by = 246;
+  for (let i = i0; i < i0 + 7; i++) {
+    const x = i * sw - off + hash(i, 8) * 30, kind = Math.floor(hash(i, 9) * 4);
+    pen(200 + i);
+    if (kind === 0) { // DOGS store, page 1
+      const wd = 150, ht = 96;
+      shape(poly([[x, by], [x, by - ht], [x + wd, by - ht], [x + wd, by]]), null, 2.6);
+      const sign = blob(x + wd / 2, by - ht + 4, wd / 2 + 6, 22, 1.2, 12); shape(sign, C.hog, 2.6);
+      miniDog(x + 30, by - ht + 8, .85); miniDog(x + 54, by - ht + 8, .85); miniDog(x + 78, by - ht + 8, .85);
+      hand('DOGS', x + 116, by - ht + 8, 22);
+      shape(poly([[x + 16, by], [x + 16, by - 40], [x + 44, by - 40], [x + 44, by]]), null, 2.2);
+      const win = poly([[x + 64, by - 16], [x + 64, by - 56], [x + 136, by - 56], [x + 136, by - 16]]); shape(win, null, 2.2);
+      ctx.save(); ctx.clip(win); scribble(x + 100, by - 36, 32, 16, 4, 1.2); ctx.restore();
+    } else if (kind === 1) { // window tower, page 1
+      const wd = 84, ht = 140 + hash(i, 10) * 20;
+      shape(poly([[x, by], [x, by - ht], [x + wd, by - ht], [x + wd, by]]), null, 2.6);
+      stroke(poly([[x, by - ht], [x + 10, by - ht - 18], [x + 18, by - ht], [x + 28, by - ht - 22], [x + 38, by - ht], [x + 48, by - ht - 16], [x + 58, by - ht], [x + 70, by - ht - 20], [x + wd, by - ht]], false, .8), 2.2);
+      for (let r = 0; r < 3; r++) for (let c = 0; c < 2; c++) {
+        const wx = x + 14 + c * 36, wy = by - ht + 22 + r * 38;
+        shape(poly([[wx, wy], [wx + 22, wy], [wx + 22, wy + 22], [wx, wy + 22]], true, .6), null, 2);
+        if (hash(i * 7 + r * 2 + c, 11) < .5) miniDog(wx + 11, wy + 16, .6);
+      }
+    } else if (kind === 2) { // lab — Dog Hog is a scientist
+      const wd = 120, ht = 88;
+      shape(poly([[x, by], [x, by - ht], [x + wd, by - ht], [x + wd, by]]), C.lab, 2.6);
+      hand('LAB', x + wd / 2, by - ht + 22, 26);
+      const fx = x + wd / 2;
+      shape(poly([[fx - 6, by - ht], [fx - 6, by - ht - 18], [fx - 22, by - ht - 2], [fx + 22, by - ht - 2], [fx + 6, by - ht - 18], [fx + 6, by - ht]]), C.croc, 2.2);
+      shape(poly([[fx - 22, by - ht], [fx - 6, by - ht - 24], [fx - 6, by - ht - 36], [fx + 6, by - ht - 36], [fx + 6, by - ht - 24], [fx + 22, by - ht]]), C.croc, 2.4);
+      for (let k = 0; k < 3; k++) { const bb = blob(fx - 4 + k * 5, by - ht - 44 - k * 10 - (t * 20 % 10), 3 + k, 3 + k, .4, 7); paper(bb); stroke(bb, 1.6); }
+      shape(poly([[x + 16, by], [x + 16, by - 36], [x + 40, by - 36], [x + 40, by]]), null, 2.2);
+      shape(blob(x + 86, by - 32, 14, 14, .6, 9), C.goggle, 2.2);
+    } else { // scribble tree, page 2
+      stroke(line(x + 40, by, x + 42, by - 50), 3);
+      const tr = blob(x + 40, by - 80, 38, 36, 2.2, 11); paper(tr); crayon(tr, C.croc, .7); stroke(tr, 2.4);
+      scribble(x + 40, by - 80, 30, 26, 3, 1.1);
+    }
+  }
+}
+function drawStands() {
+  pen(300);
+  const band = poly([[-10, 236], [W + 10, 236], [W + 10, 274], [-10, 274]], true, .6); paper(band);
+  stroke(line(-10, 236, W + 10, 236, .8), 2.4);
+  stroke(line(-10, 255, W + 10, 255, .8), 1.4);
+  const near = bike.x - camX;
+  for (const [yy, sp, sc, par, seed] of [[252, 34, .75, .8, 21], [270, 28, .95, .86, 22]]) {
+    const off = camX * par, i0 = Math.floor(off / sp) - 1;
+    for (let i = i0; i < i0 + Math.ceil(W / sp) + 2; i++) {
+      if (hash(i, seed) < .18) continue;
+      const x = i * sp - off + hash(i, seed + 1) * 8;
+      const excited = Math.abs(x - near) < 160 ? 3 : 1;
+      const y = yy - Math.abs(Math.sin(t * 6 + i)) * 2.5 * excited;
+      pen(400 + i * 3 + seed);
+      if (hash(i, seed + 2) < .07) {
+        stroke(line(x - 4, y - 6, x - 4, y - 34), 2);
+        const s = poly([[x - 22, y - 50], [x + 14, y - 50], [x + 14, y - 32], [x - 22, y - 32]], true, .6);
+        shape(s, hash(i, 3) < .5 ? C.hog : C.cool, 2);
+        hand(hash(i, 4) < .5 ? 'GO!' : 'WOOF', x - 4, y - 41, 14);
+      }
+      miniDog(x, y, sc, hash(i, seed + 3) < .5 ? 1 : -1);
+    }
+  }
+}
+function drawFence() {
+  pen(500);
+  stroke(line(-10, 277, W + 10, 277, .8), 2.4);
+  for (let x = -(camX % 80); x < W + 10; x += 80) stroke(line(x, 277, x, TRACK_TOP, .6), 2);
+  const bw = 700, i0 = Math.floor(camX / bw) - 1;
+  for (let i = i0; i < i0 + 3; i++) {
+    const wx = i * bw + 260, x = wx - camX;
+    if (x < -200 || x > W + 20) continue;
+    pen(600 + i);
+    const [txt, col] = BOARDS[((i % BOARDS.length) + BOARDS.length) % BOARDS.length];
+    const bd = poly([[x, 274], [x + 160, 273], [x + 160, 297], [x, 297]], true, .6); shape(bd, col, 2.4);
+    hand(txt, x + 80, 285, 20);
+  }
+  for (const s of world.signs) {
+    const x = s.x - camX; if (x < -220 || x > W + 20) continue;
+    pen(s.x | 0);
+    const bd = poly([[x, 270], [x + 190, 269], [x + 190, 298], [x, 298]], true, .6); shape(bd, s.color, 2.8);
+    hand(s.text, x + 95, 284, 24);
+  }
+}
+function drawTrack() {
+  pen(700);
+  ctx.save(); ctx.translate(-(camX % 48), 0);
+  ctx.globalAlpha = .5; ctx.fillStyle = crayonPattern(C.dirt); ctx.fillRect(0, TRACK_TOP, W + 48, TRACK_BOT - TRACK_TOP);
+  ctx.restore();
+  stroke(line(-10, TRACK_TOP, W + 10, TRACK_TOP, 1), 3);
+  stroke(line(-10, TRACK_BOT, W + 10, TRACK_BOT, 1), 3.2);
+  for (let k = 1; k < 4; k++) {
+    const y = TRACK_TOP + k * 40;
+    for (let x = -(camX % 64); x < W; x += 64) stroke(line(x, y, x + 28, y, .6), 1.5);
+  }
+  // grass tufts below the track
+  for (let x = -(camX % 55); x < W + 20; x += 55) stroke(poly([[x, 474], [x + 4, 466], [x + 7, 474], [x + 11, 464], [x + 14, 474]], false, .6), 1.6);
+  // start line
+  const s = 160 - camX;
+  if (s > -20 && s < W + 20) for (let k = 0; k < 8; k++) { stroke(line(s, TRACK_TOP + k * 20 + 3, s + 2, TRACK_TOP + k * 20 + 14, .5), 3); }
+  // finish line
+  const f = L - camX;
+  if (f > -60 && f < W + 200) {
+    for (let r = 0; r < 8; r++) for (let c = 0; c < 2; c++) if ((r + c) % 2 === 0) { ctx.fillStyle = C.ink; ctx.fillRect(f + c * 12, TRACK_TOP + r * 20, 12, 20); }
+    stroke(line(f - 6, 472, f - 6, 170), 3);
+    const fl = poly([[f - 6, 172], [f + 170, 176], [f + 168, 222], [f - 6, 218]], true, 1.2); shape(fl, C.hog, 2.8);
+    hand('FINISH', f + 82, 197, 30);
+  }
+}
+function drawDecals() {
+  for (const m of world.muds) {
+    const x = m.x - camX; if (x + m.len < -20 || x > W + 20) continue;
+    pen(800 + (m.x | 0));
+    const y = laneY(m.lane);
+    const mp = blob(x + m.len / 2, y, m.len / 2, 14, 2, 14); crayon(mp, '#6b4a2b', .9); stroke(mp, 2);
+    for (let k = 0; k < Math.ceil(m.len / 50); k++) scribble(x + 25 + k * 50, y, 22, 10, 3, 1.2);
+  }
+  for (const c of world.cools) {
+    const x = c.x - camX; if (x < -40 || x > W + 40) continue;
+    pen(900 + (c.x | 0) + c.lane);
+    const y = laneY(c.lane);
+    for (let k = 0; k < 2; k++) {
+      const ch = poly([[x - 12 + k * 14, y - 11], [x + k * 14, y], [x - 12 + k * 14, y + 11]], false, .5);
+      stroke(ch, 6, c.used ? '#b9c6dc' : C.cool); stroke(ch, 1.6);
+    }
+  }
+}
+function drawRamps() {
+  world.ramps.forEach((r, i) => {
+    const sx0 = r.x - camX; if (sx0 > W + 20 || sx0 + r.w < -20) return;
+    pen(3000 + i);
+    const P = r.pts.map(([px, h]) => [sx0 + px, h]);
+    for (let k = 0; k < P.length - 1; k++) {
+      const [x1, h1] = P[k], [x2, h2] = P[k + 1];
+      if (x2 - x1 < 3) continue;
+      const q = poly([[x1, TRACK_TOP - h1], [x2, TRACK_TOP - h2], [x2, TRACK_BOT - h2], [x1, TRACK_BOT - h1]], true, .8);
+      paper(q); crayon(q, C.dirt, h2 > h1 ? .95 : h2 === h1 ? .6 : .4); stroke(q, 2.4);
+      for (let l = 1; l < 4; l++) stroke(line(x1, TRACK_TOP + l * 40 - h1, x2, TRACK_TOP + l * 40 - h2, .5), 1);
+    }
+    const fp = [[P[0][0], TRACK_BOT]].concat(P.map(([x, h]) => [x, TRACK_BOT - h])).concat([[P[P.length - 1][0], TRACK_BOT]]);
+    const f = poly(fp, true, .8); paper(f); hatch(f, P[0][0], TRACK_BOT - 140, P[P.length - 1][0], TRACK_BOT, Math.ceil(r.w / 9), 1.1); stroke(f, 2.6);
+  });
+}
+function drawParticles() {
+  for (const p of parts) {
+    const sx = p.x - camX, sy = laneY(p.lane) - p.z, a = p.life / p.max;
+    pen(p.id);
+    ctx.save(); ctx.globalAlpha = a;
+    if (p.kind === 'mud') dot(sx, sy, p.r, '#6b4a2b');
+    else { const b = blob(sx, sy, p.r * (p.kind === 'smoke' ? 2 - a : 1), p.r * (p.kind === 'smoke' ? 2 - a : 1), .6, 7); if (p.kind === 'smoke') { ctx.fillStyle = 'rgba(160,157,147,.5)'; ctx.fill(b); } stroke(b, 1.4); }
+    ctx.restore();
+  }
+}
+function drawPopups() {
+  for (const p of popups) {
+    const sx = p.x - camX, sy = laneY(p.lane) - p.z - 96 - p.t * 40;
+    ctx.save(); ctx.globalAlpha = p.t > .8 ? Math.max(0, 1 - (p.t - .8) / .4) : 1;
+    ctx.lineWidth = 6; ctx.strokeStyle = C.paper; ctx.lineJoin = 'round';
+    ctx.font = '700 30px Gaegu, "Comic Sans MS", cursive'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.strokeText(p.text, sx, sy); ctx.fillStyle = p.color === C.paper ? C.ink : p.color; ctx.fillText(p.text, sx, sy);
+    ctx.restore();
+  }
+}
+function drawHUD() {
+  pen(9); ctx.fillStyle = C.paper; ctx.fillRect(0,0,W,44); stroke(line(0,44,W,43,.5),2);
+  if(mode === 'arcade') {
+    hand('TIME '+fmt(raceT),20,23,25,'left'); hand('SCORE '+score,260,23,25,'left');
+    hand('HEAT '+Math.round(bike.heat)+'%',W-20,23,25,'right',bike.heat>80?C.hot:C.ink);
+  } else {
+    hand(W < 700 ? 'DOG HOG' : 'DOG HOG RIDES AGAIN',20,23,25,'left');
+    hand(springReady > 0 ? 'SPRING RECHARGING…' : 'E · SPRING-O-MATIC!',W-20,23,25,'right',C.cool);
+  }
+}
+function drawMap() {
+  pen(11);
+  const y = 510, x0 = 96, x1 = W-92;
+  stroke(line(x0, y, x1, y, .8), 3);
+  hand('START', x0 - 12, y, 20, 'right');
+  for (let r = 0; r < 2; r++) for (let c = 0; c < 3; c++) if ((r + c) % 2 === 0) { ctx.fillStyle = C.ink; ctx.fillRect(x1 + 4 + c * 6, y - 8 + r * 8, 6, 8); }
+  stroke(poly([[x1 + 4, y - 8], [x1 + 22, y - 8], [x1 + 22, y + 8], [x1 + 4, y + 8]], true, .3), 1.6);
+  for (const e of world.enemies) if (e.type === 'gz') {
+    const gx = x0 + (x1 - x0) * e.x / L;
+    shape(poly([[gx - 10, y - 4], [gx - 8, y - 18], [gx + 9, y - 19], [gx + 11, y - 4]], true, .5), e.dazed ? C.grey : C.croc, 2);
+    stroke(poly([[gx - 8, y - 10], [gx - 4, y - 7], [gx, y - 10], [gx + 4, y - 7], [gx + 8, y - 10]], false, .2), 1.2);
+  }
+  const bx = x0 + (x1 - x0) * clamp(bike.x / L, 0, 1);
+  miniDog(bx, y - 4, 1.1);
+  hand(chapters[Math.max(0,chapter)], W - 18, 532, 20, 'right', C.soft);
+}
+function drawBig() {
+  let txt = null, sc = 1, col = C.ink;
+  if (state === 'count') { txt = String(Math.max(1, Math.ceil(countT))); sc = 1 + (Math.ceil(countT) - countT) * .4; }
+  else if (big) { txt = big.text; sc = 1 + Math.min(.25, big.t * .8); col = big.color; }
+  if (!txt) return;
+  ctx.save(); ctx.translate(W / 2, 170); ctx.scale(sc, sc); ctx.rotate(-.04);
+  ctx.font = '700 96px Gaegu, "Comic Sans MS", cursive'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.lineWidth = 14; ctx.strokeStyle = C.paper; ctx.lineJoin = 'round'; ctx.strokeText(txt, 0, 0);
+  ctx.fillStyle = col; ctx.fillText(txt, 0, 0);
+  ctx.restore();
+}
+
+function render() {
+  ctx.setTransform(cv.width / W, 0, 0, cv.height / H, 0, 0);
+  ctx.fillStyle = C.paper; ctx.fillRect(0, 0, W, H);
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.save();
+  if (shake > 0 && !reduceMotion) ctx.translate((Math.random() - .5) * shake * 26, (Math.random() - .5) * shake * 18);
+  drawSky(); drawBuildings(); drawStands(); drawFence(); drawTrack(); drawDecals(); drawRamps();
+  const list = [];
+  for (const e of world.enemies) list.push({ k: e.type === 'gz' ? 1.5 : e.lane, f: () => drawEnemy(e) });
+  for (const o of world.bones) if (!o.got && Math.abs(o.x - camX - W / 2) < W) list.push({ k: o.lane - .01, f: () => drawBone(o) });
+  list.push({ k: bike.lane + .02, f: drawBikeAll });
+  list.sort((a, b) => a.k - b.k);
+  for (const it of list) it.f();
+  drawParticles(); drawPopups();
+  ctx.restore();
+  drawHUD(); drawMap(); drawBig();
+}
+
+document.getElementById('monsterName').value = monsterName;
+document.getElementById('btnPause').addEventListener('click',()=>{setPaused(!paused); document.activeElement.blur();});
+function toggleSound() { muted = !muted; document.getElementById('btnSound').textContent = muted ? 'Sound off' : 'Sound on'; document.getElementById('btnSound').setAttribute('aria-pressed',String(!muted)); }
+document.getElementById('btnSound').addEventListener('click',()=>{audioInit();toggleSound();document.activeElement.blur();});
+document.getElementById('btnHome').addEventListener('click',()=>{
+  state='title'; paused=false; ovTitle.hidden=false; ovPause.hidden=true; ovResults.hidden=true;
+  for(const k in held) held[k]=0; resetWorld(); bike.speed=270; bike.x=1100;
+  document.getElementById('btnPause').textContent='Pause';
+  document.getElementById('chapterLabel').textContent='A comic you can ride through';
+  document.getElementById('btnStart').focus();
+});
+// Read-only diagnostics for browser verification; no gameplay overrides.
+window.astraSnapshot = () => ({state,paused,mode,x:bike.x,z:bike.z,speed:bike.speed,angle:bike.ang,heat:bike.heat,crashes:stats.crashes,chapter,springReady,inventions,monsterName});
+requestAnimationFrame(now => { last = now; frame(now); });
+})();
