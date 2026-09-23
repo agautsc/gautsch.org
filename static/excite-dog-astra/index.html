@@ -6,6 +6,6 @@ for(const button of document.querySelectorAll('[data-view]')) button.addEventLis
   const view=button.dataset.view;
   for(const b of document.querySelectorAll('[data-view]')) b.setAttribute('aria-pressed',String(b===button));
   document.getElementById('games').classList.toggle('solo',view!=='both');
-  for(const article of articles){const show=view==='both'||view===article.id;article.hidden=!show;const frame=article.querySelector('iframe');frame.src=show?article.id+'.html':'about:blank';}
+  for(const article of articles){const show=view==='both'||view===article.id;article.hidden=!show;const frame=article.querySelector('iframe');const source=frame.getAttribute('src');frame.src=show?source:'about:blank';}
 });
 </script></body></html>
