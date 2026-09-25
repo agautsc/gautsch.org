@@ -55,6 +55,8 @@ These aren't reachable from the open internet, so there's nothing to click.
 
 **Murphy Makes Math** — Printable first-grade math worksheets built on the things my son already likes: comics, stories, and drawing.
 
+**Folding Surprises** — Murphy's fold-in drawings, animated from photos of the paper so every line stays his marker. First up: the Toilet Monster. [See them](/folding-surprises/)
+
 **Dog Hog** — My son's own comic about a scientist dog who rides a motorcycle. The AI handles the scans, layout and cover; the pencil lines stay his.
 
 **Tour de Sacs** — A walking and biking game that turns the cul-de-sacs in my neighborhood into collectibles.
