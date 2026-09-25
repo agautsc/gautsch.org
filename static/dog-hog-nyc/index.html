@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Dog Hog: a running and motorcycle game starring Dog Hog and the bad guys from Murphy's comic.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%23f4b81c' stroke='%231b1a1f' stroke-width='3'/%3E%3Cpath d='M16 5v22M5 16h22' stroke='%231b1a1f' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%231b1a1f'/%3E%3C/svg%3E">
+<title>Dog Hog</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<meta name="theme-color" content="#f4b81c">
+  <script type="module" crossorigin src="./assets/index-B3EuMA3Z.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-hYT2R0kz.css">
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>Dog <span class="hog">Hog</span></h1>
+    <p class="byline"><b>Dog Hog</b>, the scientist dog, and the bad guys from Murphy's comic, Vol.&nbsp;2.</p>
+  </header>
+
+  <div class="panel" id="panel">
+    <canvas id="game" width="960" height="540" aria-label="Dog Hog: side-scrolling running and motorcycle game"></canvas>
+
+    <div class="overlay" id="ovTitle">
+      <div class="card">
+        <p class="eyebrow" id="titleEyebrow">Level 1</p>
+        <h2 id="titleHead">Ready, Dog Hog?</h2>
+        <p id="titleBlurb">Jump the bad guys and don't get too hot.</p>
+        <div class="levels" id="levelPick" role="group" aria-label="Choose a level"></div>
+        <div class="row">
+          <button class="btn" id="btnStart" type="button">Start</button>
+          <span class="hint" id="bestLine">or press Enter</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="overlay" id="ovPause" hidden>
+      <div class="card">
+        <h2>Paused</h2>
+        <p>The hog is idling.</p>
+        <div class="row"><button class="btn" id="btnResume" type="button">Keep riding</button><span class="hint">or press P</span></div>
+      </div>
+    </div>
+
+    <div class="overlay" id="ovResults" hidden>
+      <div class="card">
+        <p class="eyebrow" id="resEyebrow">Dogs Avenue</p>
+        <h2 id="resTitle">Finish!</h2>
+        <table class="res" id="resTable"></table>
+        <div class="row">
+          <button class="btn" id="btnNext" type="button" hidden>Next level →</button>
+          <button class="btn alt" id="btnAgain" type="button">Again</button>
+          <button class="btn alt" id="btnLevels" type="button">Levels</button>
+        </div>
+        <p class="hint">Enter plays again</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pad" id="pad" aria-label="Touch controls">
+    <div class="grp">
+      <button type="button" data-k="up" aria-label="Lane up">▲</button>
+      <button type="button" data-k="down" aria-label="Lane down">▼</button>
+    </div>
+    <div class="grp">
+      <button type="button" data-k="left" aria-label="Brake or lean back">◀</button>
+      <button type="button" data-k="right" aria-label="Gas or lean forward">▶</button>
+    </div>
+    <div class="grp">
+      <button type="button" class="big" data-k="hop">HOP</button>
+      <button type="button" class="turbo" data-k="turbo">TURBO</button>
+    </div>
+  </div>
+
+  <div class="below">
+    <div>
+      <h3>How to ride</h3>
+      <ul class="keys">
+        <li><kbd>↑</kbd><kbd>↓</kbd> change lanes</li>
+        <li><kbd>Space</kbd> jump over a bad guy (or bonk him on the head)</li>
+        <li><kbd>Z</kbd> run fast or turbo, but don't overheat. Water bowls and blue arrows cool you down.</li>
+        <li><kbd>←</kbd><kbd>→</kbd> slow down and speed up; on the Hog, lean in the air to land flat</li>
+        <li><kbd>P</kbd> pause · <kbd>M</kbd> sound on/off</li>
+      </ul>
+    </div>
+    <div>
+      <h3>The cast</h3>
+      <ul class="cast">
+        <li>Dog Hog <span>· p.9</span></li>
+        <li>Chomp Croc <span>· p.7</span></li>
+        <li>Toast Bats <span>· p.1</span></li>
+        <li>Bandit <span>· p.2</span></li>
+        <li>GODZILLA <span>· p.9</span></li>
+        <li>Cone Gremlin <span>· new</span></li>
+        <li>Hot Dog Bandit <span>· new</span></li>
+        <li>Cans, benches, cars <span>· new</span></li>
+        <li>Seagull, Squirrel, Pizza Rat <span>· New York</span></li>
+        <li>Skeleton, lion mask, taxi <span>· New York</span></li>
+      </ul>
+      <p class="note">Names are placeholders. Murphy gets final say. The New York crew are stand-ins until Murphy draws them.</p>
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>
