@@ -177,7 +177,7 @@
           <img id="sladeImg" alt="Slade, drawn by Murphy">
           <span>Match 3 copies and they go <b>BRO!</b> Pop the copies next to a cage to free a real Titan, who can beat any color. Every miss charges Slade. When he's full, he stomps the ceiling down.</span>
         </div>
-        <p class="fine">Drag to aim, let go to shoot. Bounce shots off the walls. Characters and names by Murphy.</p>
+        <p class="fine">Drag to aim, let go to shoot. Tap NEXT to swap. Bounce shots off the walls. Characters and names by Murphy.</p>
       </div>
     </section>
 
@@ -290,7 +290,7 @@
     { id: 'checkers', round: 2, name: 'Checkers', tip: 'No free matches here. Build your own pairs.',
       rows: ['RBRBRBRB', 'GOGOGOG', 'BRBRBRBR', 'OGOGOGO', 'RBRBRBRB', 'GOGpGOG'] },
     { id: 'switchback', round: 2, name: 'Switchback', tip: 'Climb up through the gaps. The top row holds everything.',
-      rows: ['RRRRRRR.', 'XXXXXG.', 'BBOOPPG.', 'BBOPPG.', '...XXXXX'] },
+      rows: ['RRRRRRR.', 'XXXX...', 'BBRRoOPP', '...XXXX', 'RROOPPBB'] },
     { id: 'machine', round: 2, name: 'The Machine', tip: 'Beat this one and Slade is done.',
       rows: ['XPPRRGGX', 'XPbRGrX', 'BBOORRPP', 'BXOORXP', 'GGPPoBBO', 'GXPPBXO', 'RRGGBBOO', 'R.G.B.O'] },
   ];
@@ -512,6 +512,15 @@
   }
   function levelTip() { return S.free ? '' : LEVELS[S.levelIndex].tip || ''; }
 
+  // Trade the loaded piece for the next one, so a color with nowhere to go can wait.
+  function swap() {
+    if (S.screen !== 'play' || S.phase !== 'aim') return;
+    [S.current, S.next] = [S.next, S.current];
+    S.swapT = 0.18;
+    Sound.bounce();
+  }
+  const NEXT_X = BX + 46, NEXT_Y = CANNON_Y - 2;
+
   function fire() {
     if (S.screen !== 'play' || S.phase !== 'aim') return;
     const a = S.angle;
@@ -724,6 +733,7 @@
     S.texts = S.texts.filter((t) => t.t < t.life);
     if (S.landing) { S.landing.t += dt; if (S.landing.t > 0.2) S.landing = null; }
     S.shake = Math.max(0, S.shake - 40 * dt);
+    if (S.swapT) S.swapT = Math.max(0, S.swapT - dt);
   }
 
   // ---------- art: Murphy's drawings, filled in and outlined ----------
@@ -1061,8 +1071,13 @@
       if (S.phase !== 'won' && S.phase !== 'lost') drawPiece(S.current, CANNON_X, CANNON_Y, now);
 
       // next piece
-      arcadeText('NEXT', BX + 46, CANNON_Y - 44, 10, '#a3a9dc');
-      drawPiece(S.next, BX + 46, CANNON_Y - 2, now, 0.82);
+      arcadeText('NEXT', NEXT_X, CANNON_Y - 44, 10, '#a3a9dc');
+      ctx.save();
+      ctx.setLineDash([4, 5]); ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(163,169,220,0.55)';
+      ctx.beginPath(); ctx.arc(NEXT_X, NEXT_Y, 27, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+      drawPiece(S.next, NEXT_X, NEXT_Y, now, 0.82 * (1 + (S.swapT || 0) * 1.2));
+      roundText('tap to swap', NEXT_X, CANNON_Y + 42, 12, '#a3a9dc');
       if (S.helpers.length) arcadeText('+' + S.helpers.length, BX + 84, CANNON_Y + 22, 9, '#7fe3ff');
 
       // Slade's meter
@@ -1148,6 +1163,9 @@
   cv.addEventListener('pointerdown', (e) => {
     if (S.screen !== 'play') return;
     Sound.init();
+    const rect = cv.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width * W, py = (e.clientY - rect.top) / rect.height * H;
+    if (Math.hypot(px - NEXT_X, py - NEXT_Y) < 40) { swap(); return; }
     S.pointerDown = true;
     try { cv.setPointerCapture(e.pointerId); } catch { /* not supported */ }
     aimAt(e);
@@ -1169,6 +1187,7 @@
     if (e.key === 'ArrowLeft') { S.angle = Math.min(MAX_A, S.angle + step); e.preventDefault(); }
     else if (e.key === 'ArrowRight') { S.angle = Math.max(MIN_A, S.angle - step); e.preventDefault(); }
     else if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'Enter') { Sound.init(); fire(); e.preventDefault(); }
+    else if (e.key === 's' || e.key === 'S') { swap(); e.preventDefault(); }
     else if (e.key === 'p' || e.key === 'P' || e.key === 'Escape') { pause(); e.preventDefault(); }
   });
   document.addEventListener('visibilitychange', () => { if (document.hidden && S.screen === 'play') pause(); });
@@ -1340,7 +1359,7 @@
   });
 
   // Test hooks for the prototype (harmless in play).
-  window.__bro = { S, LEVELS, ART, fire, startLevel, trace, update, setMode, setAngle: (a) => { S.angle = a; } };
+  window.__bro = { S, LEVELS, ART, fire, swap, startLevel, trace, update, setMode, setAngle: (a) => { S.angle = a; } };
 })();
 </script>
 </body>
