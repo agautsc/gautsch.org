@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a0b1f">
-<meta name="robots" content="noindex">
 <title>Bro! Pac-Men</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -53,7 +53,7 @@
     border-radius: 14px;
     cursor: crosshair;
   }
-  .hud-btns { position: absolute; top: 6px; right: 8px; display: flex; gap: 6px; }
+  .hud-btns { position: absolute; bottom: 6px; right: 8px; display: flex; gap: 6px; }
   .icon-btn {
     width: 36px; height: 36px;
     display: grid; place-items: center;
@@ -109,7 +109,7 @@
   .toggles label { display: flex; gap: 7px; align-items: center; cursor: pointer; }
   .toggles input { width: 18px; height: 18px; accent-color: var(--pellet); }
   .villain { display: flex; gap: 10px; align-items: center; justify-content: center; font-size: 13px; color: var(--dim); text-align: left; line-height: 1.3; }
-  .villain img { width: 66px; background: var(--card); border-radius: 8px; padding: 4px; flex: none; }
+  .villain img { width: 84px; flex: none; }
   .fine { margin: 0; font-size: 12px; color: var(--dim); line-height: 1.35; }
   .levels { display: grid; gap: 8px; }
   .lvl {
@@ -125,6 +125,9 @@
   .legend ul { display: flex; flex-wrap: wrap; gap: 6px 12px; padding: 0; list-style: none; margin: 8px 0 0; }
   .legend li { display: flex; align-items: center; gap: 5px; color: var(--ink); }
   .legend img { width: 24px; height: 24px; }
+  .round { margin: 6px 0 0; text-align: left; font-family: var(--arcade); font-size: 10px; color: var(--dim); }
+  .round:first-child { margin-top: 0; }
+  .sheet-link { color: var(--pellet); }
   .legend code { font-family: var(--arcade); font-size: 11px; color: var(--pellet); }
   .big { margin: 0; font-family: var(--arcade); font-size: clamp(20px, 6vw, 28px); line-height: 1.3; color: var(--pellet); text-wrap: balance; }
   .big.bad { color: var(--danger); }
@@ -150,7 +153,7 @@
     <section class="screen" id="titleScreen" aria-label="Title">
       <div class="panel">
         <h1 class="logo">BRO!</h1>
-        <p class="sub">Starring Murphy's Teen Titans Pac-Men</p>
+        <p class="sub">Slade captured the Titans and made Pac-Man copies of them. Pop the copies and set the real ones free!</p>
         <ul class="cast" id="cast"></ul>
         <div class="modes" role="group" aria-label="Game mode">
           <button class="mode" type="button" id="modeMurphy" aria-pressed="true">
@@ -172,7 +175,7 @@
         </div>
         <div class="villain">
           <img id="sladeImg" alt="Slade, drawn by Murphy">
-          <span>Match 3 of the same Pac Man and they go <b>BRO!</b> Every miss brings Slade closer. When his meter fills, he pushes the ceiling down.</span>
+          <span>Match 3 copies and they go <b>BRO!</b> Pop the copies next to a cage to free a real Titan, who can beat any color. Every miss charges Slade. When he's full, he stomps the ceiling down.</span>
         </div>
         <p class="fine">Drag to aim, let go to shoot. Bounce shots off the walls. Characters and names by Murphy.</p>
       </div>
@@ -183,9 +186,9 @@
         <p class="big">LEVELS</p>
         <div class="levels" id="levelList"></div>
         <div class="legend">
-          Make your own level: color a hex grid with these letters and we'll add it.
+          Make your own level: color in a <a class="sheet-link" href="https://gautsch.org/bro/worksheet/" target="_blank" rel="noopener">level sheet</a> and we'll type it in.
           <ul id="legend"></ul>
-          <p class="fine" style="margin-top:8px">Use <code>.</code> for empty. Rows take turns: 8 spots, then 7 (shifted half a spot).</p>
+          <p class="fine" style="margin-top:8px">Small letter = that Titan in a cage (<code>r</code>). <code>X</code> = Slade block. <code>.</code> = empty. Rows take turns: 8 spots, then 7.</p>
         </div>
         <div class="row"><button class="btn ghost" type="button" id="levelsBack">Back</button></div>
       </div>
@@ -220,15 +223,26 @@
   'use strict';
 
   // ---------- board geometry (logical units; the canvas scales to fit) ----------
-  const W = 424, H = 700, BX = 12, BW = 400;
+  const W = 424, H = 716, BX = 12, BW = 400;
   const R = 25, COLS = 8, ROW_H = R * Math.sqrt(3);
-  const HUD_H = 48, CEIL0 = HUD_H + 12;
+  const HUD_H = 64, CEIL0 = HUD_H + 12;
   const DANGER_Y = CEIL0 + 2 * R + 10 * ROW_H + 2;   // a piece's bottom past this line loses
-  const CANNON_X = BX + BW / 2, CANNON_Y = 634;
-  const ROWS_MAX = 16, EMPTY = -1;
+  const CANNON_X = BX + BW / 2, CANNON_Y = 650;
+  const ROWS_MAX = 16;
   const SHOT_SPEED = 1050;
   const HIT = 2 * R * 0.84;
   const MIN_A = 0.16, MAX_A = Math.PI - 0.16;
+
+  // ---------- cell values ----------
+  // 0-4   one of Slade's Pac-Man copies (these match and pop)
+  // 10-14 a real Titan locked in a cage (freed by popping a copy next to it, or by knocking it loose)
+  // 20    a Slade block (never pops; only falls when cut loose)
+  // 30-34 a freed real Titan, loaded in the cannon: it beats the biggest bunch of copies it touches, any color
+  const EMPTY = -1, CAGE = 10, STONE = 20, REAL = 30;
+  const isCopy = (v) => v >= 0 && v < CAGE;
+  const isCage = (v) => v >= CAGE && v < STONE;
+  const isReal = (v) => v >= REAL;
+  const titanOf = (v) => v % 10;
 
   const KINDS = [
     { key: 'R', id: 'robin',    name: 'Robin Pac Man',     short: 'Robin',     color: '#f04a3a', light: '#ffab9c' },
@@ -253,16 +267,34 @@
     melissa: { sladeMax: 5, guide: 'short', preview: false },
   };
 
-  // Levels are text grids: R Robin, O Starfire, P Raven, G Beast Boy, B Cyborg, "." empty.
-  // Even rows hold 8 spots, odd rows 7 (shifted half a spot right).
+  // Levels are text grids. Capital letters are Slade's copies: R Robin, O Starfire, P Raven,
+  // G Beast Boy, B Cyborg. A small letter is that Titan locked in a cage. X is a Slade block,
+  // "." is empty. Even rows hold 8 spots, odd rows 7 (shifted half a spot right).
   const LEVELS = [
-    { id: 'titans-go', name: 'Titans, Go!', rows: ['RRGGBBRR', 'RGGBBRR', 'GGBBRRGG', 'GBBRRGG'] },
-    { id: 'zoo', name: "Beast Boy's Zoo", rows: ['GGOOBBRR', 'GOOBBRR', 'GGRRBBOO', 'BRRGGOO', 'BBGGRROO'] },
-    { id: 'tower', name: "Raven's Tower", rows: ['BBPPPPRR', 'B.PPP.R', '...OO...', '..GOG..', '...RR...', '..BRB..', '...PP...'] },
-    { id: 'stripes', name: 'Starfire Stripes', rows: ['OOOOOOOO', 'PPPPPPP', 'BBGGRRBB', 'OOOOOOO', 'PPPPPPPP', 'GGRRBBG'] },
-    { id: 'circuit', name: "Cyborg's Circuit", rows: ['B..BB..B', 'B..G..B', 'G..RR..G', 'G..R..G', 'P..OO..P', 'P..O..P'] },
-    { id: 'lair', name: "Slade's Lair", rows: ['PPRRGGBB', 'POORGBB', 'PPOORRGG', 'BBGGOOP', 'BBRRPPOO', 'GGBBRRP', 'OOGGBBRR'] },
+    { id: 'titans-go', round: 1, name: 'Titans, Go!', rows: ['RRGGBBRR', 'RGGBBRR', 'GGBBRRGG', 'GBBRRGG'] },
+    { id: 'zoo', round: 1, name: "Beast Boy's Zoo", rows: ['GGOOBBRR', 'GOOBBRR', 'GGRRBBOO', 'BRRGGOO', 'BBGGRROO'] },
+    { id: 'tower', round: 1, name: "Raven's Tower", rows: ['BBPPPPRR', 'B.PPP.R', '...OO...', '..GOG..', '...RR...', '..BRB..', '...PP...'] },
+    { id: 'stripes', round: 1, name: 'Starfire Stripes', rows: ['OOOOOOOO', 'PPPPPPP', 'BBGGRRBB', 'OOOOOOO', 'PPPPPPPP', 'GGRRBBG'] },
+    { id: 'circuit', round: 1, name: "Cyborg's Circuit", rows: ['B..BB..B', 'B..G..B', 'G..RR..G', 'G..R..G', 'P..OO..P', 'P..O..P'] },
+    { id: 'lair', round: 1, name: "Slade's Lair", rows: ['PPRRGGBB', 'POORGBB', 'PPOORRGG', 'BBGGOOP', 'BBRRPPOO', 'GGBBRRP', 'OOGGBBRR'] },
+    { id: 'two-sides', round: 2, name: 'Two Sides', tip: 'Cages hold real Titans. Pop a copy next to a cage to set one free.',
+      rows: ['RRRR.BBB', 'RRR.BBB', 'OOOG.PPP', 'OOOGPPP', 'rOOG.PPg', 'GGG.GGG'] },
+    { id: 'stems', round: 2, name: 'Stems', tip: 'Cut a stem and everything hanging from it falls.',
+      rows: ['..G..B..', '.G...B.', 'ROP..PRO', 'OPR..RP', 'POO..PRO', 'RPg..oR', 'RR....OO'] },
+    { id: 'vault', round: 2, name: 'The Vault', tip: 'Slade blocks never pop. Find the door.',
+      rows: ['XXXXXXXX', 'XRRBBBX', 'XROoPBBX', 'XROPPBX', 'XGGPPGGX', 'XX.G.XX'] },
+    { id: 'raindrops', round: 2, name: 'Raindrops', tip: 'Bounce off the walls to reach the high ones.',
+      rows: ['BOGPRBOG', 'B.G.R.O', 'B..G..R.', 'o..G..b', 'R..P..G.', 'R..P..G', '...P....'] },
+    { id: 'upside-down', round: 2, name: 'Upside Down', tip: 'Find the pieces holding everything up.',
+      rows: ['...PP...', '...P...', '..RPPG..', '..RPGG.', '.rROGGB.', 'BBROOGB', 'BBBOOGGG', 'RROOOPP'] },
+    { id: 'checkers', round: 2, name: 'Checkers', tip: 'No free matches here. Build your own pairs.',
+      rows: ['RBRBRBRB', 'GOGOGOG', 'BRBRBRBR', 'OGOGOGO', 'RBRBRBRB', 'GOGpGOG'] },
+    { id: 'switchback', round: 2, name: 'Switchback', tip: 'Climb up through the gaps. The top row holds everything.',
+      rows: ['RRRRRRR.', 'XXXXXG.', 'BBOOPPG.', 'BBOPPG.', '...XXXXX'] },
+    { id: 'machine', round: 2, name: 'The Machine', tip: 'Beat this one and Slade is done.',
+      rows: ['XPPRRGGX', 'XPbRGrX', 'BBOORRPP', 'BXOORXP', 'GGPPoBBO', 'GXPPBXO', 'RRGGBBOO', 'R.G.B.O'] },
   ];
+  const ROUNDS = { 1: 'Round 1', 2: 'Round 2 · Expert' };
 
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -301,6 +333,8 @@
     stick() { this.tone(170, 0.05, 'triangle', 0.09); },
     waka(n) { const k = Math.min(n, 8); for (let i = 0; i < k; i++) this.tone(i % 2 ? 300 : 460, 0.085, 'square', 0.05, null, i * 0.085); },
     drop() { this.tone(820, 0.55, 'sine', 0.06, 150); },
+    free() { [659, 784, 988, 1319].forEach((f, i) => this.tone(f, 0.1, 'triangle', 0.07, null, 0.1 + i * 0.07)); },
+    hero() { this.tone(300, 0.25, 'sawtooth', 0.05, 1200); },
     slade() { this.tone(95, 0.45, 'sawtooth', 0.09, 45); this.tone(64, 0.5, 'square', 0.05, 40, 0.06); },
     ready() { [392, 523, 659].forEach((f, i) => this.tone(f, 0.12, 'square', 0.045, null, i * 0.11)); },
     win() { [523, 659, 784, 1047, 784, 1047].forEach((f, i) => this.tone(f, 0.14, 'square', 0.05, null, i * 0.11)); },
@@ -320,8 +354,8 @@
   const S = {
     screen: 'title', mode: 'murphy', levelIndex: 0, free: false,
     grid: null, topY: CEIL0, meter: 0, score: 0,
-    current: 0, next: 0, angle: Math.PI / 2,
-    phase: 'idle', readyT: 0, shot: null, ceil: null,
+    current: 0, next: 0, helpers: [], freedTotal: 0, toldReal: false, angle: Math.PI / 2,
+    phase: 'idle', readyT: 0, shot: null, ceil: null, slade: null,
     anims: [], texts: [], parts: [], shake: 0, pointerDown: false, landing: null,
   };
 
@@ -344,20 +378,23 @@
   function forEachPiece(fn) {
     for (let r = 0; r < ROWS_MAX; r++) for (let c = 0; c < rowLen(r); c++) if (S.grid[r][c] !== EMPTY) fn(r, c, S.grid[r][c]);
   }
-  function kindsPresent() { const set = new Set(); if (S.grid) forEachPiece((r, c, k) => set.add(k)); return set; }
+  function kindsPresent() { const set = new Set(); if (S.grid) forEachPiece((r, c, v) => { if (isCopy(v)) set.add(v); }); return set; }
   const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
   function randomKind() {
     const present = [...kindsPresent()];
     return present.length ? pick(present) : 0;
   }
 
+  function cellFor(ch) {
+    if (ch === 'X') return STONE;
+    const up = KEY_INDEX[ch.toUpperCase()];
+    if (up === undefined) return EMPTY;
+    return ch === ch.toUpperCase() ? up : CAGE + up;
+  }
   function levelGrid(def) {
     const g = makeGrid();
     def.rows.forEach((row, r) => {
-      for (let c = 0; c < rowLen(r) && c < row.length; c++) {
-        const k = KEY_INDEX[row[c]];
-        if (k !== undefined) g[r][c] = k;
-      }
+      for (let c = 0; c < rowLen(r) && c < row.length; c++) g[r][c] = cellFor(row[c]);
     });
     return g;
   }
@@ -374,6 +411,10 @@
         }
         g[r][c] = done.length && Math.random() < 0.55 ? pick(done) : pick(kinds);
       }
+    }
+    for (let i = 0; i < 2; i++) {   // two captured Titans somewhere below the top row
+      const r = 2 + Math.floor(Math.random() * (rows - 2)), c = Math.floor(Math.random() * rowLen(r));
+      g[r][c] = CAGE + g[r][c];
     }
     return g;
   }
@@ -461,22 +502,24 @@
     S.levelIndex = S.free ? S.levelIndex : index;
     S.grid = S.free ? freeGrid() : levelGrid(LEVELS[index]);
     S.topY = CEIL0; S.meter = 0; S.score = 0;
+    S.helpers = []; S.freedTotal = 0; S.toldReal = false; S.slade = null;
     S.anims = []; S.texts = []; S.parts = []; S.shot = null; S.ceil = null; S.shake = 0;
     S.current = randomKind(); S.next = randomKind();
     S.angle = Math.PI / 2;
-    S.phase = 'ready'; S.readyT = 1.15;
+    S.phase = 'ready'; S.readyT = levelTip() ? 2.6 : 1.15;
     Sound.ready();
     show('play');
   }
+  function levelTip() { return S.free ? '' : LEVELS[S.levelIndex].tip || ''; }
 
   function fire() {
     if (S.screen !== 'play' || S.phase !== 'aim') return;
     const a = S.angle;
     S.shot = { x: CANNON_X, y: CANNON_Y, vx: Math.cos(a), vy: -Math.sin(a), kind: S.current };
     S.current = S.next;
-    S.next = randomKind();
+    S.next = S.helpers.length ? S.helpers.shift() : randomKind();
     S.phase = 'fly';
-    Sound.shoot();
+    if (isReal(S.shot.kind)) Sound.hero(); else Sound.shoot();
   }
 
   function updateShot(dt) {
@@ -500,38 +543,71 @@
     return { text: 'bro.', size: 17, color: '#f3f4ff', say: ['bro', 1.0, 1.0], shake: 0 };
   }
 
+  const NOTHING = { cleared: [], dropped: [], freed: [] };
+
   function land(sh) {
     S.shot = null;
     const cell = snapCell(sh.x, sh.y);
-    if (!cell) { afterShot([], [], null); return; }
+    if (!cell) { afterShot(NOTHING); return; }
     const [r, c] = cell;
-    S.grid[r][c] = sh.kind;
-    S.landing = { r, c, t: 0 };
     Sound.stick();
-    let cleared = [], dropped = [];
-    const group = flood(r, c);
-    if (group.length >= 3) {
-      cleared = group.map(([rr, cc]) => ({ x: cellX(rr, cc), y: cellY(rr), k: S.grid[rr][cc] }));
-      for (const [rr, cc] of group) S.grid[rr][cc] = EMPTY;
-      dropped = orphans().map(([rr, cc]) => ({ x: cellX(rr, cc), y: cellY(rr), k: S.grid[rr][cc], rr, cc }));
-      for (const d of dropped) S.grid[d.rr][d.cc] = EMPTY;
-      for (const p of cleared) {
-        S.anims.push({ type: 'pop', x: p.x, y: p.y, k: p.k, t: 0, life: 0.38 });
-        burst(p.x, p.y);
+    let group = [];
+    if (isReal(sh.kind)) {
+      // A real Titan beats the biggest bunch of copies it touches, whatever the color, then heads home.
+      for (const [rr, cc] of nbrs(r, c)) {
+        if (isCopy(S.grid[rr][cc])) { const g = flood(rr, cc); if (g.length > group.length) group = g; }
       }
-      for (const p of dropped) {
-        S.anims.push({ type: 'fall', x: p.x, y: p.y, k: p.k, t: 0, vx: (Math.random() - 0.5) * 140, vy: -60 - Math.random() * 140, rot: 0, vr: (Math.random() - 0.5) * 7 });
-      }
+      S.anims.push({ type: 'rise', x: cellX(r, c), y: cellY(r), v: sh.kind, t: 0 });
+    } else {
+      S.grid[r][c] = sh.kind;
+      S.landing = { r, c, t: 0 };
+      const g = flood(r, c);
+      if (g.length >= 3) group = g;
     }
-    afterShot(cleared, dropped);
+    afterShot(group.length ? clearGroup(group) : NOTHING);
   }
 
-  function afterShot(cleared, dropped) {
+  function clearGroup(group) {
+    const at = (rr, cc) => ({ x: cellX(rr, cc), y: cellY(rr), v: S.grid[rr][cc], rr, cc });
+    const cleared = group.map(([rr, cc]) => at(rr, cc));
+    for (const [rr, cc] of group) S.grid[rr][cc] = EMPTY;
+    const freed = [];
+    for (const [rr, cc] of group) {
+      for (const [nr, nc] of nbrs(rr, cc)) {
+        if (isCage(S.grid[nr][nc])) { freed.push(at(nr, nc)); S.grid[nr][nc] = EMPTY; }
+      }
+    }
+    const dropped = [];
+    for (const [rr, cc] of orphans()) {
+      const p = at(rr, cc);
+      (isCage(p.v) ? freed : dropped).push(p);
+      S.grid[rr][cc] = EMPTY;
+    }
+    for (const p of cleared) {
+      S.anims.push({ type: 'pop', x: p.x, y: p.y, v: p.v, t: 0, life: 0.38 });
+      burst(p.x, p.y);
+    }
+    for (const p of dropped) {
+      S.anims.push({ type: 'fall', x: p.x, y: p.y, v: p.v, t: 0, vx: (Math.random() - 0.5) * 140, vy: -60 - Math.random() * 140, rot: 0, vr: (Math.random() - 0.5) * 7 });
+    }
+    for (const p of freed) freeTitan(p);
+    return { cleared, dropped, freed };
+  }
+
+  function freeTitan(p) {
+    const v = REAL + titanOf(p.v);
+    S.anims.push({ type: 'rise', x: p.x, y: p.y, v, t: 0 });
+    burst(p.x, p.y, '#7fe3ff');
+    S.helpers.push(v);
+    S.freedTotal += 1;
+  }
+
+  function afterShot({ cleared, dropped, freed }) {
     const mode = MODES[S.mode];
     if (cleared.length) {
-      const pts = cleared.length * 10 + dropped.length * 20 * (dropped.length >= 3 ? 2 : 1);
+      const pts = cleared.length * 10 + dropped.length * 20 * (dropped.length >= 3 ? 2 : 1) + freed.length * 100;
       S.score += pts;
-      const b = broFor(cleared.length, dropped.length);
+      const b = broFor(cleared.length, dropped.length + freed.length);
       const cx = cleared.reduce((s, p) => s + p.x, 0) / cleared.length;
       const cy = cleared.reduce((s, p) => s + p.y, 0) / cleared.length;
       addText(b.text, cx, cy, { size: b.size, color: b.color, life: 1.25 });
@@ -544,15 +620,27 @@
     } else {
       S.meter += 1;
     }
+    if (freed.length) {
+      const fx = freed.reduce((s, p) => s + p.x, 0) / freed.length;
+      const fy = freed.reduce((s, p) => s + p.y, 0) / freed.length;
+      addText(freed.length > 1 ? `${freed.length} FREE!` : 'FREE!', fx, fy - 34, { size: 16, color: '#7fe3ff', life: 1.4 });
+      if (!S.toldReal) {
+        S.toldReal = true;
+        addText('REAL TITANS BEAT ANY COLOR', W / 2, DANGER_Y - 34, { size: 9, color: '#ffffff', life: 2.8 });
+      }
+      Sound.free();
+    }
     const present = kindsPresent();
     if (!present.size) { win(); return; }
     const kinds = [...present];
-    if (!present.has(S.current)) S.current = pick(kinds);
-    if (!present.has(S.next)) S.next = pick(kinds);
+    if (isCopy(S.current) && !present.has(S.current)) S.current = pick(kinds);
+    if (isCopy(S.next) && !present.has(S.next)) S.next = pick(kinds);
+    if (S.helpers.length && !isReal(S.next)) S.next = S.helpers.shift();   // a freed Titan jumps the line
     if (S.meter >= mode.sladeMax) {
       S.meter = 0;
       S.phase = 'ceiling';
       S.ceil = { from: S.topY, to: S.topY + ROW_H, t: 0 };
+      S.slade = { fx: 'stomp', t: 0 };
       Sound.slade();
       if (!reduceMotion) S.shake = Math.max(S.shake, 8);
       addText('SLADE!', W / 2, DANGER_Y - 30, { size: 22, color: '#ff5a4e', life: 1.1 });
@@ -564,6 +652,11 @@
 
   function win() {
     S.phase = 'won';
+    forEachPiece((r, c, v) => {   // with the copies gone, any cages still up there spring open
+      if (isCage(v)) { freeTitan({ x: cellX(r, c), y: cellY(r), v }); S.grid[r][c] = EMPTY; }
+    });
+    S.helpers = [];
+    S.slade = { fx: 'defeat', t: 0 };
     const bonus = 500 + 50 * Math.max(0, MODES[S.mode].sladeMax - S.meter);
     S.score += bonus;
     addText('BRO BRO BRO!', W / 2, (CEIL0 + DANGER_Y) / 2, { size: 24, color: 'rainbow', life: 1.9 });
@@ -575,6 +668,7 @@
   }
   function lose() {
     S.phase = 'lost';
+    S.slade = { fx: 'laugh', t: 0 };
     Sound.lose();
     Sound.say(['bro?', 0.8, 0.7]);
     const best = saveBest();
@@ -592,16 +686,20 @@
   function addText(text, x, y, o) {
     S.texts.push({ text, x: Math.max(70, Math.min(W - 70, x)), y, t: 0, life: o.life || 1.2, size: o.size || 18, color: o.color || '#fff' });
   }
-  function burst(x, y) {
+  function burst(x, y, color = '#ffd84a') {
     const n = reduceMotion ? 2 : 6;
     for (let i = 0; i < n; i++) {
       const a = Math.random() * Math.PI * 2, v = 90 + Math.random() * 160;
-      S.parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, t: 0, life: 0.5 + Math.random() * 0.3 });
+      S.parts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, t: 0, life: 0.5 + Math.random() * 0.3, color });
     }
   }
 
   // ---------- update ----------
   function update(dt) {
+    if (S.slade) {
+      S.slade.t += dt;
+      if (S.slade.fx === 'stomp' && S.slade.t > 0.6) S.slade = null;
+    }
     if (S.screen !== 'play') return;
     if (S.phase === 'ready') { S.readyT -= dt; if (S.readyT <= 0) S.phase = 'aim'; }
     if (S.phase === 'fly' && S.shot) updateShot(dt);
@@ -617,8 +715,9 @@
     for (const a of S.anims) {
       a.t += dt;
       if (a.type === 'fall') { a.vy += 1900 * dt; a.x += a.vx * dt; a.y += a.vy * dt; a.rot += a.vr * dt; }
+      if (a.type === 'rise') { a.y -= (120 + 520 * a.t) * dt; }
     }
-    S.anims = S.anims.filter((a) => (a.type === 'pop' ? a.t < a.life : a.y < H + 80));
+    S.anims = S.anims.filter((a) => (a.type === 'pop' ? a.t < a.life : a.type === 'rise' ? a.t < 1.1 : a.y < H + 80));
     for (const p of S.parts) { p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vx *= 0.94; p.vy *= 0.94; }
     S.parts = S.parts.filter((p) => p.t < p.life);
     for (const t of S.texts) { t.t += dt; t.y -= 22 * dt; }
@@ -627,68 +726,206 @@
     S.shake = Math.max(0, S.shake - 40 * dt);
   }
 
+  // ---------- art: Murphy's drawings, filled in and outlined ----------
+  // Each drawing is traced once at load: whatever the outside can't reach without crossing one of
+  // Murphy's lines is the character's body. The body gets a color fill, his lines go on top
+  // unchanged, and a rim goes around the whole shape.
+  const SC = 3;   // sprite pixels per logical unit
+  const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+
+  function disc(rad) {
+    const out = [];
+    for (let y = -rad; y <= rad; y++) for (let x = -rad; x <= rad; x++) if (x * x + y * y <= rad * rad + rad) out.push(y, x);
+    return out;
+  }
+  function grow(mask, w, h, rad) {
+    if (rad <= 0) return mask;
+    const out = new Uint8Array(mask.length), offs = disc(rad);
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        if (!mask[y * w + x]) continue;
+        for (let i = 0; i < offs.length; i += 2) {
+          const yy = y + offs[i], xx = x + offs[i + 1];
+          if (yy >= 0 && yy < h && xx >= 0 && xx < w) out[yy * w + xx] = 1;
+        }
+      }
+    }
+    return out;
+  }
+  function maskCanvas(mask, w, h, [r, g, b]) {
+    const c = mk(w, h), cx = c.getContext('2d'), id = cx.createImageData(w, h);
+    for (let i = 0; i < mask.length; i++) {
+      if (!mask[i]) continue;
+      id.data[i * 4] = r; id.data[i * 4 + 1] = g; id.data[i * 4 + 2] = b; id.data[i * 4 + 3] = 255;
+    }
+    cx.putImageData(id, 0, 0);
+    return c;
+  }
+  const rgb = (hex) => { const n = parseInt(hex.slice(1), 16); return [n >> 16, (n >> 8) & 255, n & 255]; };
+
+  function cutout(img, maxW, maxH, pad, thick) {
+    const k = Math.min(maxW / img.width, maxH / img.height);
+    const w = Math.round(img.width * k), h = Math.round(img.height * k);
+    const cw = w + 2 * pad, ch = h + 2 * pad;
+    const lines = mk(cw, ch), g = lines.getContext('2d');
+    // thicken Murphy's lines a touch so they read at small sizes
+    const t = thick, ring = [[0, 0], [t, 0], [-t, 0], [0, t], [0, -t], [t * .7, t * .7], [-t * .7, t * .7], [t * .7, -t * .7], [-t * .7, -t * .7]];
+    for (const [dx, dy] of ring) g.drawImage(img, pad + dx, pad + dy, w, h);
+    const a = g.getImageData(0, 0, cw, ch).data;
+    const ink = new Uint8Array(cw * ch);
+    for (let i = 0; i < ink.length; i++) ink[i] = a[i * 4 + 3] > 80 ? 1 : 0;
+    const walls = grow(ink, cw, ch, 3);   // closes the small gaps where a line didn't quite meet
+    const outside = new Uint8Array(cw * ch), stack = [];
+    const seed = (i) => { if (!walls[i] && !outside[i]) { outside[i] = 1; stack.push(i); } };
+    for (let x = 0; x < cw; x++) { seed(x); seed((ch - 1) * cw + x); }
+    for (let y = 0; y < ch; y++) { seed(y * cw); seed(y * cw + cw - 1); }
+    while (stack.length) {
+      const i = stack.pop(), x = i % cw;
+      if (x > 0) seed(i - 1);
+      if (x < cw - 1) seed(i + 1);
+      if (i >= cw) seed(i - cw);
+      if (i < cw * (ch - 1)) seed(i + cw);
+    }
+    const body = new Uint8Array(cw * ch);
+    for (let i = 0; i < body.length; i++) body[i] = outside[i] ? 0 : 1;
+    return { lines, body, cw, ch, rims: {} };
+  }
+  function rimMask(cut, rad) { return cut.rims[rad] || (cut.rims[rad] = grow(cut.body, cut.cw, cut.ch, rad)); }
+
+  // rims: [[radius, color], ...] from the outside in; fill(g, w, h) paints the body color
+  function paint(cut, rims, fill) {
+    const { cw, ch } = cut, out = mk(cw, ch), g = out.getContext('2d');
+    for (const [rad, color] of rims) g.drawImage(maskCanvas(rimMask(cut, rad), cw, ch, rgb(color)), 0, 0);
+    const f = mk(cw, ch), fg = f.getContext('2d');
+    fill(fg, cw, ch);
+    fg.globalCompositeOperation = 'destination-in';
+    fg.drawImage(maskCanvas(cut.body, cw, ch, [0, 0, 0]), 0, 0);
+    g.drawImage(f, 0, 0);
+    g.drawImage(cut.lines, 0, 0);
+    return out;
+  }
+  function shade(hex, amt) {
+    const [r, g, b] = rgb(hex);
+    const f = (v) => Math.max(0, Math.min(255, Math.round(v * (1 + amt))));
+    return `rgb(${f(r)},${f(g)},${f(b)})`;
+  }
+  const bodyFill = (light, color) => (g, w, h) => {
+    const rad = Math.max(w, h) / 2;
+    const grad = g.createRadialGradient(w * 0.38, h * 0.32, rad * 0.1, w / 2, h / 2, rad);
+    grad.addColorStop(0, light);
+    grad.addColorStop(0.55, color);
+    grad.addColorStop(1, shade(color, -0.3));
+    g.fillStyle = grad;
+    g.fillRect(0, 0, w, h);
+  };
+
+  const PIECE_PX = 2 * R * SC;
+  const ART = {};   // cell value -> sprite canvas (drawn at canvas size / SC)
+  let sladeSprite = null;
+
+  function fallbackPiece(kind) {
+    const c = mk(PIECE_PX, PIECE_PX), g = c.getContext('2d'), m = PIECE_PX / 2;
+    g.fillStyle = kind.color; g.beginPath(); g.arc(m, m, m - 8, 0, Math.PI * 2); g.fill();
+    g.fillStyle = '#111'; g.font = `bold ${PIECE_PX * 0.4}px sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.fillText(kind.key, m, m);
+    return c;
+  }
+  function cageOver(real) {
+    // bars in front of the real Titan
+    const c = mk(PIECE_PX, PIECE_PX), g = c.getContext('2d'), m = PIECE_PX / 2;
+    const s = Math.min(1, (PIECE_PX - 18) / Math.max(real.width, real.height));
+    g.drawImage(real, m - real.width * s / 2, m - real.height * s / 2, real.width * s, real.height * s);
+    const x0 = 10, y0 = 12, x1 = PIECE_PX - 10, y1 = PIECE_PX - 10;
+    g.lineCap = 'round';
+    for (const [lw, col] of [[11, '#0a0b1f'], [5.5, '#c9d0ea']]) {
+      g.lineWidth = lw; g.strokeStyle = col;
+      g.beginPath(); g.roundRect(x0, y0, x1 - x0, y1 - y0, 16); g.stroke();
+      for (let i = 1; i <= 4; i++) { const x = x0 + (x1 - x0) * i / 5; g.moveTo(x, y0); g.lineTo(x, y1); }
+      g.stroke();
+    }
+    g.fillStyle = '#ffd84a';
+    g.beginPath(); g.roundRect(m - 11, y1 - 22, 22, 18, 4); g.fill();
+    g.strokeStyle = '#0a0b1f'; g.lineWidth = 3; g.stroke();
+    return c;
+  }
+  function sladeBlock() {
+    // a Slade block: gunmetal hexagon, orange trim, four bolts
+    const c = mk(PIECE_PX, PIECE_PX), g = c.getContext('2d'), m = PIECE_PX / 2, rad = m - 6;
+    const hex = (rr) => { g.beginPath(); for (let i = 0; i < 6; i++) { const a = Math.PI / 6 + i * Math.PI / 3; g.lineTo(m + rr * Math.cos(a), m + rr * Math.sin(a)); } g.closePath(); };
+    hex(rad); g.fillStyle = '#ff8a2a'; g.fill();
+    const grad = g.createLinearGradient(0, 0, PIECE_PX, PIECE_PX);
+    grad.addColorStop(0, '#5a6285'); grad.addColorStop(1, '#1d2036');
+    hex(rad - 9); g.fillStyle = grad; g.fill();
+    g.lineWidth = 4; g.strokeStyle = '#0a0b1f'; hex(rad); g.stroke(); hex(rad - 9); g.stroke();
+    g.fillStyle = '#c9d0ea';
+    for (const [dx, dy] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) { g.beginPath(); g.arc(m + dx * rad * 0.42, m + dy * rad * 0.42, 6, 0, Math.PI * 2); g.fill(); }
+    return c;
+  }
+
+  function buildArt() {
+    KINDS.forEach((kind, i) => {
+      const img = images[kind.id];
+      if (!img) { ART[i] = ART[REAL + i] = fallbackPiece(kind); ART[CAGE + i] = cageOver(ART[i]); return; }
+      const cut = cutout(img, 42 * SC, 42 * SC, 4 * SC, SC * 0.9);
+      // Slade's copies: a thin rim in the Titan's light color. The real ones: a thick white rim.
+      ART[i] = paint(cut, [[5, '#0a0b1f'], [3, kind.light]], bodyFill(kind.light, kind.color));
+      ART[REAL + i] = paint(cut, [[11, '#ffd84a'], [8, '#ffffff']], bodyFill('#ffffff', kind.color));
+      ART[CAGE + i] = cageOver(ART[REAL + i]);
+    });
+    ART[STONE] = sladeBlock();
+    if (images.slade) {
+      const cut = cutout(images.slade, 96 * SC, 60 * SC, 3 * SC, SC * 0.8);
+      sladeSprite = paint(cut, [[6, '#0a0b1f'], [4, '#ffb070']], bodyFill('#ffc18a', '#f06a1c'));
+    }
+  }
+
   // ---------- drawing ----------
   const cv = document.getElementById('game');
   const ctx = cv.getContext('2d');
-  const sprites = [];
-  let sladeCard = null;
   const images = {};
 
-  function shade(hex, amt) {
-    const n = parseInt(hex.slice(1), 16);
-    const f = (v) => Math.max(0, Math.min(255, Math.round(v * (1 + amt))));
-    return `rgb(${f(n >> 16)},${f((n >> 8) & 255)},${f(n & 255)})`;
-  }
-  function buildSprite(kind, img) {
-    const SC = 3, size = Math.round(2 * R * SC), c = size / 2, rad = size / 2 - SC * 1.5;
-    const s = document.createElement('canvas');
-    s.width = s.height = size;
-    const g = s.getContext('2d');
-    const grad = g.createRadialGradient(c - rad * 0.35, c - rad * 0.4, rad * 0.1, c, c, rad);
-    grad.addColorStop(0, kind.light);
-    grad.addColorStop(0.6, kind.color);
-    grad.addColorStop(1, shade(kind.color, -0.28));
-    g.fillStyle = grad;
-    g.beginPath(); g.arc(c, c, rad, 0, Math.PI * 2); g.fill();
-    g.lineWidth = SC * 2.2; g.strokeStyle = 'rgba(255,255,255,0.92)'; g.stroke();
-    if (img) {
-      const box = rad * 1.6, k = Math.min(box / img.width, box / img.height);
-      const w = img.width * k, h = img.height * k, x = c - w / 2, y = c - h / 2;
-      const t = size * 0.009;   // thicken Murphy's lines a touch so they read at small sizes
-      for (const [dx, dy] of [[0, 0], [t, 0], [-t, 0], [0, t], [0, -t], [t * .7, t * .7], [-t * .7, t * .7], [t * .7, -t * .7], [-t * .7, -t * .7]]) {
-        g.drawImage(img, x + dx, y + dy, w, h);
-      }
-    } else {
-      g.fillStyle = '#111'; g.font = `bold ${size * 0.4}px sans-serif`; g.textAlign = 'center'; g.textBaseline = 'middle';
-      g.fillText(kind.key, c, c);
-    }
-    return s;
-  }
-  function buildCard(img) {
-    const SC = 3, w = 88 * SC, h = 70 * SC;
-    const s = document.createElement('canvas');
-    s.width = w; s.height = h;
-    const g = s.getContext('2d');
-    g.fillStyle = '#f7f5ee';
-    g.beginPath(); g.roundRect(0, 0, w, h, 10 * SC); g.fill();
-    if (img) {
-      const k = Math.min((w - 12 * SC) / img.width, (h - 10 * SC) / img.height);
-      const iw = img.width * k, ih = img.height * k;
-      const t = SC * 0.9;
-      for (const [dx, dy] of [[0, 0], [t, 0], [0, t], [t, t]]) g.drawImage(img, (w - iw) / 2 + dx, (h - ih) / 2 + dy, iw, ih);
-    }
-    return s;
-  }
-
-  function drawSprite(k, x, y, scale = 1, alpha = 1, rot = 0) {
-    const s = sprites[k];
+  function drawSprite(v, x, y, scale = 1, alpha = 1, rot = 0) {
+    const s = ART[v];
     if (!s) return;
     ctx.save();
     ctx.globalAlpha = alpha;
     ctx.translate(x, y);
     if (rot) ctx.rotate(rot);
-    const d = 2 * R * scale;
-    ctx.drawImage(s, -d / 2, -d / 2, d, d);
+    const w = s.width / SC * scale, h = s.height / SC * scale;
+    ctx.drawImage(s, -w / 2, -h / 2, w, h);
+    ctx.restore();
+  }
+  function heroRing(x, y, now, scale = 1) {
+    ctx.save();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = `hsl(${Math.round(now / 3) % 360}, 95%, 65%)`;
+    ctx.setLineDash([6, 5]);
+    ctx.lineDashOffset = -now / 40;
+    ctx.beginPath(); ctx.arc(x, y, (R + 2) * scale, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
+  }
+  function drawPiece(v, x, y, now, scale = 1) {
+    if (isReal(v)) heroRing(x, y, now, scale);
+    drawSprite(v, x, y, scale);
+  }
+
+  function drawSlade(now) {
+    if (!sladeSprite) return;
+    const f = S.slade, t = f ? f.t : 0;
+    const hot = S.screen === 'play' || S.screen === 'pause' ? S.meter / MODES[S.mode].sladeMax : 0;
+    let dx = 0, dy = 0, rot = 0, sc = 1, alpha = 1;
+    if (f && f.fx === 'stomp') dy = -Math.sin(Math.min(1, t / 0.6) * Math.PI) * 14;
+    else if (f && f.fx === 'laugh') { dy = reduceMotion ? 0 : -Math.abs(Math.sin(t * 14)) * 5; sc = 1 + Math.min(0.1, t * 0.3); }
+    else if (f && f.fx === 'defeat') { rot = reduceMotion ? 0 : t * 4; dy = t * t * 520 - t * 140; alpha = Math.max(0, 1 - t / 1.3); }
+    else if (hot >= 0.6 && !reduceMotion) dx = Math.sin(now / 45) * 2 * hot;
+    if (alpha <= 0) return;
+    const h = sladeSprite.height / SC * sc, w = sladeSprite.width / SC * sc;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(W / 2 + dx, CEIL0 - 10 - h / 2 + dy);
+    if (rot) ctx.rotate(rot);
+    if (hot >= 0.6 && !f) { ctx.shadowColor = 'rgba(255,90,78,0.95)'; ctx.shadowBlur = 12 + 8 * Math.sin(now / 110); }
+    ctx.drawImage(sladeSprite, -w / 2, -h / 2, w, h);
     ctx.restore();
   }
 
@@ -710,6 +947,13 @@
     ctx.lineWidth = Math.max(3, size * 0.28); ctx.strokeStyle = '#0a0b1f';
     ctx.strokeText(text, x, y);
     ctx.fillStyle = color;
+    ctx.fillText(text, x, y);
+    ctx.restore();
+  }
+  function roundText(text, x, y, size, color, align = 'center') {
+    ctx.save();
+    ctx.font = `600 ${size}px "Fredoka", "Trebuchet MS", sans-serif`;
+    ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'middle';
     ctx.fillText(text, x, y);
     ctx.restore();
   }
@@ -754,10 +998,10 @@
       ctx.restore();
 
       // pieces
-      forEachPiece((r, c, k) => {
+      forEachPiece((r, c, v) => {
         let sc = 1;
         if (S.landing && S.landing.r === r && S.landing.c === c) sc = 1 + 0.12 * Math.sin(S.landing.t / 0.2 * Math.PI);
-        drawSprite(k, cellX(r, c), cellY(r), sc);
+        drawSprite(v, cellX(r, c), cellY(r), sc);
       });
     }
 
@@ -769,7 +1013,8 @@
       if (tr.cell) {
         const [r, c] = tr.cell;
         ctx.save();
-        ctx.setLineDash([5, 5]); ctx.lineWidth = 2.5; ctx.strokeStyle = KINDS[S.current].color;
+        ctx.setLineDash([5, 5]); ctx.lineWidth = 2.5;
+        ctx.strokeStyle = isReal(S.current) ? '#ffffff' : KINDS[S.current].color;
         ctx.beginPath(); ctx.arc(cellX(r, c), cellY(r), R - 2, 0, Math.PI * 2); ctx.stroke();
         ctx.restore();
         drawSprite(S.current, cellX(r, c), cellY(r), 0.92, 0.35);
@@ -780,17 +1025,24 @@
     for (const a of S.anims) {
       if (a.type === 'pop') {
         const p = a.t / a.life;
-        drawSprite(a.k, a.x, a.y, 1 + 0.55 * p, 1 - p, Math.sin(p * Math.PI * 3) * 0.35);
+        drawSprite(a.v, a.x, a.y, 1 + 0.55 * p, 1 - p, Math.sin(p * Math.PI * 3) * 0.35);
+      } else if (a.type === 'rise') {
+        const p = a.t / 1.1;
+        heroRing(a.x, a.y, now, 1 + 0.2 * p);
+        drawSprite(a.v, a.x, a.y, 1 + 0.2 * p, 1 - p * p);
       } else {
-        drawSprite(a.k, a.x, a.y, 1, 1, a.rot);
+        drawSprite(a.v, a.x, a.y, 1, 1, a.rot);
       }
     }
-    ctx.fillStyle = '#ffd84a';
-    for (const p of S.parts) { ctx.globalAlpha = 1 - p.t / p.life; ctx.beginPath(); ctx.arc(p.x, p.y, 3.2, 0, Math.PI * 2); ctx.fill(); }
+    for (const p of S.parts) {
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = 1 - p.t / p.life;
+      ctx.beginPath(); ctx.arc(p.x, p.y, 3.2, 0, Math.PI * 2); ctx.fill();
+    }
     ctx.globalAlpha = 1;
 
     // shot in flight
-    if (S.shot) drawSprite(S.shot.kind, S.shot.x, S.shot.y);
+    if (S.shot) drawPiece(S.shot.kind, S.shot.x, S.shot.y, now);
 
     // cannon
     if (S.grid) {
@@ -806,42 +1058,33 @@
       ctx.fillStyle = '#1b2263'; ctx.strokeStyle = '#3355ff'; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.arc(CANNON_X, CANNON_Y + 14, 38, Math.PI, 0); ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.restore();
-      if (S.phase !== 'won' && S.phase !== 'lost') drawSprite(S.current, CANNON_X, CANNON_Y);
+      if (S.phase !== 'won' && S.phase !== 'lost') drawPiece(S.current, CANNON_X, CANNON_Y, now);
 
       // next piece
       arcadeText('NEXT', BX + 46, CANNON_Y - 44, 10, '#a3a9dc');
-      drawSprite(S.next, BX + 46, CANNON_Y - 2, 0.82);
+      drawPiece(S.next, BX + 46, CANNON_Y - 2, now, 0.82);
+      if (S.helpers.length) arcadeText('+' + S.helpers.length, BX + 84, CANNON_Y + 22, 9, '#7fe3ff');
 
-      // Slade meter
+      // Slade's meter
       const mode = MODES[S.mode];
-      const cardX = BX + BW - 98, cardY = CANNON_Y - 64;
-      if (sladeCard) {
-        ctx.save();
-        const hot = S.meter / mode.sladeMax;
-        if (hot > 0.6) { ctx.shadowColor = 'rgba(255,90,78,0.9)'; ctx.shadowBlur = 10 + 8 * Math.sin(now / 110); }
-        ctx.drawImage(sladeCard, cardX, cardY, 88, 70);
-        ctx.restore();
-      }
+      const mx = BX + BW - 98, my = CANNON_Y - 44;
       const pipW = 88 / mode.sladeMax;
+      arcadeText('SLADE', mx + 44, my, 10, S.meter >= mode.sladeMax - 1 ? '#ff5a4e' : '#ff9a2e');
       for (let i = 0; i < mode.sladeMax; i++) {
         ctx.fillStyle = i < S.meter ? (S.meter >= mode.sladeMax - 1 ? '#ff5a4e' : '#ff9a2e') : 'rgba(163,169,220,0.25)';
-        ctx.beginPath(); ctx.roundRect(cardX + i * pipW + 1.5, cardY + 76, pipW - 3, 9, 3); ctx.fill();
+        ctx.beginPath(); ctx.roundRect(mx + i * pipW + 1.5, my + 14, pipW - 3, 10, 3); ctx.fill();
       }
-      arcadeText('SLADE', cardX + 44, cardY - 10, 9, '#ff9a2e');
     }
 
-    // HUD
+    // HUD: score on the left, Slade on the ceiling, level on the right
     if (S.grid) {
-      arcadeText('SCORE', BX + 4, 16, 10, '#ffd84a', 'left');
-      arcadeText(String(S.score), BX + 4, 36, 12, '#f3f4ff', 'left');
+      arcadeText('SCORE', BX + 4, 18, 10, '#ffd84a', 'left');
+      arcadeText(String(S.score), BX + 4, 40, 12, '#f3f4ff', 'left');
       const label = S.free ? 'FREE PLAY' : `LEVEL ${S.levelIndex + 1}`;
-      arcadeText(label, W / 2, 16, 10, '#ffd84a');
-      ctx.save();
-      ctx.font = '600 15px "Fredoka", "Trebuchet MS", sans-serif';
-      ctx.fillStyle = '#f3f4ff'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-      ctx.fillText(S.free ? 'Random board' : LEVELS[S.levelIndex].name, W / 2, 37);
-      ctx.restore();
+      arcadeText(label, BX + BW - 4, 18, 10, '#ffd84a', 'right');
+      roundText(S.free ? 'Random board' : LEVELS[S.levelIndex].name, BX + BW - 4, 41, 15, '#f3f4ff', 'right');
     }
+    drawSlade(now);
 
     // floating words
     for (const t of S.texts) {
@@ -856,7 +1099,25 @@
       ctx.restore();
     }
 
-    if (S.screen === 'play' && S.phase === 'ready') arcadeText('READY!', W / 2, DANGER_Y - 70, 20, '#ffd84a');
+    if (S.screen === 'play' && S.phase === 'ready') {
+      arcadeText('READY!', W / 2, DANGER_Y - 110, 20, '#ffd84a');
+      const tip = levelTip();
+      if (tip) {
+        ctx.save();
+        ctx.font = '600 15px "Fredoka", "Trebuchet MS", sans-serif';
+        const lines = [];
+        for (const word of tip.split(' ')) {
+          const cur = lines.length ? lines[lines.length - 1] + ' ' + word : word;
+          if (lines.length && ctx.measureText(cur).width <= BW - 60) lines[lines.length - 1] = cur;
+          else lines.push(word);
+        }
+        const boxH = 16 + lines.length * 20, top = DANGER_Y - 12 - boxH;
+        ctx.fillStyle = 'rgba(10, 11, 31, 0.88)';
+        ctx.beginPath(); ctx.roundRect(BX + 16, top, BW - 32, boxH, 9); ctx.fill();
+        ctx.restore();
+        lines.forEach((line, i) => roundText(line, W / 2, top + 18 + i * 20, 15, '#f3f4ff'));
+      }
+    }
   }
 
   // ---------- sizing ----------
@@ -948,29 +1209,44 @@
   function renderLevelList() {
     const list = $('levelList');
     list.replaceChildren();
-    const entries = LEVELS.map((l, i) => ({ label: String(i + 1), name: l.name, key: l.id, go: () => startLevel(i) }));
-    entries.push({ label: '?', name: 'Free play', key: 'free', go: () => startLevel('free') });
-    for (const en of entries) {
+    const entry = (label, name, key, go) => {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'lvl';
-      const best = store.get(`bro:best:${S.mode}:${en.key}`, 0);
+      const best = store.get(`bro:best:${S.mode}:${key}`, 0);
       b.innerHTML = `<span class="n"></span><span class="name"></span><span class="best"></span>`;
-      b.querySelector('.n').textContent = en.label;
-      b.querySelector('.name').textContent = en.name;
+      b.querySelector('.n').textContent = label;
+      b.querySelector('.name').textContent = name;
       b.querySelector('.best').textContent = best ? `Best ${best}` : '';
-      b.addEventListener('click', en.go);
+      b.addEventListener('click', go);
       list.append(b);
-    }
+    };
+    let round = null;
+    LEVELS.forEach((l, i) => {
+      if (l.round !== round) {
+        round = l.round;
+        const h = document.createElement('p');
+        h.className = 'round'; h.textContent = ROUNDS[round];
+        list.append(h);
+      }
+      entry(String(i + 1), l.name, l.id, () => startLevel(i));
+    });
+    entry('?', 'Free play', 'free', () => startLevel('free'));
   }
 
   function showResult(won, best) {
     const last = !S.free && S.levelIndex === LEVELS.length - 1;
-    $('resultTitle').textContent = won ? (last ? 'ALL CLEAR! TITANS GO!' : 'LEVEL CLEAR! BRO!') : 'SLADE GOT THROUGH';
+    const endOfRound = !S.free && !last && LEVELS[S.levelIndex + 1].round !== LEVELS[S.levelIndex].round;
+    $('resultTitle').textContent = won ? (last ? 'SLADE IS DONE! BRO!' : 'LEVEL CLEAR! BRO!') : 'SLADE GOT THROUGH';
     $('resultTitle').classList.toggle('bad', !won);
     $('resultScore').textContent = `Score ${S.score}  ·  Best ${best}`;
-    $('resultNote').textContent = won
-      ? (last ? 'Every level is done. Draw a new one and we will add it.' : 'Next up: ' + (S.free ? 'another random board.' : LEVELS[S.levelIndex + 1].name + '.'))
-      : 'Tip: clear a group to calm Slade down. Each clear takes one away from his meter.';
+    const freed = S.freedTotal ? `You freed ${S.freedTotal} real Titan${S.freedTotal > 1 ? 's' : ''}. ` : '';
+    let note;
+    if (!won) note = 'Tip: clear a group to calm Slade down. Each clear takes one away from his meter.';
+    else if (last) note = freed + 'Every level is done. Draw a new one on a level sheet and we will add it.';
+    else if (S.free) note = freed + 'Next up: another random board.';
+    else if (endOfRound) note = freed + `${ROUNDS[LEVELS[S.levelIndex + 1].round]} is next. Slade has built tougher boards.`;
+    else note = freed + 'Next up: ' + LEVELS[S.levelIndex + 1].name + '.';
+    $('resultNote').textContent = note;
     const btns = $('resultBtns');
     btns.replaceChildren();
     const add = (label, cls, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ' + cls; b.textContent = label; b.addEventListener('click', fn); btns.append(b); return b; };
@@ -990,7 +1266,7 @@
   $('levelsBack').addEventListener('click', () => show('title'));
   $('resumeBtn').addEventListener('click', () => show('play'));
   $('restartBtn').addEventListener('click', () => startLevel(S.free ? 'free' : S.levelIndex));
-  $('quitBtn').addEventListener('click', () => show('title'));
+  $('quitBtn').addEventListener('click', () => { S.slade = null; show('title'); });
   $('pauseBtn').addEventListener('click', pause);
   $('soundBtn').addEventListener('click', () => setSound(!Sound.on));
   $('optSound').addEventListener('change', (e) => setSound(e.target.checked));
@@ -1017,8 +1293,8 @@
   }
 
   function snapshot() {
-    if (!S.grid || (S.screen !== 'play' && S.screen !== 'pause')) return { v: 1 };
-    return { v: 1, mode: S.mode, levelIndex: S.levelIndex, free: S.free, grid: S.grid, topY: S.topY, meter: S.meter, score: S.score, current: S.current, next: S.next };
+    if (!S.grid || (S.screen !== 'play' && S.screen !== 'pause')) return { v: 2 };
+    return { v: 2, mode: S.mode, levelIndex: S.levelIndex, free: S.free, grid: S.grid, topY: S.topY, meter: S.meter, score: S.score, current: S.current, next: S.next, helpers: S.helpers, freedTotal: S.freedTotal };
   }
 
   function start(data) {
@@ -1026,8 +1302,8 @@
     if (saved) { S.mode = saved.mode === 'melissa' ? 'melissa' : 'murphy'; Sound.voice = saved.voice !== false; setSound(saved.sound !== false); }
     $('optVoice').checked = Sound.voice;
     setMode(S.mode);
-    if (data && data.v === 1 && Array.isArray(data.grid)) {
-      Object.assign(S, { mode: data.mode, levelIndex: data.levelIndex, free: data.free, grid: data.grid, topY: data.topY, meter: data.meter, score: data.score, current: data.current, next: data.next, phase: 'aim' });
+    if (data && data.v === 2 && Array.isArray(data.grid)) {
+      Object.assign(S, { mode: data.mode, levelIndex: data.levelIndex, free: data.free, grid: data.grid, topY: data.topY, meter: data.meter, score: data.score, current: data.current, next: data.next, helpers: data.helpers || [], freedTotal: data.freedTotal || 0, phase: 'aim' });
       show('pause');
     } else {
       S.grid = levelGrid(LEVELS[0]);   // attract board behind the title
@@ -1038,22 +1314,25 @@
 
   fit();
   loadImages().then(() => {
-    KINDS.forEach((k, i) => { sprites[i] = buildSprite(k, images[k.id]); });
-    sladeCard = buildCard(images.slade);
+    buildArt();
     const cast = $('cast'), legend = $('legend');
     KINDS.forEach((k, i) => {
-      const src = sprites[i].toDataURL('image/png');
       const li = document.createElement('li');
-      const im = document.createElement('img'); im.src = src; im.alt = k.name;
+      const im = document.createElement('img'); im.src = ART[REAL + i].toDataURL('image/png'); im.alt = k.name;
       li.append(im, document.createTextNode(k.name));
       cast.append(li);
-      const lg = document.createElement('li');
-      const im2 = document.createElement('img'); im2.src = src; im2.alt = '';
-      const code = document.createElement('code'); code.textContent = k.key;
-      lg.append(code, im2, document.createTextNode(k.short));
-      legend.append(lg);
     });
-    if (images.slade) $('sladeImg').src = images.slade.src;
+    const legendItem = (code, v, label) => {
+      const lg = document.createElement('li');
+      const im = document.createElement('img'); im.src = ART[v].toDataURL('image/png'); im.alt = '';
+      const c = document.createElement('code'); c.textContent = code;
+      lg.append(c, im, document.createTextNode(label));
+      legend.append(lg);
+    };
+    KINDS.forEach((k, i) => legendItem(k.key, i, k.short));
+    legendItem('r', CAGE, 'Cage');
+    legendItem('X', STONE, 'Slade block');
+    if (sladeSprite) $('sladeImg').src = sladeSprite.toDataURL('image/png');
     const hot = window.claude && window.claude.hot;
     if (hot && typeof hot.snapshot === 'function') { try { hot.snapshot(snapshot); } catch { /* optional */ } }
     if (hot && typeof hot.ready === 'function') hot.ready(start);
@@ -1061,7 +1340,7 @@
   });
 
   // Test hooks for the prototype (harmless in play).
-  window.__bro = { S, fire, startLevel, trace, setAngle: (a) => { S.angle = a; } };
+  window.__bro = { S, LEVELS, ART, fire, startLevel, trace, update, setMode, setAngle: (a) => { S.angle = a; } };
 })();
 </script>
 </body>
