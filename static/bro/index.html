@@ -339,10 +339,13 @@
     ready() { [392, 523, 659].forEach((f, i) => this.tone(f, 0.12, 'square', 0.045, null, i * 0.11)); },
     win() { [523, 659, 784, 1047, 784, 1047].forEach((f, i) => this.tone(f, 0.14, 'square', 0.05, null, i * 0.11)); },
     lose() { [392, 370, 349, 311].forEach((f, i) => this.tone(f, 0.3, 'triangle', 0.08, f * 0.96, i * 0.27)); },
-    say(line) {
+    chuckle() { [0, 0.2, 0.4].forEach((d) => this.tone(150, 0.12, 'sawtooth', 0.07, 95, d)); },
+    gasp() { this.tone(520, 0.3, 'triangle', 0.06, 300); },
+    thud() { this.tone(80, 0.2, 'square', 0.1, 45); },
+    say(line, queue = false) {
       if (!this.on || !this.voice || !line || !('speechSynthesis' in window)) return;
       try {
-        window.speechSynthesis.cancel();
+        if (!queue) window.speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(line[0]);
         u.pitch = line[1]; u.rate = line[2]; u.volume = 0.95;
         window.speechSynthesis.speak(u);
@@ -355,7 +358,7 @@
     screen: 'title', mode: 'murphy', levelIndex: 0, free: false,
     grid: null, topY: CEIL0, meter: 0, score: 0,
     current: 0, next: 0, helpers: [], freedTotal: 0, toldReal: false, angle: Math.PI / 2,
-    phase: 'idle', readyT: 0, shot: null, ceil: null, slade: null,
+    phase: 'idle', readyT: 0, shot: null, ceil: null, slade: null, bubble: null, throws: [], hidden: new Set(),
     anims: [], texts: [], parts: [], shake: 0, pointerDown: false, landing: null,
   };
 
@@ -507,8 +510,27 @@
     S.current = randomKind(); S.next = randomKind();
     S.angle = Math.PI / 2;
     S.phase = 'ready'; S.readyT = levelTip() ? 2.6 : 1.15;
-    Sound.ready();
+    S.bubble = null; S.throws = []; S.hidden = new Set();
+    if (!S.free && index === 0) startThrows(); else Sound.ready();
     show('play');
+  }
+
+  // Level 1 opens with Slade throwing his copies onto the board, top row first. A tap skips it.
+  function startThrows() {
+    const order = [];
+    forEachPiece((r, c, v) => order.push({ r, c, v }));
+    order.sort((a, b) => a.r - b.r || Math.random() - 0.5);
+    order.forEach((p, i) => { p.t = -i * 0.07; S.hidden.add(p.r + ',' + p.c); });
+    S.throws = order;
+    S.phase = 'intro';
+    S.slade = { fx: 'throw', t: 0 };
+    say(['HERE THEY COME!', 1.3], ['here they come', 0.3, 0.9]);
+  }
+  function finishThrows() {
+    S.throws = []; S.hidden = new Set();
+    if (S.slade && S.slade.fx === 'throw') S.slade = null;
+    S.phase = 'ready'; S.readyT = 1.15;
+    Sound.ready();
   }
   function levelTip() { return S.free ? '' : LEVELS[S.levelIndex].tip || ''; }
 
@@ -629,6 +651,11 @@
     } else {
       S.meter += 1;
     }
+    if (freed.length && S.phase !== 'won') {
+      if (!S.slade || S.slade.fx !== 'strike') S.slade = { fx: 'ahh', t: 0 };
+      say(['AHH!', 1.1], ['ahh!', 0.6, 1.1], true);
+      Sound.gasp();
+    }
     if (freed.length) {
       const fx = freed.reduce((s, p) => s + p.x, 0) / freed.length;
       const fy = freed.reduce((s, p) => s + p.y, 0) / freed.length;
@@ -648,11 +675,9 @@
     if (S.meter >= mode.sladeMax) {
       S.meter = 0;
       S.phase = 'ceiling';
-      S.ceil = { from: S.topY, to: S.topY + ROW_H, t: 0 };
-      S.slade = { fx: 'stomp', t: 0 };
-      Sound.slade();
-      if (!reduceMotion) S.shake = Math.max(S.shake, 8);
-      addText('SLADE!', W / 2, DANGER_Y - 30, { size: 22, color: '#ff5a4e', life: 1.1 });
+      S.ceil = { from: S.topY, to: S.topY + ROW_H, t: -SLAM_AT };   // waits for the sword hand to land
+      S.slade = { fx: 'strike', t: 0 };
+      Sound.hero();
       return;
     }
     if (lostNow()) { lose(); return; }
@@ -666,6 +691,7 @@
     });
     S.helpers = [];
     S.slade = { fx: 'defeat', t: 0 };
+    S.bubble = { text: 'NOOO!', t: 0, life: 1.5 };
     const bonus = 500 + 50 * Math.max(0, MODES[S.mode].sladeMax - S.meter);
     S.score += bonus;
     addText('BRO BRO BRO!', W / 2, (CEIL0 + DANGER_Y) / 2, { size: 24, color: 'rainbow', life: 1.9 });
@@ -679,7 +705,8 @@
     S.phase = 'lost';
     S.slade = { fx: 'laugh', t: 0 };
     Sound.lose();
-    Sound.say(['bro?', 0.8, 0.7]);
+    say(['HUH HUH HUH!', 3], ['huh. huh. huh.', 0.1, 0.7]);
+    Sound.chuckle();
     const best = saveBest();
     setTimeout(() => showResult(false, best), 1200);
   }
@@ -707,14 +734,38 @@
   function update(dt) {
     if (S.slade) {
       S.slade.t += dt;
-      if (S.slade.fx === 'stomp' && S.slade.t > 0.6) S.slade = null;
+      const ends = { strike: 1.1, ahh: 0.8 }[S.slade.fx];
+      if (ends && S.slade.t > ends) S.slade = null;
     }
+    if (S.bubble) { S.bubble.t += dt; if (S.bubble.t > S.bubble.life) S.bubble = null; }
     if (S.screen !== 'play') return;
+    if (S.phase === 'intro') {
+      let left = 0;
+      for (const p of S.throws) {
+        if (p.done) continue;
+        p.t += dt;
+        if (p.t >= THROW_T) {
+          p.done = true; S.hidden.delete(p.r + ',' + p.c);
+          if (!reduceMotion) burst(cellX(p.r, p.c), cellY(p.r), '#ff9a2e');
+          Sound.stick();
+        } else left++;
+      }
+      if (!left) finishThrows();
+    }
     if (S.phase === 'ready') { S.readyT -= dt; if (S.readyT <= 0) S.phase = 'aim'; }
     if (S.phase === 'fly' && S.shot) updateShot(dt);
     if (S.phase === 'ceiling' && S.ceil) {
-      S.ceil.t = Math.min(1, S.ceil.t + dt / 0.45);
-      const e = 1 - Math.pow(1 - S.ceil.t, 3);
+      if (S.ceil.t < 0) {
+        S.ceil.t += dt;
+        if (S.ceil.t >= 0) {   // the sword hand hits the top of the board
+          S.ceil.t = 0;
+          Sound.slade(); Sound.thud(); Sound.chuckle();
+          if (!reduceMotion) S.shake = Math.max(S.shake, 9);
+          burst(sladeHandX(), CEIL0 - 12, '#c9d0ea');
+          say(['HUH HUH HUH!', 1.5], ['huh. huh. huh.', 0.1, 0.7]);
+        }
+      } else S.ceil.t = Math.min(1, S.ceil.t + dt / 0.45);
+      const e = 1 - Math.pow(1 - Math.max(0, S.ceil.t), 3);
       S.topY = S.ceil.from + (S.ceil.to - S.ceil.from) * e;
       if (S.ceil.t >= 1) {
         S.topY = S.ceil.to; S.ceil = null;
@@ -831,7 +882,7 @@
 
   const PIECE_PX = 2 * R * SC;
   const ART = {};   // cell value -> sprite canvas (drawn at canvas size / SC)
-  let sladeSprite = null;
+  const SLADE_WALL = CEIL0 - 12, SLAM_AT = 0.42, THROW_T = 0.42;
 
   function fallbackPiece(kind) {
     const c = mk(PIECE_PX, PIECE_PX), g = c.getContext('2d'), m = PIECE_PX / 2;
@@ -883,10 +934,137 @@
       ART[CAGE + i] = cageOver(ART[REAL + i]);
     });
     ART[STONE] = sladeBlock();
-    if (images.slade) {
-      const cut = cutout(images.slade, 96 * SC, 60 * SC, 3 * SC, SC * 0.8);
-      sladeSprite = paint(cut, [[6, '#0a0b1f'], [4, '#ffb070']], bodyFill('#ffc18a', '#f06a1c'));
+    if (images.slade) buildSlade(images.slade);
+  }
+
+  // Slade is colored in like a comic: each closed shape in Murphy's drawing gets a color by
+  // where it sits (fractions of the drawing), and his lines go on top unchanged. The sword arm
+  // is cut out at the shoulder so it can swing.
+  const SLADE_PARTS = [
+    // [x, y, color]: the center of a shape in Murphy's drawing
+    [0.42, 0.07, 'mask'],       // head: half orange, half black
+    [0.45, 0.20, 'torso'],      // chest (joined to the sword arm's sleeve)
+    [0.68, 0.12, '#ff8a2a'],    // bracer
+    [0.75, 0.26, '#4a5178'],    // sword forearm
+    [0.25, 0.27, '#4a5178'],    // other arm
+    [0.91, 0.27, '#f2f5fb'],    // blade
+    [0.86, 0.34, '#ffc13b'],    // sword guard
+    [0.17, 0.45, '#c3cbe0'],    // elbow pad
+    [0.37, 0.46, '#c3cbe0'],    // knee pads
+    [0.50, 0.45, '#c3cbe0'],
+    [0.79, 0.43, '#c3cbe0'],    // gauntlet
+    [0.63, 0.51, '#d08a45'],    // club
+  ];
+  const SLADE_CUT = 0.457;          // he shows from the top of his head down to here (the knees)
+  const SLADE_HEAD_X = 0.422;       // the middle of his head, lined up with the middle of the board
+  const SLADE_PIVOT = [0.511, 0.11];
+  const SLADE_H = 62;               // shown height of the top half, in board units
+  const isArm = (fx, fy) => (fy < 0.213 && fx > 0.511) || fx > 0.539;
+  let sladeBody = null, sladeArm = null, sladeGeo = null;
+
+  function buildSlade(img) {
+    // Work on the drawing at full size, where every shape is clean, then shrink it.
+    const W0 = img.width, H0 = img.height, n = W0 * H0;
+    const src = mk(W0, H0), sg = src.getContext('2d');
+    sg.drawImage(img, 0, 0);
+    const a = sg.getImageData(0, 0, W0, H0).data;
+    const ink = new Uint8Array(n);
+    for (let i = 0; i < n; i++) ink[i] = a[i * 4 + 3] > 80 ? 1 : 0;
+    const walls = grow(ink, W0, H0, 6);
+    // label the closed shapes; anything touching the edge is outside
+    const lab = new Int32Array(n).fill(-1), colors = [];
+    for (let s0 = 0; s0 < n; s0++) {
+      if (walls[s0] || lab[s0] !== -1) continue;
+      const stack = [s0], id = colors.length;
+      lab[s0] = id;
+      let cnt = 0, sx = 0, sy = 0, edge = false;
+      while (stack.length) {
+        const i = stack.pop(), x = i % W0, y = (i / W0) | 0;
+        cnt++; sx += x; sy += y;
+        if (x === 0 || y === 0 || x === W0 - 1 || y === H0 - 1) edge = true;
+        for (const j of [x > 0 ? i - 1 : -1, x < W0 - 1 ? i + 1 : -1, i - W0, i + W0]) {
+          if (j >= 0 && j < n && !walls[j] && lab[j] === -1) { lab[j] = id; stack.push(j); }
+        }
+      }
+      let name = null;
+      if (!edge) {
+        const fx = sx / cnt / W0, fy = sy / cnt / H0;
+        let bd = 0.09;
+        name = '#4a5178';
+        for (const part of SLADE_PARTS) { const d = Math.hypot(part[0] - fx, part[1] - fy); if (d < bd) { bd = d; name = part[2]; } }
+      }
+      colors.push(name);
     }
+    // let each shape's color run right up to Murphy's lines
+    for (let pass = 0; pass < 7; pass++) {
+      const next = lab.slice();
+      for (let i = 0; i < n; i++) {
+        if (lab[i] !== -1 || ink[i]) continue;
+        const x = i % W0;
+        for (const j of [x > 0 ? i - 1 : -1, x < W0 - 1 ? i + 1 : -1, i - W0, i + W0]) {
+          if (j >= 0 && j < n && lab[j] !== -1) { next[i] = lab[j]; break; }
+        }
+      }
+      lab.set(next);
+    }
+    const parts = [new ImageData(W0, H0), new ImageData(W0, H0)];   // [body, sword arm]
+    const orange = rgb('#ff8a2a'), black = rgb('#1d1f2b'), torso = rgb('#7d8bbd'), sleeve = rgb('#4a5178'), inkc = rgb('#0a0b1f');
+    for (let i = 0; i < n; i++) {
+      const x = i % W0, y = (i / W0) | 0, fx = x / W0, fy = y / H0;
+      const out = parts[isArm(fx, fy) ? 1 : 0].data;
+      if (ink[i]) { out.set([inkc[0], inkc[1], inkc[2], a[i * 4 + 3]], i * 4); continue; }
+      const name = lab[i] >= 0 ? colors[lab[i]] : null;
+      if (!name) continue;
+      let col = name === 'mask' ? (fx < SLADE_HEAD_X ? orange : black)
+        : name === 'torso' ? (fx > 0.514 ? sleeve : torso) : rgb(name);
+      const lift = 1.15 - 0.3 * Math.max(0, Math.min(1, fy / 0.5));   // a little light from above
+      col = col.map((v) => Math.min(255, Math.round(v * lift)));
+      out.set([col[0], col[1], col[2], 255], i * 4);
+    }
+    // shrink to game size, then rim the whole silhouette so he stands out on the dark board
+    const k = SLADE_H * SC / (H0 * SLADE_CUT), pad = 3 * SC;
+    const w = Math.round(W0 * k), h = Math.round(H0 * k), cw = w + 2 * pad, ch = h + 2 * pad;
+    const small = parts.map((id) => {
+      const full = mk(W0, H0); full.getContext('2d').putImageData(id, 0, 0);
+      const c = mk(cw, ch), g = c.getContext('2d');
+      g.imageSmoothingQuality = 'high';
+      g.drawImage(full, pad, pad, w, h);
+      return c;
+    });
+    const both = mk(cw, ch), bg = both.getContext('2d');
+    small.forEach((c) => bg.drawImage(c, 0, 0));
+    const ba = bg.getImageData(0, 0, cw, ch).data, sil = new Uint8Array(cw * ch);
+    for (let i = 0; i < sil.length; i++) sil[i] = ba[i * 4 + 3] > 60 ? 1 : 0;
+    const rimIn = grow(sil, cw, ch, 3), rimOut = grow(sil, cw, ch, 5);
+    [sladeBody, sladeArm] = small.map((c, armPart) => {
+      const out = mk(cw, ch), g = out.getContext('2d');
+      const keep = (mask) => {   // this part's share of a rim, split the same way as the drawing
+        const m = new Uint8Array(mask.length);
+        for (let i = 0; i < m.length; i++) {
+          if (!mask[i]) continue;
+          const fx = ((i % cw) - pad) / w, fy = (((i / cw) | 0) - pad) / h;
+          if (isArm(fx, fy) === !!armPart) m[i] = 1;
+        }
+        return m;
+      };
+      g.drawImage(maskCanvas(keep(rimOut), cw, ch, rgb('#0a0b1f')), 0, 0);
+      g.drawImage(maskCanvas(keep(rimIn), cw, ch, rgb('#d9dff0')), 0, 0);
+      g.drawImage(c, 0, 0);
+      return out;
+    });
+    sladeGeo = { cw, ch, pad, w, h };
+  }
+  // Where a point of the drawing (fractions) lands on the board when Slade stands still.
+  function sladePoint(fx, fy) {
+    const { pad, w, h } = sladeGeo;
+    return [W / 2 + (pad + fx * w - (pad + SLADE_HEAD_X * w)) / SC, SLADE_WALL + (pad + fy * h - (pad + SLADE_CUT * h)) / SC];
+  }
+  function sladeHandX() { return sladeGeo ? sladePoint(0.79, 0.43)[0] : W / 2; }
+  // The whole top half as one picture, for the title screen.
+  function sladePortrait() {
+    const { cw, ch, pad, h } = sladeGeo, c = mk(cw, Math.round(pad + SLADE_CUT * h)), g = c.getContext('2d');
+    g.drawImage(sladeBody, 0, 0); g.drawImage(sladeArm, 0, 0);
+    return c;
   }
 
   // ---------- drawing ----------
@@ -919,23 +1097,73 @@
     drawSprite(v, x, y, scale);
   }
 
-  function drawSlade(now) {
-    if (!sladeSprite) return;
-    const f = S.slade, t = f ? f.t : 0;
+  // Slade's sword arm angle (radians, + swings down) and body offset for each thing he does.
+  function sladePose(now) {
+    const f = S.slade, t = f ? f.t : 0, calm = reduceMotion;
     const hot = S.screen === 'play' || S.screen === 'pause' ? S.meter / MODES[S.mode].sladeMax : 0;
-    let dx = 0, dy = 0, rot = 0, sc = 1, alpha = 1;
-    if (f && f.fx === 'stomp') dy = -Math.sin(Math.min(1, t / 0.6) * Math.PI) * 14;
-    else if (f && f.fx === 'laugh') { dy = reduceMotion ? 0 : -Math.abs(Math.sin(t * 14)) * 5; sc = 1 + Math.min(0.1, t * 0.3); }
-    else if (f && f.fx === 'defeat') { rot = reduceMotion ? 0 : t * 4; dy = t * t * 520 - t * 140; alpha = Math.max(0, 1 - t / 1.3); }
-    else if (hot >= 0.6 && !reduceMotion) dx = Math.sin(now / 45) * 2 * hot;
-    if (alpha <= 0) return;
-    const h = sladeSprite.height / SC * sc, w = sladeSprite.width / SC * sc;
+    let arm = calm ? 0 : Math.sin(now / 700) * 0.05, dx = 0, dy = calm ? 0 : Math.sin(now / 520) * 1.2, rot = 0, sink = 0;
+    const ease = (a, b, p) => a + (b - a) * (1 - Math.pow(1 - Math.max(0, Math.min(1, p)), 3));
+    if (f && f.fx === 'strike') {
+      if (t < 0.3) arm = ease(0, -0.6, t / 0.3);                       // wind up
+      else if (t < SLAM_AT) arm = -0.6 + 0.72 * ((t - 0.3) / (SLAM_AT - 0.3)) ** 2;   // slam
+      else if (t < 0.6) arm = 0.12;                                    // hand on the wall
+      else arm = ease(0.12, 0, (t - 0.6) / 0.4);
+      if (t > SLAM_AT && !calm) dy = -Math.abs(Math.sin((t - SLAM_AT) * 18)) * 3;   // laughing
+    } else if (f && f.fx === 'ahh') {
+      const p = Math.min(1, t / 0.8), jolt = Math.sin(p * Math.PI);
+      rot = -0.1 * jolt; dy = -5 * jolt; arm = -0.35 * jolt;
+      if (!calm) dx = Math.sin(t * 60) * 1.5 * (1 - p);
+    } else if (f && f.fx === 'laugh') {
+      arm = -0.5 + (calm ? 0 : Math.sin(t * 10) * 0.1); dy = calm ? 0 : -Math.abs(Math.sin(t * 16)) * 4;
+    } else if (f && f.fx === 'defeat') {
+      rot = Math.min(0.5, t * 0.6); sink = t * t * 160; arm = -Math.min(1.2, t * 2);
+    } else if (f && f.fx === 'throw') {
+      arm = calm ? -0.3 : -0.3 - Math.abs(Math.sin(t * 22)) * 0.35; dy = calm ? 0 : -Math.abs(Math.sin(t * 22)) * 2;
+    } else if (hot >= 0.6 && !calm) {
+      dx = Math.sin(now / 45) * 1.6 * hot; arm = -0.12 * hot + Math.sin(now / 90) * 0.06;
+    }
+    return { arm, dx, dy, rot, sink, hot };
+  }
+
+  function drawSlade(now) {
+    if (!sladeGeo) return;
+    const { cw, ch, pad, w, h } = sladeGeo, pose = sladePose(now);
+    const ox = -(pad + SLADE_HEAD_X * w) / SC, oy = -(pad + SLADE_CUT * h) / SC;   // drawing origin, relative to his base
+    const [pxs, pys] = [(pad + SLADE_PIVOT[0] * w) / SC + ox, (pad + SLADE_PIVOT[1] * h) / SC + oy];
     ctx.save();
-    ctx.globalAlpha = alpha;
-    ctx.translate(W / 2 + dx, CEIL0 - 10 - h / 2 + dy);
-    if (rot) ctx.rotate(rot);
-    if (hot >= 0.6 && !f) { ctx.shadowColor = 'rgba(255,90,78,0.95)'; ctx.shadowBlur = 12 + 8 * Math.sin(now / 110); }
-    ctx.drawImage(sladeSprite, -w / 2, -h / 2, w, h);
+    ctx.beginPath(); ctx.rect(-20, -40, W + 40, SLADE_WALL + 40); ctx.clip();   // he stands behind the board's top wall
+    ctx.translate(W / 2 + pose.dx, SLADE_WALL + pose.dy + pose.sink);
+    if (pose.rot) ctx.rotate(pose.rot);
+    if (pose.hot >= 0.6 && !S.slade) { ctx.shadowColor = 'rgba(255,90,78,0.95)'; ctx.shadowBlur = 12 + 8 * Math.sin(now / 110); }
+    ctx.drawImage(sladeBody, ox, oy, cw / SC, ch / SC);
+    ctx.translate(pxs, pys); ctx.rotate(pose.arm); ctx.translate(-pxs, -pys);
+    ctx.drawImage(sladeArm, ox, oy, cw / SC, ch / SC);
+    ctx.restore();
+  }
+
+  function say([text, life], voice, queue = false) {
+    S.bubble = { text, t: 0, life };
+    Sound.say(voice, queue);
+  }
+  function drawBubble() {
+    const b = S.bubble;
+    if (!b) return;
+    const p = b.t / b.life, pop = reduceMotion ? 1 : Math.min(1, b.t / 0.1);
+    ctx.save();
+    ctx.globalAlpha = p > 0.8 ? 1 - (p - 0.8) / 0.2 : 1;
+    ctx.font = '12px "Press Start 2P", ui-monospace, monospace';
+    const tw = ctx.measureText(b.text).width, bw = tw + 22, bh = 30;
+    const x = Math.min(W / 2 + 34, BX + BW - bw), y = CEIL0 + 8;
+    ctx.translate(x, y); ctx.scale(pop, pop);
+    ctx.fillStyle = '#ffffff'; ctx.strokeStyle = '#0a0b1f'; ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(4, 0); ctx.lineTo(-22, -22); ctx.lineTo(20, 0);   // the tail points up at Slade
+    ctx.roundRect(-8, 0, bw, bh, 10);
+    ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(2, -1, 22, 6);
+    ctx.fillStyle = '#0a0b1f'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText(b.text, 3, bh / 2 + 1);
     ctx.restore();
   }
 
@@ -963,7 +1191,10 @@
   function roundText(text, x, y, size, color, align = 'center') {
     ctx.save();
     ctx.font = `600 ${size}px "Fredoka", "Trebuchet MS", sans-serif`;
-    ctx.fillStyle = color; ctx.textAlign = align; ctx.textBaseline = 'middle';
+    ctx.textAlign = align; ctx.textBaseline = 'middle';
+    ctx.lineJoin = 'round'; ctx.lineWidth = 4; ctx.strokeStyle = '#0a0b1f';
+    ctx.strokeText(text, x, y);
+    ctx.fillStyle = color;
     ctx.fillText(text, x, y);
     ctx.restore();
   }
@@ -1009,6 +1240,7 @@
 
       // pieces
       forEachPiece((r, c, v) => {
+        if (S.hidden.has(r + ',' + c)) return;
         let sc = 1;
         if (S.landing && S.landing.r === r && S.landing.c === c) sc = 1 + 0.12 * Math.sin(S.landing.t / 0.2 * Math.PI);
         drawSprite(v, cellX(r, c), cellY(r), sc);
@@ -1092,6 +1324,7 @@
     }
 
     // HUD: score on the left, Slade on the ceiling, level on the right
+    drawSlade(now);
     if (S.grid) {
       arcadeText('SCORE', BX + 4, 18, 10, '#ffd84a', 'left');
       arcadeText(String(S.score), BX + 4, 40, 12, '#f3f4ff', 'left');
@@ -1099,7 +1332,6 @@
       arcadeText(label, BX + BW - 4, 18, 10, '#ffd84a', 'right');
       roundText(S.free ? 'Random board' : LEVELS[S.levelIndex].name, BX + BW - 4, 41, 15, '#f3f4ff', 'right');
     }
-    drawSlade(now);
 
     // floating words
     for (const t of S.texts) {
@@ -1113,6 +1345,17 @@
       arcadeText(t.text, 0, 0, t.size, color);
       ctx.restore();
     }
+
+    // Slade's throws
+    for (const p of S.throws) {
+      if (p.done || p.t < 0) continue;
+      const q = p.t / THROW_T, [sx, sy] = [W / 2 - 20, SLADE_WALL - 24];
+      const tx = cellX(p.r, p.c), ty = cellY(p.r);
+      const x = sx + (tx - sx) * q, y = sy + (ty - sy) * q - Math.sin(q * Math.PI) * 60;
+      drawSprite(p.v, x, y, 0.6 + 0.4 * q, 1, (1 - q) * 6);
+    }
+    if (S.phase === 'intro') roundText('tap to skip', W / 2, DANGER_Y - 40, 14, '#a3a9dc');
+    drawBubble();
 
     if (S.screen === 'play' && S.phase === 'ready') {
       arcadeText('READY!', W / 2, DANGER_Y - 110, 20, '#ffd84a');
@@ -1165,6 +1408,7 @@
     Sound.init();
     const rect = cv.getBoundingClientRect();
     const px = (e.clientX - rect.left) / rect.width * W, py = (e.clientY - rect.top) / rect.height * H;
+    if (S.phase === 'intro') { finishThrows(); return; }
     if (Math.hypot(px - NEXT_X, py - NEXT_Y) < 40) { swap(); return; }
     S.pointerDown = true;
     try { cv.setPointerCapture(e.pointerId); } catch { /* not supported */ }
@@ -1285,7 +1529,7 @@
   $('levelsBack').addEventListener('click', () => show('title'));
   $('resumeBtn').addEventListener('click', () => show('play'));
   $('restartBtn').addEventListener('click', () => startLevel(S.free ? 'free' : S.levelIndex));
-  $('quitBtn').addEventListener('click', () => { S.slade = null; show('title'); });
+  $('quitBtn').addEventListener('click', () => { S.slade = null; S.bubble = null; S.throws = []; S.hidden = new Set(); show('title'); });
   $('pauseBtn').addEventListener('click', pause);
   $('soundBtn').addEventListener('click', () => setSound(!Sound.on));
   $('optSound').addEventListener('change', (e) => setSound(e.target.checked));
@@ -1351,7 +1595,7 @@
     KINDS.forEach((k, i) => legendItem(k.key, i, k.short));
     legendItem('r', CAGE, 'Cage');
     legendItem('X', STONE, 'Slade block');
-    if (sladeSprite) $('sladeImg').src = sladeSprite.toDataURL('image/png');
+    if (sladeGeo) $('sladeImg').src = sladePortrait().toDataURL('image/png');
     const hot = window.claude && window.claude.hot;
     if (hot && typeof hot.snapshot === 'function') { try { hot.snapshot(snapshot); } catch { /* optional */ } }
     if (hot && typeof hot.ready === 'function') hot.ready(start);
