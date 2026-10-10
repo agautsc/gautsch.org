@@ -291,10 +291,27 @@
       rows: ['RBRBRBRB', 'GOGOGOG', 'BRBRBRBR', 'OGOGOGO', 'RBRBRBRB', 'GOGpGOG'] },
     { id: 'switchback', round: 2, name: 'Switchback', tip: 'Climb up through the gaps. The top row holds everything.',
       rows: ['RRRRRRR.', 'XXXX...', 'BBRRoOPP', '...XXXX', 'RROOPPBB'] },
-    { id: 'machine', round: 2, name: 'The Machine', tip: 'Beat this one and Slade is done.',
+    { id: 'machine', round: 2, name: 'The Machine', tip: 'Free the real Titans. They beat any color.',
       rows: ['XPPRRGGX', 'XPbRGrX', 'BBOORRPP', 'BXOORXP', 'GGPPoBBO', 'GXPPBXO', 'RRGGBBOO', 'R.G.B.O'] },
+    // Round 3: new boards built like Murphy's favorites (issue #7).
+    { id: 'go-again', round: 3, name: 'Titans, Go Again!', tip: 'Slade is back with more copies. Titans, go!',
+      rows: ['RRPPGGBB', 'RPPGGBB', 'PPGGBBRR', 'PGGBBRR', 'GGBBRRPP'] },
+    { id: 'jungle', round: 3, name: "Beast Boy's Jungle", tip: 'Green is everywhere. Pop the vines.',
+      rows: ['GGPPGGOO', 'GPPGGOO', 'BBGGRRGG', 'BGGRRGG', 'GGOOPPBB', 'GOOPPBB'] },
+    { id: 'wires', round: 3, name: "Cyborg's Wires", tip: 'Cut a wire up high and the rest of it falls.',
+      rows: ['BB.GG.BB', 'B..G..B', 'R..OO..R', 'R..O..R', 'P..BB..P', 'P..B..P', 'O..PP..O', 'o..P..b'] },
+    { id: 'three-sides', round: 3, name: 'Three Sides', tip: 'Three towers. Each one hides a real Titan.',
+      rows: ['RR.OO.BB', 'RR.O.BB', 'GG.PP.GG', 'GG.P.GG', 'BB.RR.OO', '.r.g.b.'] },
+    { id: 'double-vault', round: 3, name: 'The Double Vault', tip: 'Two vaults, two doors. Slade blocks never pop.',
+      rows: ['XXXXXXXX', 'XGGXPPX', 'XGgGPpPX', 'XGGXPPX', 'XRRXXBBX', 'X.R.B.X'] },
+    { id: 'zigzag', round: 3, name: 'Zigzag', tip: 'Climb up through the gaps. The top row holds everything.',
+      rows: ['.GGGGGGG', '...XXXX', 'PPOoBBGG', 'XXXX...', 'BBPPOOGG', 'B.P.O.G'] },
+    { id: 'topsy-turvy', round: 3, name: 'Topsy Turvy', tip: 'Two stems hold it all up. Cut them both.',
+      rows: ['..B..O..', '..B.O..', '..BRRO..', '..GRRP.', '.pGGPPg.', 'OGGRPPB', 'OOBBRRPP', 'BBOOGGR'] },
+    { id: 'mega-machine', round: 3, name: 'The Mega Machine', tip: 'Beat this one and Slade is done.',
+      rows: ['PPXRRXGG', 'PpRRRgG', 'OOBBGGPP', 'OXBXGXP', 'RRGGrOOB', 'RXG.OXB', 'BBPPOOGG', 'B.P.O.G'] },
   ];
-  const ROUNDS = { 1: 'Round 1', 2: 'Round 2 · Expert' };
+  const ROUNDS = { 1: 'Round 1', 2: 'Round 2 · Expert', 3: 'Round 3 · Slade Returns' };
 
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
