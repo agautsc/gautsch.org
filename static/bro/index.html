@@ -310,8 +310,11 @@
       rows: ['..B..O..', '..B.O..', '..BRRO..', '..GRRP.', '.pGGPPg.', 'OGGRPPB', 'OOBBRRPP', 'BBOOGGR'] },
     { id: 'mega-machine', round: 3, name: 'The Mega Machine', tip: 'Beat this one and Slade is done.',
       rows: ['PPXRRXGG', 'PpRRRgG', 'OOBBGGPP', 'OXBXGXP', 'RRGGrOOB', 'RXG.OXB', 'BBPPOOGG', 'B.P.O.G'] },
+    // Homemade: drawn on a level sheet and typed in as drawn. These come after the story, so keep them last.
+    { id: 'titans-go-wild', round: 'home', name: 'Titans Go Wild', tip: 'Drawn by Murphy.',
+      rows: ['BBB.ROO.', 'BBBROGO', 'B..BBOO.', 'B..GGGG', '.BRGGGGG', 'RBBBGBG', '.R.GGGGG', '..BBGGG', '.BBRBPPP', '..BBPRB'] },
   ];
-  const ROUNDS = { 1: 'Round 1', 2: 'Round 2 · Expert', 3: 'Round 3 · Slade Returns' };
+  const ROUNDS = { 1: 'Round 1', 2: 'Round 2 · Expert', 3: 'Round 3 · Slade Returns', home: 'Homemade Levels' };
 
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -1539,15 +1542,19 @@
   }
 
   function showResult(won, best) {
-    const last = !S.free && S.levelIndex === LEVELS.length - 1;
-    const endOfRound = !S.free && !last && LEVELS[S.levelIndex + 1].round !== LEVELS[S.levelIndex].round;
-    $('resultTitle').textContent = won ? (last ? 'SLADE IS DONE! BRO!' : 'LEVEL CLEAR! BRO!') : 'SLADE GOT THROUGH';
+    // The story ends at the last numbered round; homemade levels sit after it and have an end of their own.
+    const next = S.free ? null : LEVELS[S.levelIndex + 1];
+    const home = !S.free && LEVELS[S.levelIndex].round === 'home';
+    const last = !S.free && (!next || (next.round === 'home' && !home));
+    const endOfRound = !S.free && !last && next.round !== LEVELS[S.levelIndex].round;
+    $('resultTitle').textContent = won ? (last && !home ? 'SLADE IS DONE! BRO!' : 'LEVEL CLEAR! BRO!') : 'SLADE GOT THROUGH';
     $('resultTitle').classList.toggle('bad', !won);
     $('resultScore').textContent = `Score ${S.score}  ·  Best ${best}`;
     const freed = S.freedTotal ? `You freed ${S.freedTotal} real Titan${S.freedTotal > 1 ? 's' : ''}. ` : '';
     let note;
     if (!won) note = 'Tip: clear a group to calm Slade down. Each clear takes one away from his meter.';
-    else if (last) note = freed + 'Every level is done. Draw a new one on a level sheet and we will add it.';
+    else if (last && home) note = freed + 'That was the last homemade level. Draw a new one on a level sheet and we will add it.';
+    else if (last) note = freed + `Every level is done. Try the ${ROUNDS.home}, or draw a new one on a level sheet and we will add it.`;
     else if (S.free) note = freed + 'Next up: another random board.';
     else if (endOfRound) note = freed + `${ROUNDS[LEVELS[S.levelIndex + 1].round]} is next. Slade has built tougher boards.`;
     else note = freed + 'Next up: ' + LEVELS[S.levelIndex + 1].name + '.';
