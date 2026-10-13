@@ -44,7 +44,7 @@
     display: grid;
     place-items: center;
   }
-  .frame { position: relative; width: 320px; height: 528px; }
+  .frame { position: relative; width: 320px; height: 528px; --u: 0.7547px; }
   #game {
     display: block;
     width: 100%;
@@ -132,6 +132,52 @@
   .big { margin: 0; font-family: var(--arcade); font-size: clamp(20px, 6vw, 28px); line-height: 1.3; color: var(--pellet); text-wrap: balance; }
   .big.bad { color: var(--danger); }
   .score-line { margin: 0; font-size: 18px; font-variant-numeric: tabular-nums; }
+  .row.tight .btn { padding-inline: 12px; }
+  .lvl-row { display: flex; gap: 6px; }
+  .lvl-row .lvl { flex: 1; min-width: 0; }
+  .lvl-row .icon-btn { width: 44px; height: auto; flex: none; }
+  /* The Build screen: a tray where the cannon sits. --u is one board unit in px (set in fit),
+     so the tray scales with the board. */
+  .build-bar {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    height: calc(var(--u) * 150);
+    padding: 0 calc(var(--u) * 14) calc(var(--u) * 16);
+    box-sizing: border-box;
+    display: flex; flex-direction: column; gap: calc(var(--u) * 3);
+    touch-action: manipulation;
+  }
+  .palette { display: grid; grid-template-columns: repeat(8, 1fr); gap: calc(var(--u) * 4); }
+  .tool {
+    height: calc(var(--u) * 46); min-width: 0; padding: 0;
+    display: grid; place-items: center;
+    border-radius: calc(var(--u) * 10);
+    border: 2px solid var(--maze);
+    background: rgba(10, 11, 31, .78);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .tool img { width: 84%; height: 84%; object-fit: contain; }
+  .tool svg { width: 56%; height: 56%; }
+  .tool[aria-pressed="true"] { background: var(--maze); border-color: var(--pellet); }
+  .build-hint {
+    flex: 1; min-height: 0; overflow: hidden; margin: 0;
+    display: grid; place-items: center;
+    font-size: max(11px, calc(var(--u) * 13)); line-height: 1.2; text-align: center; text-wrap: balance;
+  }
+  .build-hint.bad { color: var(--danger); }
+  .build-acts { display: flex; justify-content: space-between; gap: calc(var(--u) * 5); height: calc(var(--u) * 42); }
+  .build-acts .btn { padding: 0 calc(var(--u) * 12); font-size: max(9px, calc(var(--u) * 12)); }
+  .build-acts .btn[aria-disabled="true"] { opacity: .5; }
+  .build-acts .icon-btn { width: calc(var(--u) * 46); height: auto; }
+  .build-acts .icon-btn svg { width: 46%; height: 46%; }
+  .build-acts .icon-btn:disabled { opacity: .4; cursor: default; }
+  #nameScreen { align-items: flex-start; padding-top: 48px; }   /* up top, clear of an on-screen keyboard */
+  .name-input {
+    width: 100%; box-sizing: border-box; padding: 12px 14px;
+    border-radius: 10px; border: 2px solid var(--maze);
+    background: var(--void); color: var(--ink);
+    font: 600 20px var(--round); text-align: center;
+  }
   :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
   @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
 </style>
@@ -150,6 +196,22 @@
       </button>
     </div>
 
+    <section class="build-bar" id="buildBar" aria-label="Build a level" hidden>
+      <div class="palette" id="palette" role="group" aria-label="Pieces"></div>
+      <p class="build-hint" id="buildHint" aria-live="polite"></p>
+      <div class="build-acts">
+        <button class="btn ghost" type="button" id="buildDone">Done</button>
+        <button class="icon-btn" type="button" id="buildUndo" aria-label="Undo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 5 3 10l5 5"/><path d="M3 10h11a5.5 5.5 0 0 1 0 11h-4"/></svg>
+        </button>
+        <button class="icon-btn" type="button" id="buildClear" aria-label="Erase the whole board">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/><path d="M10 11v6M14 11v6"/></svg>
+        </button>
+        <button class="btn ghost" type="button" id="buildName">Name</button>
+        <button class="btn primary" type="button" id="buildPlay">Play</button>
+      </div>
+    </section>
+
     <section class="screen" id="titleScreen" aria-label="Title">
       <div class="panel">
         <h1 class="logo">BRO!</h1>
@@ -165,9 +227,10 @@
             <span>Snood rules. Short aim line. Slade strikes after 5.</span>
           </button>
         </div>
-        <div class="row">
+        <div class="row tight">
           <button class="btn primary" type="button" id="playBtn">Play</button>
           <button class="btn ghost" type="button" id="levelsBtn">Levels</button>
+          <button class="btn ghost" type="button" id="buildBtn">Build</button>
         </div>
         <div class="toggles">
           <label for="optSound"><input type="checkbox" id="optSound" checked> Sound</label>
@@ -186,7 +249,7 @@
         <p class="big">LEVELS</p>
         <div class="levels" id="levelList"></div>
         <div class="legend">
-          Make your own level: color in a <a class="sheet-link" href="https://gautsch.org/bro/worksheet/" target="_blank" rel="noopener">level sheet</a> and we'll type it in.
+          Make your own level: tap Build a level, or color in a <a class="sheet-link" href="https://gautsch.org/bro/worksheet/" target="_blank" rel="noopener">level sheet</a> and we'll type it in.
           <ul id="legend"></ul>
           <p class="fine" style="margin-top:8px">Small letter = that Titan in a cage (<code>r</code>). <code>X</code> = Slade block. <code>.</code> = empty. Rows take turns: 8 spots, then 7.</p>
         </div>
@@ -199,6 +262,7 @@
         <p class="big">PAUSED</p>
         <div class="row">
           <button class="btn primary" type="button" id="resumeBtn">Resume</button>
+          <button class="btn ghost" type="button" id="editBtn" hidden>Edit</button>
         </div>
         <div class="row">
           <button class="btn ghost" type="button" id="restartBtn">Restart</button>
@@ -213,6 +277,14 @@
         <p class="score-line" id="resultScore"></p>
         <p class="fine" id="resultNote"></p>
         <div class="row" id="resultBtns"></div>
+      </div>
+    </section>
+
+    <section class="screen" id="nameScreen" aria-label="Name this level" hidden>
+      <div class="panel">
+        <p class="big">NAME IT</p>
+        <input class="name-input" id="nameInput" type="text" maxlength="22" autocomplete="off" enterkeyhint="done" aria-label="Level name">
+        <div class="row"><button class="btn primary" type="button" id="nameOk">OK</button></div>
       </div>
     </section>
   </div>
@@ -320,7 +392,7 @@
     { id: 'jack-o-lantern', round: 'home', name: "Jack-o'-Lantern", tip: 'The face is Slade blocks. Pop what holds it up and it falls.',
       rows: ['...GG...', '.ORGRO.', 'OOROOROO', 'OXRORXO', 'OXXOOXXO', 'OORXROO', 'OXROORXO', 'OXXOXXO', '.OROORO.', '..ROR..'] },
   ];
-  const ROUNDS = { 1: 'Round 1', 2: 'Round 2 · Expert', 3: 'Round 3 · Slade Returns', home: 'Homemade Levels' };
+  const ROUNDS = { 1: 'Round 1', 2: 'Round 2 · Expert', 3: 'Round 3 · Slade Returns', home: 'Homemade Levels', mine: 'My Levels' };
 
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -329,7 +401,7 @@
     get(key, fallback) {
       try { const v = localStorage.getItem(key); return v == null ? fallback : JSON.parse(v); } catch { return fallback; }
     },
-    set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* storage unavailable */ } },
+    set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { return false; /* storage unavailable */ } },
   };
 
   // ---------- sound: synthesized, no samples ----------
@@ -404,10 +476,10 @@
     return out;
   }
   function makeGrid() { return Array.from({ length: ROWS_MAX }, () => new Array(COLS).fill(EMPTY)); }
-  function forEachPiece(fn) {
-    for (let r = 0; r < ROWS_MAX; r++) for (let c = 0; c < rowLen(r); c++) if (S.grid[r][c] !== EMPTY) fn(r, c, S.grid[r][c]);
+  function forEachPiece(fn, g = S.grid) {
+    for (let r = 0; r < ROWS_MAX; r++) for (let c = 0; c < rowLen(r); c++) if (g[r][c] !== EMPTY) fn(r, c, g[r][c]);
   }
-  function kindsPresent() { const set = new Set(); if (S.grid) forEachPiece((r, c, v) => { if (isCopy(v)) set.add(v); }); return set; }
+  function kindsPresent(g = S.grid) { const set = new Set(); if (g) forEachPiece((r, c, v) => { if (isCopy(v)) set.add(v); }, g); return set; }
   const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
   function randomKind() {
     const present = [...kindsPresent()];
@@ -459,18 +531,18 @@
     }
     return out;
   }
-  function orphans() {
+  function orphans(g = S.grid) {
     const seen = new Set(), queue = [];
-    for (let c = 0; c < rowLen(0); c++) if (S.grid[0][c] !== EMPTY) { seen.add('0,' + c); queue.push([0, c]); }
+    for (let c = 0; c < rowLen(0); c++) if (g[0][c] !== EMPTY) { seen.add('0,' + c); queue.push([0, c]); }
     while (queue.length) {
       const [r, c] = queue.pop();
       for (const [rr, cc] of nbrs(r, c)) {
         const key = rr + ',' + cc;
-        if (!seen.has(key) && S.grid[rr][cc] !== EMPTY) { seen.add(key); queue.push([rr, cc]); }
+        if (!seen.has(key) && g[rr][cc] !== EMPTY) { seen.add(key); queue.push([rr, cc]); }
       }
     }
     const out = [];
-    forEachPiece((r, c) => { if (!seen.has(r + ',' + c)) out.push([r, c]); });
+    forEachPiece((r, c) => { if (!seen.has(r + ',' + c)) out.push([r, c]); }, g);
     return out;
   }
   function hitsPiece(x, y) {
@@ -1251,6 +1323,7 @@
   }
 
   function draw(now) {
+    const building = S.screen === 'build' || S.screen === 'name';
     const sx = cv.width / W, sy = cv.height / H;
     const jx = S.shake ? (Math.random() - 0.5) * S.shake : 0;
     const jy = S.shake ? (Math.random() - 0.5) * S.shake : 0;
@@ -1272,13 +1345,16 @@
     }
 
     if (S.grid) {
-      // pellets mark the open spots, like the maze
+      // pellets mark the open spots, like the maze; on the Build screen they are the level sheet's circles
       ctx.fillStyle = 'rgba(255, 216, 74, 0.16)';
-      for (let r = 0; r < ROWS_MAX; r++) {
+      ctx.strokeStyle = 'rgba(138, 160, 255, 0.42)'; ctx.lineWidth = 1.5;
+      for (let r = 0; r < (building ? BUILD_ROWS : ROWS_MAX); r++) {
         const y = cellY(r);
         if (y + R > DANGER_Y) break;
         for (let c = 0; c < rowLen(r); c++) {
-          if (S.grid[r][c] === EMPTY) { ctx.beginPath(); ctx.arc(cellX(r, c), y, 2.2, 0, Math.PI * 2); ctx.fill(); }
+          if (S.grid[r][c] !== EMPTY) continue;
+          ctx.beginPath(); ctx.arc(cellX(r, c), y, building ? R - 3 : 2.2, 0, Math.PI * 2);
+          if (building) ctx.stroke(); else ctx.fill();
         }
       }
       // danger line
@@ -1294,7 +1370,8 @@
         if (S.hidden.has(r + ',' + c)) return;
         let sc = 1;
         if (S.landing && S.landing.r === r && S.landing.c === c) sc = 1 + 0.12 * Math.sin(S.landing.t / 0.2 * Math.PI);
-        drawSprite(v, cellX(r, c), cellY(r), sc);
+        // on the Build screen, a piece that isn't hanging from anything is faded
+        drawSprite(v, cellX(r, c), cellY(r), sc, building && B.loose.has(r + ',' + c) ? 0.4 : 1);
       });
     }
 
@@ -1337,8 +1414,8 @@
     // shot in flight
     if (S.shot) drawPiece(S.shot.kind, S.shot.x, S.shot.y, now);
 
-    // cannon
-    if (S.grid) {
+    // cannon (the Build screen's tray sits here instead)
+    if (S.grid && !building) {
       ctx.save();
       ctx.translate(CANNON_X, CANNON_Y);
       ctx.rotate(Math.PI / 2 - S.angle);
@@ -1376,7 +1453,11 @@
 
     // HUD: score on the left, Slade on the ceiling, level on the right
     drawSlade(now);
-    if (S.grid) {
+    if (building) {
+      arcadeText('BUILD', BX + 4, 18, 10, '#ffd84a', 'left');
+      arcadeText('MY LEVEL', BX + BW - 4, 18, 10, '#ffd84a', 'right');
+      roundText(B.name, BX + BW - 4, 41, 15, '#f3f4ff', 'right');
+    } else if (S.grid) {
       arcadeText('SCORE', BX + 4, 18, 10, '#ffd84a', 'left');
       arcadeText(String(S.score), BX + 4, 40, 12, '#f3f4ff', 'left');
       const label = S.free ? 'FREE PLAY' : `LEVEL ${S.levelIndex + 1}`;
@@ -1440,6 +1521,7 @@
     const fw = Math.floor(W * scale), fh = Math.floor(H * scale);
     frame.style.width = fw + 'px';
     frame.style.height = fh + 'px';
+    frame.style.setProperty('--u', fw / W + 'px');
     const dpr = Math.min(window.devicePixelRatio || 1, 3);
     cv.width = Math.round(fw * dpr);
     cv.height = Math.round(fh * dpr);
@@ -1455,6 +1537,7 @@
     S.angle = Math.max(MIN_A, Math.min(MAX_A, Math.atan2(dy, dx)));
   }
   cv.addEventListener('pointerdown', (e) => {
+    if (S.screen === 'build') { buildDown(e); return; }
     if (S.screen !== 'play') return;
     Sound.init();
     const rect = cv.getBoundingClientRect();
@@ -1466,16 +1549,18 @@
     aimAt(e);
   });
   cv.addEventListener('pointermove', (e) => {
+    if (S.screen === 'build') { buildMove(e); return; }
     if (S.screen !== 'play') return;
     if (S.pointerDown || e.pointerType === 'mouse') aimAt(e);
   });
   cv.addEventListener('pointerup', (e) => {
+    if (B.stroke) { buildUp(true, e); return; }
     if (!S.pointerDown) return;
     S.pointerDown = false;
     aimAt(e);
     fire();
   });
-  cv.addEventListener('pointercancel', () => { S.pointerDown = false; });
+  cv.addEventListener('pointercancel', (e) => { S.pointerDown = false; buildUp(false, e); });
   window.addEventListener('keydown', (e) => {
     if (S.screen !== 'play') return;
     const step = 0.045;
@@ -1489,11 +1574,14 @@
 
   // ---------- screens ----------
   const $ = (id) => document.getElementById(id);
-  const screens = { title: $('titleScreen'), levels: $('levelScreen'), pause: $('pauseScreen'), result: $('resultScreen') };
+  const screens = { title: $('titleScreen'), levels: $('levelScreen'), pause: $('pauseScreen'), result: $('resultScreen'), name: $('nameScreen') };
   function show(name) {
     S.screen = name;
     for (const [key, el] of Object.entries(screens)) el.hidden = key !== name;
     $('hudBtns').hidden = name !== 'play';
+    $('buildBar').hidden = name !== 'build';
+    $('editBtn').hidden = !playingMine();
+    cv.setAttribute('aria-label', name === 'build' ? 'Level board. Tap a spot to put the picked piece there.' : 'Bro! game board. Drag to aim, let go to shoot.');
     const focusTarget = { title: 'playBtn', levels: 'levelsBack', pause: 'resumeBtn' }[name];
     if (focusTarget) $(focusTarget).focus({ preventScroll: true });
   }
@@ -1533,34 +1621,61 @@
       b.querySelector('.best').textContent = best ? `Best ${best}` : '';
       b.addEventListener('click', go);
       list.append(b);
+      return b;
+    };
+    const heading = (text) => {
+      const h = document.createElement('p');
+      h.className = 'round'; h.textContent = text;
+      list.append(h);
     };
     let round = null;
-    LEVELS.forEach((l, i) => {
-      if (l.round !== round) {
-        round = l.round;
-        const h = document.createElement('p');
-        h.className = 'round'; h.textContent = ROUNDS[round];
-        list.append(h);
-      }
+    LEVELS.slice(0, BUILT_IN).forEach((l, i) => {
+      if (l.round !== round) { round = l.round; heading(ROUNDS[round]); }
       entry(String(i + 1), l.name, l.id, () => startLevel(i));
     });
     entry('?', 'Free play', 'free', () => startLevel('free'));
+    // My Levels: the ones built on this device, each with a pencil to change it
+    heading(ROUNDS.mine);
+    LEVELS.forEach((l, i) => {
+      if (!isMine(l)) return;
+      const ready = !buildProblem(levelGrid(l));
+      const b = entry(String(i + 1), l.name, l.id, () => (ready ? startLevel(i) : openBuilder(l.id)));
+      if (!ready) b.querySelector('.best').textContent = 'Not finished';
+      const row = document.createElement('div'), edit = document.createElement('button');
+      row.className = 'lvl-row'; row.dataset.level = l.id;
+      edit.type = 'button'; edit.className = 'icon-btn'; edit.innerHTML = ICON.pencil;
+      edit.setAttribute('aria-label', 'Change ' + l.name);
+      edit.addEventListener('click', () => openBuilder(l.id));
+      b.replaceWith(row);
+      row.append(b, edit);
+    });
+    entry('+', 'Build a level', 'new', () => openBuilder()).dataset.level = 'new';
+  }
+  // The level list, scrolled to one of My Levels (or to "Build a level" when it's gone).
+  function showLevels(id) {
+    renderLevelList();
+    show('levels');
+    const rows = [...$('levelList').children];
+    (rows.find((el) => el.dataset.level === id) || rows[rows.length - 1]).scrollIntoView({ block: 'center' });
   }
 
   function showResult(won, best) {
     // The story ends at the last numbered round; homemade levels sit after it and have an end of their own.
+    // A level built on the Build screen stands alone.
+    const cur = S.free ? null : LEVELS[S.levelIndex];
     const next = S.free ? null : LEVELS[S.levelIndex + 1];
-    const home = !S.free && LEVELS[S.levelIndex].round === 'home';
-    const last = !S.free && (!next || (next.round === 'home' && !home));
-    const endOfRound = !S.free && !last && next.round !== LEVELS[S.levelIndex].round;
-    $('resultTitle').textContent = won ? (last && !home ? 'SLADE IS DONE! BRO!' : 'LEVEL CLEAR! BRO!') : 'SLADE GOT THROUGH';
+    const home = !S.free && cur.round === 'home', mine = isMine(cur);
+    const last = !S.free && (mine || !next || (next.round !== cur.round && typeof next.round === 'string'));
+    const endOfRound = !S.free && !last && next.round !== cur.round;
+    $('resultTitle').textContent = won ? (last && !home && !mine ? 'SLADE IS DONE! BRO!' : 'LEVEL CLEAR! BRO!') : 'SLADE GOT THROUGH';
     $('resultTitle').classList.toggle('bad', !won);
     $('resultScore').textContent = `Score ${S.score}  ·  Best ${best}`;
     const freed = S.freedTotal ? `You freed ${S.freedTotal} real Titan${S.freedTotal > 1 ? 's' : ''}. ` : '';
     let note;
     if (!won) note = 'Tip: clear a group to calm Slade down. Each clear takes one away from his meter.';
-    else if (last && home) note = freed + 'That was the last homemade level. Draw a new one on a level sheet and we will add it.';
-    else if (last) note = freed + `Every level is done. Try the ${ROUNDS.home}, or draw a new one on a level sheet and we will add it.`;
+    else if (mine) note = freed + 'You built this one. Tap Edit to change it.';
+    else if (last && home) note = freed + 'That was the last homemade level. Build your own, or draw one on a level sheet and we will add it.';
+    else if (last) note = freed + `Every level is done. Try the ${ROUNDS.home}, or build your own.`;
     else if (S.free) note = freed + 'Next up: another random board.';
     else if (endOfRound) note = freed + `${ROUNDS[LEVELS[S.levelIndex + 1].round]} is next. Slade has built tougher boards.`;
     else note = freed + 'Next up: ' + LEVELS[S.levelIndex + 1].name + '.';
@@ -1572,9 +1687,227 @@
     if (won && S.free) first = add('Again', 'primary', () => startLevel('free'));
     else if (won && !last) first = add('Next', 'primary', () => startLevel(S.levelIndex + 1));
     else first = add(won ? 'Replay' : 'Try again', 'primary', () => startLevel(S.free ? 'free' : S.levelIndex));
+    if (mine) add('Edit', 'ghost', () => openBuilder(cur.id));
     add('Levels', 'ghost', () => { renderLevelList(); show('levels'); });
     show('result');
     first.focus({ preventScroll: true });
+  }
+
+  // ---------- build your own level ----------
+  // The Build screen is the level sheet inside the game: pick a piece, tap the board, then play it.
+  // Built levels are kept on this device and sit after the built-in ones in LEVELS, as round 'mine'.
+  const BUILT_IN = LEVELS.length;
+  const BUILD_ROWS = 10;   // the level sheet's ten rows
+  const B = { id: '', name: '', brush: 0, stroke: null, undo: [], loose: new Set(), saved: true, sure: 0 };
+
+  const isMine = (l) => !!l && l.round === 'mine';
+  const playingMine = () => !S.free && isMine(LEVELS[S.levelIndex]);
+  const charFor = (v) => (v === STONE ? 'X' : isCopy(v) ? KINDS[v].key : isCage(v) ? KINDS[titanOf(v)].key.toLowerCase() : '.');
+  // A board as level text, the same letters as LEVELS, with the empty rows at the bottom left off.
+  function gridRows(g) {
+    const rows = [];
+    for (let r = 0; r < BUILD_ROWS; r++) rows.push(g[r].slice(0, rowLen(r)).map(charFor).join(''));
+    while (rows.length && !/[^.]/.test(rows[rows.length - 1])) rows.pop();
+    return rows;
+  }
+  const cleanName = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().slice(0, 22);
+  function loadMine() {
+    const saved = store.get('bro:mine', []), seen = new Set(LEVELS.map((l) => l.id)), out = [];
+    for (const l of Array.isArray(saved) ? saved : []) {
+      if (!l || typeof l.id !== 'string' || !Array.isArray(l.rows) || seen.has(l.id)) continue;
+      seen.add(l.id);
+      const rows = gridRows(levelGrid({ rows: l.rows.slice(0, BUILD_ROWS).map(String) }));
+      if (rows.length) out.push({ id: l.id, round: 'mine', name: cleanName(l.name) || 'My Level', rows });
+    }
+    return out;
+  }
+  LEVELS.push(...loadMine());
+
+  // What still keeps a built board from being played, in words for the builder. '' means it's ready.
+  function buildProblem(g) {
+    if (!gridRows(g).length) return 'Pick a piece, then tap the board. Drag to fill a row.';
+    if (orphans(g).length) return 'The faded ones are not hanging from anything. Hook them to the ceiling.';
+    if (!kindsPresent(g).size) return 'Add some copies to pop. Cages and Slade blocks can\'t be matched.';
+    return '';
+  }
+
+  // The tray's tools. A tool's value is the piece it puts down; CAGE and EMPTY stand for the cage tool and the eraser.
+  const TOOLS = [
+    ...KINDS.map((k, i) => ({ v: i, label: k.name, tip: `${k.name}: tap a spot to put one there. Tap it again to take it off.` })),
+    { v: CAGE, label: 'Cage', tip: 'Cage: tap a copy to make it a real Titan in a cage. Tap again to let it out.' },
+    { v: STONE, label: 'Slade block', tip: 'Slade block: it never pops. It only falls.' },
+    { v: EMPTY, label: 'Eraser', tip: 'Eraser: tap or drag to take pieces off.' },
+  ];
+  const svgIcon = (paths) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${paths}</svg>`;
+  const ICON = {
+    pencil: svgIcon('<path d="M4 20l1-4L16 5l3 3L8 19l-4 1z"/><path d="M14 7l3 3"/>'),
+    eraser: svgIcon('<path d="M4 15l9-9 6 6-7 7H8l-4-4z"/><path d="M9 10l6 6"/><path d="M12 19h8"/>'),
+  };
+  function buildPalette() {
+    const pal = $('palette');
+    for (const t of TOOLS) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'tool'; b.dataset.v = t.v;
+      b.setAttribute('aria-label', t.label);
+      if (t.v === EMPTY) b.innerHTML = ICON.eraser;
+      else {
+        const im = document.createElement('img');
+        im.alt = ''; im.src = (t.v === CAGE ? cageOver(mk(1, 1)) : ART[t.v]).toDataURL('image/png');   // the cage tool is an empty cage
+        b.append(im);
+      }
+      b.addEventListener('click', () => { pickTool(t.v); buildHint(t.tip); });
+      pal.append(b);
+    }
+    pickTool(0);
+  }
+  function pickTool(v) {
+    B.brush = v; B.sure = 0;
+    for (const b of $('palette').children) b.setAttribute('aria-pressed', String(Number(b.dataset.v) === v));
+  }
+  function buildHint(text, bad = false) {
+    $('buildHint').textContent = text;
+    $('buildHint').classList.toggle('bad', bad);
+  }
+  function markLoose() { B.loose = new Set(orphans().map(([r, c]) => r + ',' + c)); }
+  function refreshBuild() {
+    markLoose();
+    B.sure = 0;
+    const problem = buildProblem(S.grid);
+    $('buildPlay').setAttribute('aria-disabled', String(!!problem));
+    $('buildUndo').disabled = !B.undo.length;
+    buildHint(problem || (B.saved ? 'Looks good. Tap Play to try it!' : 'Tap Play to try it. This device can\'t save it for later.'));
+  }
+
+  // Keep the board being built in My Levels. An empty board isn't a level.
+  function saveBuild() {
+    const rows = gridRows(S.grid), at = LEVELS.findIndex((l) => l.id === B.id);
+    if (at >= 0 && rows.join() !== LEVELS[at].rows.join()) {   // a changed board starts its best score over
+      for (const mode of Object.keys(MODES)) store.set(`bro:best:${mode}:${B.id}`, 0);
+    }
+    if (!rows.length) { if (at >= 0) LEVELS.splice(at, 1); }
+    else if (at >= 0) Object.assign(LEVELS[at], { name: B.name, rows });
+    else LEVELS.push({ id: B.id, round: 'mine', name: B.name, rows });
+    B.saved = store.set('bro:mine', LEVELS.slice(BUILT_IN).map(({ id, name, rows }) => ({ id, name, rows })));
+  }
+  function freshName() {
+    const taken = new Set(LEVELS.map((l) => l.name));
+    let n = 1;
+    while (taken.has('My Level ' + n)) n++;
+    return 'My Level ' + n;
+  }
+  // Open the Build screen on one of My Levels, or on a blank board when there's no id.
+  function openBuilder(id) {
+    Sound.init();
+    const def = LEVELS.find((l) => isMine(l) && l.id === id);
+    Object.assign(B, { id: def ? def.id : 'mine-' + Date.now().toString(36), name: def ? def.name : freshName(), stroke: null, undo: [] });
+    // a still, clean board: whatever the last game left behind is cleared away
+    Object.assign(S, {
+      grid: def ? levelGrid(def) : makeGrid(), levelIndex: 0, free: false, topY: CEIL0, meter: 0, phase: 'idle',
+      shot: null, ceil: null, slade: null, bubble: null, throws: [], hidden: new Set(), helpers: [],
+      anims: [], texts: [], parts: [], shake: 0, landing: null, pointerDown: false,
+    });
+    refreshBuild();
+    show('build');
+  }
+
+  function boardPoint(e) {
+    const rect = cv.getBoundingClientRect();
+    return [(e.clientX - rect.left) / rect.width * W, (e.clientY - rect.top) / rect.height * H];
+  }
+  function buildCellAt(x, y) {
+    const rg = Math.round((y - CEIL0 - R) / ROW_H);
+    let best = null, bd = (R * 1.16) ** 2;   // just far enough to cover the gaps between three spots
+    for (let r = Math.max(0, rg - 1); r <= Math.min(BUILD_ROWS - 1, rg + 1); r++) {
+      for (let c = 0; c < rowLen(r); c++) {
+        const dx = cellX(r, c) - x, dy = cellY(r) - y, d = dx * dx + dy * dy;
+        if (d < bd) { bd = d; best = [r, c]; }
+      }
+    }
+    return best;
+  }
+  function buildPaint([r, c]) {
+    const st = B.stroke, was = S.grid[r][c];
+    let v = B.brush;
+    // the cage tool locks copies, or unlocks cages when the stroke started on a cage
+    if (B.brush === CAGE) v = st.uncage ? (isCage(was) ? titanOf(was) : was) : (isCopy(was) ? CAGE + was : was);
+    if (v === was) return;
+    S.grid[r][c] = v;
+    if (v === EMPTY) Sound.bounce(); else Sound.stick();
+    markLoose();
+  }
+  function buildDown(e) {
+    const [x, y] = boardPoint(e), cell = buildCellAt(x, y);
+    if (!cell || B.stroke) return;   // one finger draws at a time
+    Sound.init();
+    try { cv.setPointerCapture(e.pointerId); } catch { /* not supported */ }
+    const was = S.grid[cell[0]][cell[1]];
+    B.stroke = { id: e.pointerId, x, y, cell, was, moved: false, uncage: isCage(was), before: S.grid.map((row) => row.slice()) };
+    buildPaint(cell);
+  }
+  function buildMove(e) {
+    const st = B.stroke;
+    if (!st || e.pointerId !== st.id) return;
+    const [x, y] = boardPoint(e), steps = Math.max(1, Math.ceil(Math.hypot(x - st.x, y - st.y) / (R / 2)));
+    for (let i = 1; i <= steps; i++) {   // walk the drag so a fast finger doesn't skip spots
+      const cell = buildCellAt(st.x + (x - st.x) * i / steps, st.y + (y - st.y) * i / steps);
+      if (!cell) continue;
+      if (cell[0] !== st.cell[0] || cell[1] !== st.cell[1]) st.moved = true;
+      buildPaint(cell);
+    }
+    st.x = x; st.y = y;
+  }
+  // End the stroke: when the finger that drew it lifts, or (with no event) when the tray is pressed mid-stroke.
+  function buildUp(tapped, e) {
+    const st = B.stroke;
+    if (!st || (e && e.pointerId !== st.id)) return;
+    B.stroke = null;
+    // a tap on a piece with that same piece picked takes it off again
+    if (tapped && !st.moved && st.was === B.brush && B.brush !== CAGE && B.brush !== EMPTY) {
+      S.grid[st.cell[0]][st.cell[1]] = EMPTY;
+      Sound.bounce();
+    }
+    if (gridRows(S.grid).join() !== gridRows(st.before).join()) {
+      B.undo.push(st.before);
+      if (B.undo.length > 60) B.undo.shift();
+      saveBuild();
+    }
+    refreshBuild();
+  }
+  function buildUndo() {
+    if (!B.undo.length) return;
+    S.grid = B.undo.pop();
+    saveBuild();
+    refreshBuild();
+  }
+  function buildClear() {
+    if (!gridRows(S.grid).length) return;
+    if (performance.now() > B.sure) {   // ask once; the second tap does it
+      B.sure = performance.now() + 4000;
+      buildHint('Erase the whole board? Tap the trash can again.', true);
+      return;
+    }
+    B.undo.push(S.grid);
+    S.grid = makeGrid();
+    saveBuild();
+    refreshBuild();
+    buildHint('All gone. Undo brings it back.');
+  }
+  function buildPlay() {
+    const problem = buildProblem(S.grid);
+    if (problem) { buildHint(problem, true); Sound.thud(); return; }
+    startLevel(LEVELS.findIndex((l) => l.id === B.id));
+  }
+  function openName() {
+    const input = $('nameInput');
+    input.value = B.name;
+    show('name');
+    input.focus();
+    input.select();
+  }
+  function closeName() {
+    B.name = cleanName($('nameInput').value) || B.name;
+    saveBuild();
+    show('build');
   }
 
   $('modeMurphy').addEventListener('click', () => setMode('murphy'));
@@ -1589,6 +1922,16 @@
   $('soundBtn').addEventListener('click', () => setSound(!Sound.on));
   $('optSound').addEventListener('change', (e) => setSound(e.target.checked));
   $('optVoice').addEventListener('change', (e) => { Sound.voice = e.target.checked; saveSettings(); });
+  $('buildBtn').addEventListener('click', () => openBuilder());
+  $('buildBar').addEventListener('pointerdown', () => buildUp(false), true);   // a second finger on the tray: finish the stroke first
+  $('editBtn').addEventListener('click', () => openBuilder(LEVELS[S.levelIndex].id));
+  $('buildDone').addEventListener('click', () => showLevels(B.id));
+  $('buildUndo').addEventListener('click', buildUndo);
+  $('buildClear').addEventListener('click', buildClear);
+  $('buildName').addEventListener('click', openName);
+  $('buildPlay').addEventListener('click', buildPlay);
+  $('nameOk').addEventListener('click', closeName);
+  $('nameInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') closeName(); });
 
   // ---------- loop ----------
   let last = performance.now();
@@ -1620,7 +1963,7 @@
     if (saved) { S.mode = saved.mode === 'melissa' ? 'melissa' : 'murphy'; Sound.voice = saved.voice !== false; setSound(saved.sound !== false); }
     $('optVoice').checked = Sound.voice;
     setMode(S.mode);
-    if (data && data.v === 2 && Array.isArray(data.grid)) {
+    if (data && data.v === 2 && Array.isArray(data.grid) && (data.free || LEVELS[data.levelIndex])) {
       Object.assign(S, { mode: data.mode, levelIndex: data.levelIndex, free: data.free, grid: data.grid, topY: data.topY, meter: data.meter, score: data.score, current: data.current, next: data.next, helpers: data.helpers || [], freedTotal: data.freedTotal || 0, phase: 'aim' });
       show('pause');
     } else {
@@ -1650,6 +1993,7 @@
     KINDS.forEach((k, i) => legendItem(k.key, i, k.short));
     legendItem('r', CAGE, 'Cage');
     legendItem('X', STONE, 'Slade block');
+    buildPalette();
     if (sladeGeo) $('sladeImg').src = sladePortrait().toDataURL('image/png');
     const hot = window.claude && window.claude.hot;
     if (hot && typeof hot.snapshot === 'function') { try { hot.snapshot(snapshot); } catch { /* optional */ } }
@@ -1658,7 +2002,7 @@
   });
 
   // Test hooks for the prototype (harmless in play).
-  window.__bro = { S, LEVELS, ART, fire, swap, startLevel, trace, update, setMode, setAngle: (a) => { S.angle = a; } };
+  window.__bro = { S, B, LEVELS, ART, fire, swap, startLevel, openBuilder, trace, update, setMode, setAngle: (a) => { S.angle = a; } };
 })();
 </script>
 </body>
