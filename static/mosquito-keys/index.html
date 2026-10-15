@@ -1,0 +1,1314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b3a52">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Crect%20width%3D%2732%27%20height%3D%2732%27%20rx%3D%277%27%20fill%3D%27%235cc8f2%27/%3E%3Cg%20fill%3D%27%23fff%27%20opacity%3D%27.85%27%3E%3Cellipse%20cx%3D%2710.5%27%20cy%3D%2710%27%20rx%3D%273.6%27%20ry%3D%277.5%27%20transform%3D%27rotate%28-38%2010.5%2010%29%27/%3E%3Cellipse%20cx%3D%2721.5%27%20cy%3D%2710%27%20rx%3D%273.6%27%20ry%3D%277.5%27%20transform%3D%27rotate%2838%2021.5%2010%29%27/%3E%3C/g%3E%3Cellipse%20cx%3D%2716%27%20cy%3D%2712%27%20rx%3D%273.2%27%20ry%3D%277%27%20fill%3D%27%232b2533%27/%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%2720.5%27%20r%3D%273.2%27%20fill%3D%27%232b2533%27/%3E%3Cpath%20d%3D%27M16%2023v6.5%27%20stroke%3D%27%232b2533%27%20stroke-width%3D%271.6%27%20stroke-linecap%3D%27round%27/%3E%3Ccircle%20cx%3D%2714.6%27%20cy%3D%2721%27%20r%3D%271.1%27%20fill%3D%27%23ff3550%27/%3E%3Ccircle%20cx%3D%2717.4%27%20cy%3D%2721%27%20r%3D%271.1%27%20fill%3D%27%23ff3550%27/%3E%3C/svg%3E">
+<title>Mosquito Keys</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka:wght@400;600;700&family=Overpass:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  /* One deliberate look: a bright afternoon on the Overseas Highway. Mile-marker green, conch-house pastels, a dark swarm. */
+  :root {
+    color-scheme: light;
+    --deep: #0b3a52;
+    --panel: rgba(7, 38, 56, .93);
+    --sign: #0f6b45;
+    --sign-hi: #138556;
+    --paper: #f4f7f2;
+    --sun: #ffd23f;
+    --ink: #fbfdff;
+    --dim: #b9d7e3;
+    --bite: #ff4d5e;
+    --sterile: #55dcff;
+    --focus: #ffd23f;
+    --display: "Bungee", "Arial Black", Impact, sans-serif;
+    --round: "Fredoka", "Trebuchet MS", "Segoe UI", system-ui, sans-serif;
+    --sign-font: "Overpass", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  }
+  [hidden] { display: none !important; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--deep);
+    color: var(--ink);
+    font-family: var(--round);
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .stage {
+    height: 100%;
+    box-sizing: border-box;
+    padding-block: 8px;
+    padding-inline: 16px;
+    display: grid;
+    place-items: center;
+  }
+  .frame { position: relative; width: 320px; height: 540px; }
+  #game {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    border-radius: 14px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .hud-btns { position: absolute; bottom: 6px; right: 8px; display: flex; gap: 6px; }
+  .icon-btn {
+    width: 36px; height: 36px;
+    display: grid; place-items: center;
+    border-radius: 9px;
+    border: 2px solid var(--paper);
+    background: rgba(7, 38, 56, .72);
+    color: var(--ink);
+    cursor: pointer;
+    padding: 0;
+  }
+  .icon-btn svg { width: 18px; height: 18px; }
+  .screen {
+    position: absolute; inset: 0;
+    display: flex; justify-content: center; align-items: center; align-items: safe center;
+    padding: 18px 14px;
+    box-sizing: border-box;
+    background: var(--panel);
+    border-radius: 14px;
+    overflow: auto;
+  }
+  .panel { width: min(100%, 380px); display: grid; gap: 14px; text-align: center; }
+  .logo {
+    margin: 2px 0 0;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(34px, 10.5vw, 50px);
+    line-height: .95;
+    color: var(--sun);
+    text-shadow: 3px 3px 0 var(--sign);
+    text-wrap: balance;
+  }
+  .logo small { display: block; font-size: .34em; color: var(--sterile); text-shadow: 2px 2px 0 var(--sign); margin-top: 6px; }
+  .sub { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.3; text-wrap: balance; }
+  .cast { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; list-style: none; padding: 0; margin: 0; }
+  .cast li { display: grid; justify-items: center; align-content: start; gap: 4px; font-size: 12px; line-height: 1.15; color: var(--dim); }
+  .cast li b { color: var(--ink); font-weight: 600; }
+  .cast canvas { width: 46px; height: 46px; }
+  .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mode {
+    border: 2px solid var(--sign-hi); background: transparent; color: var(--ink);
+    border-radius: 10px; padding: 10px 9px; text-align: left; font: inherit; cursor: pointer;
+    display: grid; gap: 3px;
+  }
+  .mode b { font-size: 15px; }
+  .mode span { font-size: 12px; color: var(--dim); line-height: 1.25; }
+  .mode[aria-pressed="true"] { background: var(--sign); border-color: var(--paper); }
+  .mode[aria-pressed="true"] span { color: #e2f5ea; }
+  .row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    font-family: var(--display); font-size: 15px; line-height: 1.1;
+    padding: 13px 18px; border-radius: 10px; border: 0; cursor: pointer;
+  }
+  .btn.primary { background: var(--sun); color: #2a2000; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 2px solid var(--paper); }
+  .toggles { display: flex; justify-content: center; gap: 8px 18px; flex-wrap: wrap; font-size: 14px; }
+  .toggles label { display: flex; gap: 7px; align-items: center; cursor: pointer; }
+  .toggles input { width: 18px; height: 18px; accent-color: var(--sun); }
+  .fine { margin: 0; font-size: 12px; color: var(--dim); line-height: 1.4; text-wrap: pretty; }
+  .fine a { color: var(--sterile); }
+  .big { margin: 0; font-family: var(--display); font-size: 30px; line-height: 1.05; color: var(--sun); text-wrap: balance; }
+  .score-line { margin: 0; font-family: var(--sign-font); font-weight: 800; font-size: 20px; font-variant-numeric: tabular-nums; }
+  .fact {
+    margin: 0; padding: 12px 14px; border-radius: 10px;
+    background: rgba(85, 220, 255, .1); border: 1px solid rgba(85, 220, 255, .35);
+    font-size: 15px; line-height: 1.35; text-align: left; text-wrap: pretty;
+  }
+  .fact b { color: var(--sterile); font-weight: 600; }
+  /* Level list: each Key is a green mile-marker sign, like the ones along US 1. */
+  .levels { display: grid; gap: 8px; }
+  .lvl {
+    display: grid; grid-template-columns: 54px 1fr auto; align-items: center; gap: 12px;
+    padding: 8px 14px 8px 8px; border-radius: 8px;
+    border: 2px solid var(--paper); background: var(--sign);
+    color: var(--ink); font: inherit; text-align: left; cursor: pointer;
+  }
+  .lvl:hover { background: var(--sign-hi); }
+  .mm {
+    display: grid; place-items: center; gap: 0;
+    border: 2px solid var(--paper); border-radius: 5px; padding: 3px 0 2px;
+    font-family: var(--sign-font); font-weight: 800; line-height: 1;
+  }
+  .mm small { font-size: 9px; letter-spacing: 1px; }
+  .mm span { font-size: 19px; font-variant-numeric: tabular-nums; }
+  .lvl .name { font-family: var(--sign-font); font-weight: 800; font-size: 19px; line-height: 1.1; }
+  .lvl .name small { display: block; font-family: var(--round); font-weight: 400; font-size: 12px; color: #cfeedd; margin-top: 2px; }
+  .lvl .best { font-family: var(--sign-font); font-weight: 700; font-size: 13px; color: #cfeedd; font-variant-numeric: tabular-nums; text-align: right; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  #game:focus { outline: none; }
+</style>
+</head>
+<body>
+<main class="stage" id="stage">
+  <div class="frame" id="frame">
+    <canvas id="game" tabindex="-1" aria-label="Mosquito Keys game. Hold to drive the truck and shoot sterile mosquitoes into the swarm."></canvas>
+
+    <div class="hud-btns" id="hudBtns" hidden>
+      <button class="icon-btn" id="soundBtn" type="button" aria-label="Sound on" aria-pressed="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path id="soundWave" d="M16.5 8.5a5 5 0 0 1 0 7"/></svg>
+      </button>
+      <button class="icon-btn" id="pauseBtn" type="button" aria-label="Pause">
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+      </button>
+    </div>
+
+    <section class="screen" id="titleScreen" aria-label="Title">
+      <div class="panel">
+        <h1 class="logo">MOSQUITO KEYS<small>working title</small></h1>
+        <p class="sub">Mosquitoes are coming for the Florida Keys! Shoot sterile mosquitoes into the swarm. Make enough of them sterile and the swarm dies out.</p>
+        <ul class="cast" id="cast"></ul>
+        <div class="modes" role="group" aria-label="Game mode">
+          <button class="mode" type="button" id="modeMurphy" aria-pressed="true">
+            <b>Murphy mode</b>
+            <span>Slow swarm. Lose after 10 bites.</span>
+          </button>
+          <button class="mode" type="button" id="modeMelissa" aria-pressed="false">
+            <b>Melissa mode</b>
+            <span>Fast swarm, more babies. Lose after 5 bites.</span>
+          </button>
+        </div>
+        <div class="row">
+          <button class="btn primary" type="button" id="playBtn">Play</button>
+          <button class="btn ghost" type="button" id="levelsBtn">Keys</button>
+        </div>
+        <div class="toggles">
+          <label for="optSound"><input type="checkbox" id="optSound" checked> Sound</label>
+        </div>
+        <p class="fine">Hold your finger down to drive and shoot, or use the arrow keys and Space. Placeholder art until Murphy draws the mosquitoes. Inspired by <a href="https://worksinprogress.co/issue/mosquitoes-are-a-choice/" target="_blank" rel="noopener">Mosquitoes Are a Choice</a> in Works in Progress.</p>
+      </div>
+    </section>
+
+    <section class="screen" id="levelScreen" aria-label="Keys" hidden>
+      <div class="panel">
+        <p class="big">PICK A KEY</p>
+        <div class="levels" id="levelList"></div>
+        <p class="fine">Mile markers count down along US 1, from Key Largo to Mile 0 in Key West.</p>
+        <div class="row"><button class="btn ghost" type="button" id="levelsBack">Back</button></div>
+      </div>
+    </section>
+
+    <section class="screen" id="pauseScreen" aria-label="Paused" hidden>
+      <div class="panel">
+        <p class="big">PAUSED</p>
+        <div class="row"><button class="btn primary" type="button" id="resumeBtn">Resume</button></div>
+        <div class="row">
+          <button class="btn ghost" type="button" id="restartBtn">Restart</button>
+          <button class="btn ghost" type="button" id="quitBtn">Title</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="resultScreen" aria-label="Result" hidden>
+      <div class="panel">
+        <p class="big" id="resultTitle">MOSQUITO-FREE!</p>
+        <p class="score-line" id="resultScore"></p>
+        <p class="fact" id="resultFact"></p>
+        <div class="row" id="resultBtns"></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  // ---------- geometry (logical units; the canvas scales to fit) ----------
+  const W = 424, H = 716, HUD_H = 66;
+  const COLS = 9, ROWS = 7, CW = 36, CH = 34;      // the swarm's grid
+  const FX0 = (W - (COLS - 1) * CW) / 2, FY0 = HUD_H + 50;
+  const FIELD_L = 12, FIELD_R = W - 12;
+  const SHORE_Y = 586;                              // a wild mosquito this low bites a town
+  const WATER_Y = 612, DECK_Y = 648;                // sea level and the Overseas Highway deck
+  const MUZZLE_Y = 610;                             // where shots leave the truck
+  const SHOT_V = 470, HOP = 0.085;                  // shot speed; seconds per step of a spreading chain
+  const N4 = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+
+  // ---------- rules ----------
+  // Three ways to make a mosquito sterile, each from the article.
+  const TOOLS = {
+    zap: { label: 'Sterile male', short: '', depth: 1, color: '#55dcff' },          // radiation, since the 1950s: the one you hit plus its neighbors
+    ox:  { label: 'OX gene', short: 'OX', depth: 3, color: '#8cff5a' },             // Oxitec: passed down a few generations, then fades
+    w:   { label: 'Wolbachia', short: 'W', depth: Infinity, color: '#ff7ad9' },     // spreads through the whole connected bunch
+  };
+
+  const MODES = {
+    // life: seconds a sterile mosquito lives. Releases have to keep going, like the real ones.
+    murphy:  { cases: 10, gen: 5.5, breed: 0.45, births: 4, dive: 7, diveV: 46, divers: 1, march: 20, step: 8,  hitR: 20, cool: 0.45, shots: 2, permit: 12, ammo: 4, life: 15 },
+    melissa: { cases: 5,  gen: 3.2, breed: 0.6,  births: 6, dive: 3.5, diveV: 80, divers: 2, march: 32, step: 12, hitR: 14, cool: 0.45, shots: 1, permit: 15, ammo: 3, life: 9 },
+  };
+
+  // Rows are the swarm as drawn: M = wild mosquito, . = empty. Nine across, up to seven down.
+  const LEVELS = [
+    { name: 'Key Largo', mm: 100, target: 80, tools: [], heat: 0,
+      rows: ['.MMMMMMM.', '.MMMMMMM.', 'MMMMMMMMM', '.MMMMMMM.'],
+      islands: [[-20, 236], [270, 444]], towns: [30, 100, 172, 318, 392], palms: [62, 140, 214, 296, 356, 418],
+      tip: 'Hold your finger down to drive and shoot. Hit a mosquito and the ones touching it turn sterile too.',
+      fact: 'Releasing specially bred male mosquitoes cut the wild ones in the <b>Cayman Islands by 80 percent</b>.' },
+    { name: 'Islamorada', mm: 82, target: 85, tools: ['ox'], heat: 1,
+      rows: ['MMMM.MMMM', 'MMMM.MMMM', 'MMMM.MMMM', 'MMM...MMM', 'MM.....MM'],
+      islands: [[-20, 120], [150, 262], [296, 444]], towns: [36, 94, 206, 330, 400], palms: [12, 66, 174, 238, 318, 366, 424],
+      tip: 'Shoot the PERMIT when it flies by. An OX shot spreads three mosquitoes deep.',
+      fact: 'The OX gene is passed down for <b>a few generations</b>, then fades away on its own.' },
+    { name: 'Marathon', mm: 50, target: 85, tools: ['w'], heat: 2,
+      rows: ['MM.MMM.MM', 'MM.MMM.MM', 'MM.MMM.MM', 'MM.MMM.MM', 'MM.MMM.MM'],
+      islands: [[-20, 204], [376, 444]], towns: [30, 96, 162, 404], palms: [8, 64, 128, 190, 392],
+      tip: 'A W shot (Wolbachia) spreads through every wild mosquito touching in a chain. Aim for the biggest bunch, before the babies fill the gaps!',
+      fact: 'In Singapore, Wolbachia mosquitoes cut the swarm by <b>85 percent</b> and dengue by about <b>70 percent</b>.' },
+    { name: 'Big Pine Key', mm: 30, target: 90, tools: ['ox', 'w'], heat: 3,
+      rows: ['MMM.M.MMM', 'MMM.M.MMM', '....M....', 'MM.MMM.MM', 'MM.MMM.MM', 'MM.....MM'],
+      islands: [[-20, 70], [96, 176], [204, 330], [358, 444]], towns: [26, 132, 236, 300, 404], palms: [54, 112, 160, 220, 270, 374, 430],
+      tip: 'Sterile mosquitoes can\'t have babies, and neither can the wild ones touching them. Stop the hatching!',
+      fact: 'Since the 1950s, the U.S. has released <b>sterile flies</b> to drive out screwworm, a nasty pest that attacks cows.' },
+    { name: 'Key West', mm: 0, target: 95, tools: ['ox', 'w'], heat: 4,
+      rows: ['MMMM.MMMM', 'MMMM.MMMM', 'MMMM.MMMM', '.........', 'MMMM.MMMM', 'MMMM.MMMM', 'MMMM.MMMM'],
+      islands: [[-20, 444]], towns: [28, 92, 156, 226, 296, 362], palms: [60, 124, 190, 262, 330, 404],
+      tip: 'Mile 0! The best real trial, in Brazil, got rid of 95 percent. Can you?',
+      fact: 'In 2021 the Florida Keys ran the <b>first U.S. field trial</b> of gene-edited mosquitoes.' },
+  ];
+  const FINAL_FACT = 'You cleared the Keys! In real life the newest tools waited <b>about 15 years</b> for permission. The article\'s point: mosquito diseases in the U.S. are <b>a choice</b>.';
+  const LOSE_FACT = 'In 2024 the U.S. had <b>almost 4,000 dengue cases</b>, 360 percent more than a normal year.';
+
+  // ---------- random (seeded, so a run can be replayed) ----------
+  let seed = (Date.now() ^ 0x9e3779b9) >>> 0;
+  function rng() {
+    seed = (seed + 0x6d2b79f5) >>> 0;
+    let t = seed;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  }
+  const pick = (a) => a[Math.floor(rng() * a.length)];
+
+  // ---------- storage (per device; optional) ----------
+  const store = {
+    get(key, fallback) {
+      try { const v = localStorage.getItem(key); return v == null ? fallback : JSON.parse(v); } catch { return fallback; }
+    },
+    set(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { return false; /* storage unavailable */ } },
+  };
+
+  // ---------- sound: synthesized, no samples ----------
+  const Sound = {
+    ctx: null, on: true, hum: null,
+    init() {
+      if (!this.ctx) {
+        try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch { this.ctx = null; }
+      }
+      if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
+      if (this.ctx && !this.hum) this.makeHum();
+    },
+    tone(freq, dur, type = 'square', vol = 0.05, slideTo = null, delay = 0) {
+      if (!this.on || !this.ctx) return;
+      const t0 = this.ctx.currentTime + delay;
+      const o = this.ctx.createOscillator(), g = this.ctx.createGain();
+      o.type = type;
+      o.frequency.setValueAtTime(freq, t0);
+      if (slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t0 + dur);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(vol, t0 + 0.01);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+      o.connect(g).connect(this.ctx.destination);
+      o.start(t0); o.stop(t0 + dur + 0.02);
+    },
+    // The swarm hums louder the more wild mosquitoes there are.
+    makeHum() {
+      try {
+        const c = this.ctx;
+        const o = c.createOscillator(), lfo = c.createOscillator(), lg = c.createGain(), f = c.createBiquadFilter(), g = c.createGain();
+        o.type = 'sawtooth'; o.frequency.value = 520;
+        lfo.frequency.value = 7; lg.gain.value = 24;
+        lfo.connect(lg).connect(o.frequency);
+        f.type = 'bandpass'; f.frequency.value = 900; f.Q.value = 2.5;
+        g.gain.value = 0;
+        o.connect(f).connect(g).connect(c.destination);
+        o.start(); lfo.start();
+        this.hum = g;
+      } catch { this.hum = null; }
+    },
+    setHum(level) {
+      if (!this.hum || !this.ctx) return;
+      const v = this.on ? Math.min(0.022, level * 0.0006) : 0;
+      this.hum.gain.setTargetAtTime(v, this.ctx.currentTime, 0.15);
+    },
+    shoot() { this.tone(640, 0.08, 'triangle', 0.05, 980); },
+    zap(n, depth) { const k = Math.min(n, 10); for (let i = 0; i < k; i++) this.tone(520 + i * 70, 0.07, 'square', 0.035, null, Math.min(i, depth) * HOP); },
+    hatch() { this.tone(1300, 0.04, 'sine', 0.05); this.tone(1600, 0.04, 'sine', 0.05, null, 0.07); },
+    dive() { this.tone(1500, 0.6, 'sawtooth', 0.015, 900); },
+    bite() { this.tone(240, 0.28, 'sawtooth', 0.07, 110); },
+    saved() { this.tone(880, 0.08, 'triangle', 0.06, 1320); },
+    permit() { this.tone(90, 0.12, 'square', 0.1, 60); [784, 988, 1175].forEach((f, i) => this.tone(f, 0.09, 'triangle', 0.06, null, 0.12 + i * 0.07)); },
+    ready() { [392, 523, 659].forEach((f, i) => this.tone(f, 0.12, 'square', 0.045, null, i * 0.11)); },
+    win() { [523, 659, 784, 1047, 784, 1047].forEach((f, i) => this.tone(f, 0.14, 'square', 0.05, null, i * 0.11)); },
+    lose() { [392, 370, 349, 311].forEach((f, i) => this.tone(f, 0.3, 'triangle', 0.08, f * 0.96, i * 0.27)); },
+    plop() { this.tone(300 + Math.random() * 200, 0.09, 'sine', 0.04, 120); },
+  };
+
+  // ---------- state ----------
+  const S = {
+    screen: 'title', mode: 'murphy', li: 0, P: null,
+    grid: [], fx: FX0, fy: FY0, dir: 1,
+    truckX: W / 2, input: { target: null, firing: false, left: false, right: false, key: false },
+    shots: [], divers: [], permit: null, ammo: null,
+    cases: 0, score: 0, t: 0, genT: 0, diveT: 0, permitT: 0, cool: 0,
+    phase: 'ready', phaseT: 0, bitten: {}, best: {},
+    texts: [], parts: [], rings: [],
+  };
+
+  const L = () => LEVELS[S.li];
+  const inGrid = (r, c) => r >= 0 && r < ROWS && c >= 0 && c < COLS;
+
+  function newCell(r) { return { wild: true, born: -9, vis: -9, die: 0, ph: rng() * 6.283, from: null, tool: 'zap', flashed: true, fall: 0, gone: false, r }; }
+
+  function levelGrid(lv) {
+    const g = [];
+    for (let r = 0; r < ROWS; r++) {
+      g.push([]);
+      for (let c = 0; c < COLS; c++) g[r].push(lv.rows[r] && lv.rows[r][c] === 'M' ? newCell(r) : null);
+    }
+    return g;
+  }
+
+  function params(mode, lv) {
+    const m = MODES[mode], h = lv.heat;
+    return {
+      ...m,
+      gen: m.gen / (1 + 0.08 * h),
+      breed: m.breed + 0.025 * h,
+      births: m.births + Math.floor(h / 2),
+      dive: m.dive / (1 + 0.12 * h),
+      divers: m.divers + (h >= 3 ? 1 : 0),
+      march: m.march * (1 + 0.1 * h),
+    };
+  }
+
+  function cellPos(r, c, cell) {
+    const wob = cell ? Math.sin(S.t * 3 + cell.ph) * 2.5 : 0;
+    return [S.fx + c * CW, S.fy + r * CH + wob];
+  }
+
+  function counts() {
+    let wild = 0, sterile = 0;
+    for (const row of S.grid) for (const cell of row) if (cell && !cell.gone) cell.wild ? wild++ : sterile++;
+    for (const d of S.divers) if (!d.flee) wild++;
+    return { wild, sterile };
+  }
+
+  // ---------- level flow ----------
+  function begin(li) {
+    S.li = li;
+    S.P = params(S.mode, LEVELS[li]);
+    S.grid = levelGrid(LEVELS[li]);
+    Object.assign(S, {
+      fx: FX0, fy: FY0, dir: 1, shots: [], divers: [], permit: null, ammo: null,
+      cases: 0, score: 0, t: 0, genT: 0, diveT: S.P.dive - 3, permitT: S.P.permit - 5, cool: 0,
+      phase: 'ready', phaseT: 0, bitten: {}, texts: [], parts: [], rings: [], truckX: W / 2,
+    });
+    S.input.target = null; S.input.firing = false;
+  }
+
+  function go() {
+    if (S.phase !== 'ready') return;
+    S.phase = 'play'; S.phaseT = 0;
+    Sound.ready();
+  }
+
+  function collapse() {
+    S.phase = 'collapse'; S.phaseT = 0;
+    S.shots = []; S.permit = null; S.ammo = null;
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      const cell = S.grid[r][c];
+      if (!cell || cell.gone) continue;
+      if (cell.wild) { cell.wild = false; cell.vis = S.t + 0.2 + r * 0.06 + c * 0.03; cell.from = null; cell.tool = 'zap'; cell.flashed = false; }
+      cell.die = 0;
+      cell.fall = S.t + 1.5 + Math.random() * 0.9;
+    }
+    for (const d of S.divers) d.flee = true;
+    text(W / 2, 300, 'SWARM COLLAPSE!', TOOLS.zap.color, 26, 2.2);
+    text(W / 2, 334, 'No babies = no mosquitoes', '#ffffff', 15, 2.2);
+  }
+
+  function finish(win) {
+    S.screen = 'result';
+    const lv = L();
+    if (win) S.score += 250 + 40 * (S.P.cases - S.cases);
+    const key = S.mode + ':' + S.li;
+    const best = Math.max(S.best[key] || 0, win ? S.score : 0);
+    if (win) { S.best[key] = best; store.set('mk:best', S.best); }
+    $('resultTitle').textContent = win ? (S.li === LEVELS.length - 1 ? 'THE KEYS ARE SAFE!' : 'MOSQUITO-FREE!') : 'TOO MANY BITES';
+    $('resultScore').textContent = `${lv.name} · ${S.score.toLocaleString()} points` + (win && best ? ` · best ${best.toLocaleString()}` : '');
+    $('resultFact').innerHTML = !win ? LOSE_FACT : (S.li === LEVELS.length - 1 ? FINAL_FACT : lv.fact);
+    const btns = $('resultBtns');
+    btns.textContent = '';
+    const add = (label, cls, fn) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ' + cls; b.textContent = label; b.addEventListener('click', fn); btns.append(b); return b; };
+    let first;
+    if (win && S.li < LEVELS.length - 1) first = add('Next Key', 'primary', () => play(S.li + 1));
+    const again = add(win ? 'Play again' : 'Try again', first ? 'ghost' : 'primary', () => play(S.li));
+    add('Keys', 'ghost', () => show('levels'));
+    show('result');
+    (first || again).focus({ preventScroll: true });
+    if (win) Sound.win(); else Sound.lose();
+  }
+
+  // ---------- the swarm ----------
+  function march(dt) {
+    let minC = COLS, maxC = -1, maxR = -1;
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      const cell = S.grid[r][c];
+      if (cell && !cell.gone) { if (c < minC) minC = c; if (c > maxC) maxC = c; if (r > maxR) maxR = r; }
+    }
+    if (maxC < 0) return;
+    S.fx += S.dir * S.P.march * dt;
+    const left = S.fx + minC * CW - 16, right = S.fx + maxC * CW + 16;
+    if (left < FIELD_L) { S.fx += FIELD_L - left; S.dir = 1; S.fy += S.P.step; }
+    else if (right > FIELD_R) { S.fx -= right - FIELD_R; S.dir = -1; S.fy += S.P.step; }
+    if (S.fy + maxR * CH >= SHORE_Y) land(maxR);
+  }
+
+  // The bottom row reached the islands: every wild one in it bites.
+  function land(r) {
+    for (let c = 0; c < COLS; c++) {
+      const cell = S.grid[r][c];
+      if (!cell || cell.gone) continue;
+      const [x, y] = cellPos(r, c, cell);
+      if (cell.wild) bite(x);
+      else poof(x, y);
+      S.grid[r][c] = null;
+    }
+  }
+
+  // Sterile mosquitoes don't live long. When one dies it leaves a gap the wild ones can fill.
+  function dieOff() {
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      const cell = S.grid[r][c];
+      if (!cell || cell.gone || cell.wild || !cell.die || S.t < cell.die) continue;
+      const [x, y] = cellPos(r, c, cell);
+      poof(x, y);
+      S.grid[r][c] = null;
+    }
+  }
+
+  function hasSterileNeighbor(r, c) {
+    for (const [dr, dc] of N4) {
+      const r2 = r + dr, c2 = c + dc;
+      if (!inGrid(r2, c2)) continue;
+      const n = S.grid[r2][c2];
+      if (n && !n.gone && !n.wild) return true;
+    }
+    return false;
+  }
+
+  // Wild mosquitoes lay eggs into empty spots next to them, unless a sterile one is touching.
+  function breed() {
+    const cand = [];
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      const cell = S.grid[r][c];
+      if (!cell || cell.gone || !cell.wild || hasSterileNeighbor(r, c)) continue;
+      const empty = N4.map(([dr, dc]) => [r + dr, c + dc]).filter(([r2, c2]) => inGrid(r2, c2) && !S.grid[r2][c2] && S.fy + r2 * CH < SHORE_Y - CH);
+      if (empty.length) cand.push(empty);
+    }
+    for (let i = cand.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [cand[i], cand[j]] = [cand[j], cand[i]]; }
+    let births = 0;
+    for (const empty of cand) {
+      if (births >= S.P.births) break;
+      if (rng() > S.P.breed) continue;
+      const free = empty.filter(([r2, c2]) => !S.grid[r2][c2]);
+      if (!free.length) continue;
+      const [r2, c2] = pick(free);
+      const baby = newCell(r2);
+      baby.born = S.t;
+      S.grid[r2][c2] = baby;
+      births++;
+    }
+    if (births) Sound.hatch();
+  }
+
+  // A wild one at the front of its column peels off and dives at a town.
+  function spawnDiver() {
+    if (S.divers.filter((d) => !d.flee).length >= S.P.divers) return;
+    const front = [];
+    for (let c = 0; c < COLS; c++) {
+      for (let r = ROWS - 1; r >= 0; r--) {
+        const cell = S.grid[r][c];
+        if (cell && !cell.gone) { if (cell.wild && S.t >= cell.vis) front.push([r, c]); break; }
+      }
+    }
+    if (!front.length) return;
+    const [r, c] = pick(front);
+    const [x, y] = cellPos(r, c, S.grid[r][c]);
+    S.grid[r][c] = null;
+    const towns = L().towns;
+    S.divers.push({ x, y, tx: pick(towns), t: 0, ph: rng() * 6.283, flee: false, a: 1, vx: 0 });
+    Sound.dive();
+  }
+
+  function nearestTown(x) {
+    let best = 0;
+    L().towns.forEach((tx, i) => { if (Math.abs(tx - x) < Math.abs(L().towns[best] - x)) best = i; });
+    return best;
+  }
+
+  function bite(x) {
+    S.cases++;
+    const i = nearestTown(x);
+    S.bitten[i] = S.t;
+    const tx = L().towns[i];
+    text(tx, SHORE_Y - 14, 'BITE!', '#ff4d5e', 16, 1);
+    for (let k = 0; k < 8; k++) S.parts.push({ x: tx, y: SHORE_Y + 6, vx: (Math.random() - 0.5) * 90, vy: -40 - Math.random() * 60, t: 0, life: 0.6, color: '#ff4d5e', r: 2.2 });
+    Sound.bite();
+  }
+
+  function poof(x, y) {
+    for (let k = 0; k < 6; k++) S.parts.push({ x, y, vx: (Math.random() - 0.5) * 70, vy: -30 - Math.random() * 50, t: 0, life: 0.5, color: TOOLS.zap.color, r: 2 });
+  }
+
+  // Spread sterility from the hit mosquito through the wild ones touching it, `depth` steps out.
+  function sterilize(r, c, tool) {
+    const depth = TOOLS[tool].depth;
+    const q = [[r, c, 0, null]];
+    const seen = new Set([r * COLS + c]);
+    let n = 0, deepest = 0;
+    while (q.length) {
+      const [rr, cc, d, from] = q.shift();
+      const cell = S.grid[rr][cc];
+      cell.wild = false; cell.vis = S.t + d * HOP; cell.from = from; cell.tool = tool; cell.flashed = false;
+      cell.die = cell.vis + S.P.life * (tool === 'w' ? 1.5 : 1) * (0.85 + rng() * 0.3);
+      n++; deepest = d;
+      if (d >= depth) continue;
+      for (const [dr, dc] of N4) {
+        const r2 = rr + dr, c2 = cc + dc, k = r2 * COLS + c2;
+        if (!inGrid(r2, c2) || seen.has(k)) continue;
+        const nb = S.grid[r2][c2];
+        if (!nb || nb.gone || !nb.wild) continue;
+        seen.add(k);
+        q.push([r2, c2, d + 1, [rr, cc]]);
+      }
+    }
+    const pts = n * 10 + Math.max(0, n - 5) * 10;
+    S.score += pts;
+    const [x, y] = cellPos(r, c, S.grid[r][c]);
+    text(x, y - 18, '+' + pts, TOOLS[tool].color, 14, 0.9);
+    if (n >= 8) text(W / 2, 250, n >= 15 ? 'MEGA CHAIN! ×' + n : 'CHAIN ×' + n, TOOLS[tool].color, n >= 15 ? 24 : 20, 1.3);
+    Sound.zap(n, deepest);
+    return n;
+  }
+
+  // ---------- shots, divers, permits ----------
+  function fire() {
+    const tool = S.ammo ? S.ammo.tool : 'zap';
+    S.shots.push({ x: S.truckX, y: MUZZLE_Y, tool, dead: false, t: 0 });
+    if (S.ammo && --S.ammo.n <= 0) S.ammo = null;
+    S.cool = S.P.cool;
+    Sound.shoot();
+  }
+
+  function hitCheck(s) {
+    const R = S.P.hitR;
+    for (const d of S.divers) {
+      if (d.flee) continue;
+      if (Math.hypot(d.x - s.x, d.y - s.y) < R + 3) {
+        d.flee = true; s.dead = true; S.score += 25;
+        text(d.x, d.y - 16, 'SAVED +25', TOOLS[s.tool].color, 13, 0.9);
+        Sound.saved();
+        return;
+      }
+    }
+    if (S.permit && Math.abs(S.permit.x - s.x) < 24 && Math.abs(S.permit.y - s.y) < 18) {
+      const p = S.permit;
+      S.ammo = { tool: p.tool, n: S.P.ammo };
+      S.score += 50;
+      S.permit = null; S.permitT = 0; s.dead = true;
+      text(p.x, p.y + 6, 'APPROVED!', '#ff4d5e', 18, 1.3, -0.18);
+      text(W / 2, 360, TOOLS[p.tool].label + ' ×' + S.P.ammo, TOOLS[p.tool].color, 18, 1.6);
+      Sound.permit();
+      return;
+    }
+    for (let r = ROWS - 1; r >= 0; r--) for (let c = 0; c < COLS; c++) {
+      const cell = S.grid[r][c];
+      if (!cell || cell.gone || !cell.wild) continue;
+      const [x, y] = cellPos(r, c, cell);
+      if (Math.abs(x - s.x) < R && Math.abs(y - s.y) < R) {
+        s.dead = true;
+        sterilize(r, c, s.tool);
+        return;
+      }
+    }
+  }
+
+  function updateShots(dt) {
+    for (const s of S.shots) {
+      s.t += dt;
+      let dist = SHOT_V * dt;
+      while (dist > 0 && !s.dead) {
+        const step = Math.min(8, dist);
+        dist -= step; s.y -= step;
+        hitCheck(s);
+      }
+      if (s.y < HUD_H - 8) s.dead = true;
+    }
+    S.shots = S.shots.filter((s) => !s.dead);
+  }
+
+  function updateDivers(dt) {
+    for (const d of S.divers) {
+      d.t += dt;
+      if (d.flee) {
+        d.y -= 150 * dt; d.x += Math.sin(d.t * 5 + d.ph) * 60 * dt; d.a -= dt * 0.9;
+        continue;
+      }
+      d.y += S.P.diveV * dt;
+      const vx = (d.tx - d.x) * 0.9 + Math.sin(d.t * 6 + d.ph) * 46;
+      d.vx = vx; d.x += vx * dt;
+      if (d.y >= SHORE_Y + 4) { bite(d.x); d.a = 0; d.gone = true; }
+    }
+    S.divers = S.divers.filter((d) => !d.gone && d.a > 0 && d.y > HUD_H - 30);
+  }
+
+  function updatePermit(dt) {
+    const p = S.permit;
+    if (p) {
+      p.x += p.dir * p.v * dt; p.t += dt;
+      if (p.x < -40 || p.x > W + 40) { S.permit = null; S.permitT = 0; }
+      return;
+    }
+    if (S.phase !== 'play' || !L().tools.length || S.ammo) return;
+    S.permitT += dt;
+    if (S.permitT >= S.P.permit) {
+      const dir = rng() < 0.5 ? 1 : -1;
+      S.permit = { x: dir > 0 ? -30 : W + 30, y: HUD_H + 18, dir, v: S.mode === 'murphy' ? 52 : 68, tool: pick(L().tools), t: 0 };
+    }
+  }
+
+  function moveTruck(dt) {
+    const i = S.input;
+    if (i.left || i.right) { S.truckX += ((i.right ? 1 : 0) - (i.left ? 1 : 0)) * 300 * dt; i.target = null; }
+    else if (i.target != null) {
+      const dx = i.target - S.truckX, max = 520 * dt;
+      S.truckX += Math.max(-max, Math.min(max, dx));
+    }
+    S.truckX = Math.max(34, Math.min(W - 34, S.truckX));
+  }
+
+  function text(x, y, s, color, size, life, rot = 0) { S.texts.push({ x, y, s, color, size, life, t: 0, rot }); }
+
+  function updateFx(dt) {
+    for (const p of S.parts) { p.t += dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 160 * dt; }
+    S.parts = S.parts.filter((p) => p.t < p.life);
+    for (const tx of S.texts) tx.t += dt;
+    S.texts = S.texts.filter((tx) => tx.t < tx.life);
+    for (const rg of S.rings) rg.t += dt;
+    S.rings = S.rings.filter((rg) => rg.t < 0.4);
+    // A chain lands one step at a time: flash each mosquito as it turns.
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      const cell = S.grid[r][c];
+      if (!cell || cell.flashed || S.t < cell.vis) continue;
+      cell.flashed = true;
+      const [x, y] = cellPos(r, c, cell);
+      S.rings.push({ x, y, t: 0, color: TOOLS[cell.tool].color });
+    }
+  }
+
+  function checkEnd() {
+    if (S.cases >= S.P.cases) { S.phase = 'lost'; S.phaseT = 0; S.shots = []; return; }
+    for (const row of S.grid) for (const cell of row) if (cell && cell.vis > S.t) return;   // wait for chains to land
+    const { wild, sterile } = counts();
+    const total = wild + sterile;
+    if (total === 0 || sterile * 100 >= L().target * total) collapse();
+  }
+
+  function update(dt) {
+    if (S.screen !== 'play') { Sound.setHum(0); return; }
+    if (S.phase === 'ready') { S.phaseT += dt; Sound.setHum(0); return; }
+    S.t += dt; S.phaseT += dt;
+    moveTruck(dt);
+    if (S.phase === 'play') {
+      march(dt);
+      S.cool -= dt;
+      if ((S.input.firing || S.input.key) && S.cool <= 0 && S.shots.length < S.P.shots) fire();
+      S.genT += dt;
+      if (S.genT >= S.P.gen) { S.genT = 0; breed(); }
+      S.diveT += dt;
+      if (S.diveT >= S.P.dive) { S.diveT = 0; spawnDiver(); }
+      dieOff();
+    }
+    updateShots(dt);
+    updateDivers(dt);
+    updatePermit(dt);
+    updateFx(dt);
+    if (S.phase === 'play') checkEnd();
+    else if (S.phase === 'collapse') {
+      for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+        const cell = S.grid[r][c];
+        if (!cell || cell.gone || !cell.fall || S.t < cell.fall) continue;
+        const [x, y] = cellPos(r, c, cell);
+        const k = S.t - cell.fall;
+        if (y + 0.5 * 700 * k * k > WATER_Y + 4) {
+          cell.gone = true;
+          for (let i = 0; i < 5; i++) S.parts.push({ x, y: WATER_Y + 2, vx: (Math.random() - 0.5) * 80, vy: -60 - Math.random() * 50, t: 0, life: 0.5, color: '#e9fbff', r: 2 });
+          Sound.plop();
+        }
+      }
+      if (S.phaseT > 3.6) finish(true);
+    } else if (S.phase === 'lost' && S.phaseT > 1.8) finish(false);
+    Sound.setHum(S.phase === 'play' ? counts().wild : 0);
+  }
+
+  // ---------- drawing ----------
+  const cv = document.getElementById('game');
+  const ctx = cv.getContext('2d');
+  const $ = (id) => document.getElementById(id);
+  const FONT_D = '"Bungee", "Arial Black", Impact, sans-serif';
+  const FONT_R = '"Fredoka", "Trebuchet MS", "Segoe UI", sans-serif';
+  const FONT_S = '"Overpass", "Arial Narrow", Arial, sans-serif';
+  const HOUSE = ['#ffb3c7', '#9fe8c8', '#ffe28a', '#c9b8ff', '#9fd8ff', '#ffc89a'];
+  let T = 0;   // wall clock for wings and waves
+
+  // Placeholder mosquito, head down. Wild ones are Aedes aegypti: black, white bands, the white lyre on the back.
+  function drawMosquito(g, x, y, s, sterile, flap, tilt = 0) {
+    g.save();
+    g.translate(x, y); g.rotate(tilt); g.scale(s, s);
+    const body = sterile ? '#86e6ff' : '#2b2533';
+    const band = sterile ? '#ffffff' : '#ece9f2';
+    if (sterile) { g.fillStyle = 'rgba(85,220,255,.22)'; g.beginPath(); g.arc(0, -2, 14, 0, 6.283); g.fill(); }
+    g.lineCap = 'round';
+    for (const side of [-1, 1]) {
+      for (let i = 0; i < 3; i++) {
+        const ly = -1 + i * 3.2;
+        g.strokeStyle = body; g.lineWidth = 1.5;
+        g.beginPath(); g.moveTo(side * 2, ly); g.lineTo(side * (8 + i * 1.6), ly - 5 + i * 3); g.lineTo(side * (11 + i), ly + 5 + i * 2.5); g.stroke();
+        g.strokeStyle = band; g.lineWidth = 1.5;
+        g.beginPath(); g.moveTo(side * (10.3 + i), ly + 2.5 + i * 1.5); g.lineTo(side * (10.7 + i), ly + 3.6 + i * 2); g.stroke();
+      }
+    }
+    const a = 0.25 + flap * 0.55;
+    g.fillStyle = sterile ? 'rgba(235,252,255,.8)' : 'rgba(255,255,255,.62)';
+    g.strokeStyle = 'rgba(30,30,50,.4)'; g.lineWidth = 0.8;
+    for (const side of [-1, 1]) {
+      g.save(); g.rotate(side * -a);
+      g.beginPath(); g.ellipse(side * 5.5, -9, 3.6, 9, side * 0.45, 0, 6.283); g.fill(); g.stroke();
+      g.restore();
+    }
+    g.fillStyle = body;
+    g.beginPath(); g.ellipse(0, -8, 3.5, 8, 0, 0, 6.283); g.fill();
+    g.strokeStyle = band; g.lineWidth = 1.1;
+    for (const by of [-11.5, -8, -4.5]) { g.beginPath(); g.moveTo(-2.9, by); g.lineTo(2.9, by); g.stroke(); }
+    if (!sterile) { g.fillStyle = '#d8324a'; g.beginPath(); g.ellipse(0, -14, 2.1, 2.3, 0, 0, 6.283); g.fill(); }
+    g.fillStyle = body;
+    g.beginPath(); g.ellipse(0, 1, 4.6, 4.1, 0, 0, 6.283); g.fill();
+    g.strokeStyle = band; g.lineWidth = 0.9;
+    g.beginPath(); g.moveTo(-1.9, -1.6); g.quadraticCurveTo(-3.2, 1.4, -0.9, 3.4); g.moveTo(1.9, -1.6); g.quadraticCurveTo(3.2, 1.4, 0.9, 3.4); g.stroke();
+    g.fillStyle = body;
+    g.beginPath(); g.arc(0, 7, 3.3, 0, 6.283); g.fill();
+    if (sterile) {
+      g.strokeStyle = '#0b3a52'; g.lineWidth = 0.9;
+      g.beginPath(); g.arc(-1.4, 6.6, 0.9, 0.2, Math.PI - 0.2); g.moveTo(2.3, 6.8); g.arc(1.4, 6.6, 0.9, 0.2, Math.PI - 0.2); g.stroke();
+    } else {
+      g.fillStyle = '#ff3550';
+      g.beginPath(); g.arc(-1.5, 7.4, 1.35, 0, 6.283); g.arc(1.5, 7.4, 1.35, 0, 6.283); g.fill();
+    }
+    g.strokeStyle = body; g.lineWidth = 1.2;
+    g.beginPath(); g.moveTo(0, 9.5); g.lineTo(0, sterile ? 13 : 17); g.stroke();
+    g.restore();
+  }
+
+  function drawShotSprite(g, x, y, tool, t) {
+    const col = TOOLS[tool].color;
+    g.save();
+    g.globalAlpha = 0.35; g.fillStyle = col;
+    g.beginPath(); g.ellipse(x, y + 12, 3, 11, 0, 0, 6.283); g.fill();
+    g.globalAlpha = 1;
+    g.translate(x, y);
+    const f = (Math.sin(t * 50) + 1) / 2;
+    g.fillStyle = 'rgba(255,255,255,.85)';
+    for (const side of [-1, 1]) { g.beginPath(); g.ellipse(side * 4.5, 1, 2.6, 6, side * (0.9 + f * 0.5), 0, 6.283); g.fill(); }
+    g.fillStyle = col;
+    g.beginPath(); g.ellipse(0, 3, 2.6, 6.5, 0, 0, 6.283); g.fill();
+    g.beginPath(); g.arc(0, -4.5, 2.6, 0, 6.283); g.fill();
+    g.strokeStyle = col; g.lineWidth = 1.1;
+    g.beginPath(); g.moveTo(-1, -7); g.lineTo(-3, -11); g.moveTo(1, -7); g.lineTo(3, -11); g.stroke();
+    if (TOOLS[tool].short) {
+      g.font = `9px ${FONT_D}`; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillStyle = '#0b3a52'; g.fillText(TOOLS[tool].short, 0, 4);
+    }
+    g.restore();
+  }
+
+  function drawPermit(g, x, y, tool, t) {
+    g.save();
+    g.translate(x, y + Math.sin(t * 3) * 3); g.rotate(Math.sin(t * 2) * 0.08);
+    g.fillStyle = 'rgba(0,0,0,.18)'; g.fillRect(-15, -9, 34, 24);
+    g.fillStyle = '#fffdf3'; g.beginPath();
+    g.moveTo(-17, -12); g.lineTo(11, -12); g.lineTo(17, -6); g.lineTo(17, 12); g.lineTo(-17, 12); g.closePath(); g.fill();
+    g.strokeStyle = '#9aa6ad'; g.lineWidth = 1; g.stroke();
+    g.fillStyle = '#d7dde0'; g.beginPath(); g.moveTo(11, -12); g.lineTo(11, -6); g.lineTo(17, -6); g.closePath(); g.fill();
+    g.font = `800 7px ${FONT_S}`; g.textAlign = 'left'; g.textBaseline = 'middle'; g.fillStyle = '#33424a';
+    g.fillText('PERMIT', -14, -6);
+    g.fillStyle = '#c3ccd1'; g.fillRect(-14, 0, 14, 1.5); g.fillRect(-14, 4, 12, 1.5); g.fillRect(-14, 8, 14, 1.5);
+    g.fillStyle = TOOLS[tool].color; g.beginPath(); g.arc(8, 4, 7, 0, 6.283); g.fill();
+    g.strokeStyle = '#0b3a52'; g.lineWidth = 1; g.stroke();
+    g.font = `8px ${FONT_D}`; g.textAlign = 'center'; g.fillStyle = '#0b3a52'; g.fillText(TOOLS[tool].short, 8, 4.5);
+    g.restore();
+  }
+
+  function drawTruck(g, x) {
+    const y = DECK_Y;
+    g.save(); g.translate(x, 0);
+    g.fillStyle = 'rgba(0,0,0,.18)'; g.fillRect(-30, y - 2, 60, 3);
+    // box with the mosquito-control green stripe
+    g.fillStyle = '#ffffff'; roundRect(g, -30, y - 30, 40, 22, 3); g.fill();
+    g.fillStyle = '#1f8f5f'; g.fillRect(-30, y - 21, 40, 6);
+    // cab
+    g.fillStyle = '#f2f4f5'; g.beginPath(); g.moveTo(12, y - 8); g.lineTo(12, y - 24); g.lineTo(22, y - 24); g.lineTo(29, y - 15); g.lineTo(29, y - 8); g.closePath(); g.fill();
+    g.fillStyle = '#7ed3f0'; g.beginPath(); g.moveTo(15, y - 21); g.lineTo(21, y - 21); g.lineTo(26, y - 15); g.lineTo(15, y - 15); g.closePath(); g.fill();
+    g.fillStyle = '#ffd23f'; g.fillRect(26, y - 12, 3, 2);
+    // release tube
+    g.fillStyle = '#5b6b73'; g.fillRect(-6, y - 40, 8, 11);
+    g.fillStyle = S.ammo ? TOOLS[S.ammo.tool].color : TOOLS.zap.color; g.fillRect(-7, y - 42, 10, 3);
+    // wheels
+    g.fillStyle = '#1d2226';
+    for (const wx of [-21, -4, 21]) { g.beginPath(); g.arc(wx, y - 6, 5, 0, 6.283); g.fill(); }
+    g.fillStyle = '#9aa6ad';
+    for (const wx of [-21, -4, 21]) { g.beginPath(); g.arc(wx, y - 6, 1.8, 0, 6.283); g.fill(); }
+    g.restore();
+    if (S.ammo) {
+      const tool = TOOLS[S.ammo.tool], label = `${tool.short} ×${S.ammo.n}`;
+      g.font = `11px ${FONT_D}`;
+      const w = g.measureText(label).width + 12;
+      g.fillStyle = tool.color; roundRect(g, x - 2 - w / 2, y - 60, w, 16, 5); g.fill();
+      g.fillStyle = '#0b3a52'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(label, x - 2, y - 51.5);
+    }
+  }
+
+  function roundRect(g, x, y, w, h, r) {
+    g.beginPath();
+    g.moveTo(x + r, y); g.lineTo(x + w - r, y); g.quadraticCurveTo(x + w, y, x + w, y + r);
+    g.lineTo(x + w, y + h - r); g.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    g.lineTo(x + r, y + h); g.quadraticCurveTo(x, y + h, x, y + h - r);
+    g.lineTo(x, y + r); g.quadraticCurveTo(x, y, x + r, y); g.closePath();
+  }
+
+  function drawScene(g) {
+    const lv = L();
+    // sky
+    const sky = g.createLinearGradient(0, 0, 0, WATER_Y);
+    sky.addColorStop(0, '#5cc8f2'); sky.addColorStop(0.7, '#bdeeff'); sky.addColorStop(1, '#fff3d6');
+    g.fillStyle = sky; g.fillRect(0, 0, W, WATER_Y);
+    g.fillStyle = 'rgba(255,255,255,.75)';
+    for (let i = 0; i < 3; i++) {
+      const cx = ((T * (6 + i * 3) + i * 170) % (W + 160)) - 80, cy = 150 + i * 120;
+      g.beginPath(); g.ellipse(cx, cy, 34, 10, 0, 0, 6.283); g.ellipse(cx + 22, cy - 6, 22, 10, 0, 0, 6.283); g.ellipse(cx - 20, cy - 3, 18, 8, 0, 0, 6.283); g.fill();
+    }
+    // the line the swarm must not reach
+    g.save();
+    g.strokeStyle = 'rgba(255,77,94,.45)'; g.setLineDash([6, 6]); g.lineWidth = 1.5;
+    g.beginPath(); g.moveTo(0, SHORE_Y); g.lineTo(W, SHORE_Y); g.stroke();
+    g.restore();
+    // sea
+    const sea = g.createLinearGradient(0, WATER_Y, 0, H);
+    sea.addColorStop(0, '#39d0c8'); sea.addColorStop(0.5, '#14a3b5'); sea.addColorStop(1, '#0b6c8c');
+    g.fillStyle = sea; g.fillRect(0, WATER_Y, W, H - WATER_Y);
+    // islands: mangrove green on a sand rim
+    for (const [x0, x1] of lv.islands) {
+      g.fillStyle = '#f3dca6';
+      g.beginPath(); g.moveTo(x0 - 6, WATER_Y + 3); g.quadraticCurveTo(x0 + 8, WATER_Y - 10, x0 + 24, WATER_Y - 10); g.lineTo(x1 - 24, WATER_Y - 10); g.quadraticCurveTo(x1 - 8, WATER_Y - 10, x1 + 6, WATER_Y + 3); g.closePath(); g.fill();
+      g.fillStyle = '#3f9b4f';
+      g.beginPath(); g.moveTo(x0 + 8, WATER_Y - 6); g.quadraticCurveTo(x0 + 18, WATER_Y - 16, x0 + 30, WATER_Y - 15); g.lineTo(x1 - 30, WATER_Y - 15); g.quadraticCurveTo(x1 - 18, WATER_Y - 16, x1 - 8, WATER_Y - 6); g.closePath(); g.fill();
+    }
+    // palms
+    for (const px of lv.palms) {
+      const sway = Math.sin(T * 1.3 + px) * 1.5;
+      g.strokeStyle = '#8a6a43'; g.lineWidth = 3; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(px, WATER_Y - 10); g.quadraticCurveTo(px + 4, WATER_Y - 26, px + 2 + sway, WATER_Y - 40); g.stroke();
+      g.strokeStyle = '#2e8a45'; g.lineWidth = 3;
+      const tx = px + 2 + sway, ty = WATER_Y - 40;
+      for (const [dx, dy] of [[-12, 4], [12, 4], [-9, -6], [9, -6], [0, -9]]) { g.beginPath(); g.moveTo(tx, ty); g.quadraticCurveTo(tx + dx * 0.6, ty + dy - 4, tx + dx, ty + dy + 3); g.stroke(); }
+    }
+    // towns: little conch houses. A bitten one blinks red.
+    lv.towns.forEach((tx, i) => {
+      const hb = S.bitten[i] != null && S.t - S.bitten[i] < 1.2 && Math.floor((S.t - S.bitten[i]) * 8) % 2 === 0;
+      const y = WATER_Y - 14;
+      g.fillStyle = hb ? '#ff4d5e' : HOUSE[i % HOUSE.length];
+      g.fillRect(tx - 8, y - 11, 16, 11);
+      g.fillStyle = hb ? '#b81d33' : '#f7f2e8';
+      g.beginPath(); g.moveTo(tx - 10, y - 10); g.lineTo(tx, y - 19); g.lineTo(tx + 10, y - 10); g.closePath(); g.fill();
+      g.fillStyle = '#5b4636'; g.fillRect(tx - 2, y - 6, 4, 6);
+      g.fillStyle = '#7ed3f0'; g.fillRect(tx - 6.5, y - 8, 3, 3); g.fillRect(tx + 3.5, y - 8, 3, 3);
+    });
+    // waves
+    g.strokeStyle = 'rgba(255,255,255,.35)'; g.lineWidth = 1.5;
+    for (let i = 0; i < 5; i++) {
+      const wy = 668 + i * 10, off = (T * (12 + i * 4) + i * 40) % 60;
+      g.beginPath();
+      for (let x = -60 + off; x < W + 60; x += 60) { g.moveTo(x, wy); g.quadraticCurveTo(x + 8, wy - 3, x + 16, wy); }
+      g.stroke();
+    }
+    // the Overseas Highway on its piers
+    g.fillStyle = '#c9d0d4';
+    for (let px = 10; px < W; px += 44) { g.fillRect(px, DECK_Y + 6, 7, 30); }
+    g.fillStyle = 'rgba(11,108,140,.55)'; g.fillRect(0, DECK_Y + 26, W, 12);
+    g.fillStyle = '#e6eaec'; g.fillRect(0, DECK_Y, W, 7);
+    g.fillStyle = '#aab3b8'; g.fillRect(0, DECK_Y + 6, W, 2);
+    g.fillStyle = '#ffd23f';
+    for (let x = 6; x < W; x += 24) g.fillRect(x, DECK_Y + 3, 10, 1.2);
+  }
+
+  function visSterile(cell) { return !cell.wild && S.t >= cell.vis; }
+
+  function drawSwarm(g) {
+    const linkW = S.ammo && S.ammo.tool === 'w';
+    // Links between wild mosquitoes that touch: this is what a chain spreads along.
+    g.save();
+    g.strokeStyle = linkW ? 'rgba(255,122,217,.7)' : 'rgba(43,37,51,.2)';
+    g.lineWidth = linkW ? 2.4 : 1.4;
+    g.beginPath();
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      const a = S.grid[r][c];
+      if (!a || a.gone || visSterile(a)) continue;
+      const [x, y] = cellPos(r, c, a);
+      for (const [dr, dc] of [[0, 1], [1, 0]]) {
+        const b = inGrid(r + dr, c + dc) && S.grid[r + dr][c + dc];
+        if (!b || b.gone || visSterile(b)) continue;
+        const [x2, y2] = cellPos(r + dr, c + dc, b);
+        g.moveTo(x, y); g.lineTo(x2, y2);
+      }
+    }
+    g.stroke();
+    g.restore();
+    // Chain sparks traveling from each mosquito to the next.
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      const cell = S.grid[r][c];
+      if (!cell || !cell.from || S.t >= cell.vis || S.t < cell.vis - HOP) continue;
+      const [x2, y2] = cellPos(r, c, cell), [x1, y1] = cellPos(cell.from[0], cell.from[1], S.grid[cell.from[0]][cell.from[1]]);
+      const k = 1 - (cell.vis - S.t) / HOP;
+      g.strokeStyle = TOOLS[cell.tool].color; g.lineWidth = 3; g.lineCap = 'round';
+      g.beginPath(); g.moveTo(x1, y1); g.lineTo(x1 + (x2 - x1) * k, y1 + (y2 - y1) * k); g.stroke();
+    }
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      const cell = S.grid[r][c];
+      if (!cell || cell.gone) continue;
+      let [x, y] = cellPos(r, c, cell);
+      let tilt = 0;
+      if (cell.fall && S.t > cell.fall) { const k = S.t - cell.fall; y += 0.5 * 700 * k * k; tilt = k * 6 * (cell.ph > 3 ? 1 : -1); }
+      const grow = cell.born > 0 ? Math.min(1, 0.25 + (S.t - cell.born) / 0.5 * 0.75) : 1;
+      const st = visSterile(cell);
+      const flap = st ? (Math.sin(T * 14 + cell.ph) + 1) / 2 : (Math.sin(T * 42 + cell.ph) + 1) / 2;
+      const left = cell.die ? cell.die - S.t : 9;
+      g.globalAlpha = st && left < 3 ? 0.35 + 0.65 * (left / 3) * (0.75 + 0.25 * Math.sin(T * 14)) : 1;
+      drawMosquito(g, x, y, 0.94 * grow, st, flap, tilt);
+      g.globalAlpha = 1;
+    }
+  }
+
+  function wrap(g, s, maxW) {
+    const words = s.split(' '), lines = [];
+    let line = '';
+    for (const w of words) {
+      const test = line ? line + ' ' + w : w;
+      if (g.measureText(test).width > maxW && line) { lines.push(line); line = w; } else line = test;
+    }
+    if (line) lines.push(line);
+    return lines;
+  }
+
+  function mileSign(g, x, y, w, h, mm) {
+    g.fillStyle = '#0f6b45'; roundRect(g, x, y, w, h, 4); g.fill();
+    g.strokeStyle = '#f4f7f2'; g.lineWidth = 1.6; roundRect(g, x + 2.5, y + 2.5, w - 5, h - 5, 3); g.stroke();
+    g.fillStyle = '#f4f7f2'; g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+    g.font = `800 ${Math.round(h * 0.2)}px ${FONT_S}`; g.fillText('MILE', x + w / 2, y + h * 0.38);
+    g.font = `800 ${Math.round(h * 0.4)}px ${FONT_S}`; g.fillText(String(mm), x + w / 2, y + h * 0.84);
+  }
+
+  function drawHud(g) {
+    const lv = L();
+    g.fillStyle = 'rgba(7,38,56,.86)'; g.fillRect(0, 0, W, HUD_H);
+    mileSign(g, 9, 8, 38, 50, lv.mm);
+    g.textBaseline = 'alphabetic';
+    g.font = `16px ${FONT_D}`; g.textAlign = 'left'; g.fillStyle = '#ffd23f';
+    g.fillText(lv.name.toUpperCase(), 56, 27);
+    g.font = `800 17px ${FONT_S}`; g.textAlign = 'right'; g.fillStyle = '#fbfdff';
+    g.fillText(S.score.toLocaleString(), W - 12, 27);
+    // hatch timer: the egg fills up, then babies pop out
+    const ex = 64, ey = 46, k = S.phase === 'play' ? S.genT / S.P.gen : 0;
+    g.fillStyle = 'rgba(255,255,255,.18)'; g.beginPath(); g.ellipse(ex, ey, 6.5, 8.5, 0, 0, 6.283); g.fill();
+    g.save(); g.beginPath(); g.ellipse(ex, ey, 6.5, 8.5, 0, 0, 6.283); g.clip();
+    g.fillStyle = k > 0.8 ? '#ffd23f' : '#f4f1e4'; g.fillRect(ex - 7, ey + 9 - 17 * k, 14, 17 * k);
+    g.restore();
+    // sterile meter with the level's goal marked
+    const { wild, sterile } = counts();
+    const total = wild + sterile, pct = total ? sterile / total : 1;
+    const bx = 78, bw = 214, by = 39, bh = 14;
+    g.fillStyle = 'rgba(255,255,255,.14)'; roundRect(g, bx, by, bw, bh, 7); g.fill();
+    g.fillStyle = '#55dcff'; if (pct > 0) { roundRect(g, bx, by, Math.max(bh, bw * pct), bh, 7); g.fill(); }
+    const gx = bx + bw * lv.target / 100;
+    g.fillStyle = '#ffd23f'; g.fillRect(gx - 1.5, by - 4, 3, bh + 8);
+    g.font = `800 11px ${FONT_S}`; g.textAlign = 'left'; g.textBaseline = 'middle';
+    g.fillStyle = pct > 0.32 ? '#0b3a52' : '#fbfdff';
+    g.fillText(`${Math.floor(pct * 100)}% STERILE`, bx + 7, by + bh / 2 + 1);
+    // bites: one dot per case allowed
+    const n = S.P.cases, sp = n > 6 ? 10.5 : 18, x0 = W - 12 - (n - 1) * sp;
+    for (let i = 0; i < n; i++) {
+      const cx = x0 + i * sp, cy = by + bh / 2;
+      g.beginPath(); g.arc(cx, cy, n > 6 ? 4 : 6, 0, 6.283);
+      if (i < S.cases) { g.fillStyle = '#ff4d5e'; g.fill(); } else { g.strokeStyle = 'rgba(255,255,255,.55)'; g.lineWidth = 1.5; g.stroke(); }
+    }
+  }
+
+  function drawReady(g) {
+    const lv = L();
+    const x = 36, w = W - 72, y = 196;
+    g.font = `15px ${FONT_R}`;
+    const lines = wrap(g, lv.tip, w - 36);
+    const h = 178 + lines.length * 20;
+    g.fillStyle = 'rgba(7,38,56,.9)'; roundRect(g, x, y, w, h, 14); g.fill();
+    g.strokeStyle = '#f4f7f2'; g.lineWidth = 2; roundRect(g, x + 4, y + 4, w - 8, h - 8, 11); g.stroke();
+    mileSign(g, W / 2 - 22, y + 16, 44, 56, lv.mm);
+    g.textAlign = 'center'; g.textBaseline = 'alphabetic';
+    g.font = `22px ${FONT_D}`; g.fillStyle = '#ffd23f'; g.fillText(lv.name.toUpperCase(), W / 2, y + 98);
+    g.font = `800 14px ${FONT_S}`; g.fillStyle = '#55dcff'; g.fillText(`MAKE ${lv.target}% STERILE`, W / 2, y + 120);
+    g.font = `15px ${FONT_R}`; g.fillStyle = '#fbfdff';
+    lines.forEach((ln, i) => g.fillText(ln, W / 2, y + 146 + i * 20));
+    const pulse = 0.6 + 0.4 * Math.sin(T * 5);
+    g.globalAlpha = pulse; g.font = `14px ${FONT_D}`; g.fillStyle = '#ffd23f';
+    g.fillText('TAP TO START', W / 2, y + h - 20);
+    g.globalAlpha = 1;
+  }
+
+  function draw() {
+    const scale = cv.width / W;
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    drawScene(ctx);
+    drawSwarm(ctx);
+    for (const d of S.divers) {
+      ctx.globalAlpha = Math.max(0, d.a);
+      const tilt = d.flee ? 0 : Math.atan2(-d.vx, S.P.diveV) * 0.6;
+      drawMosquito(ctx, d.x, d.y, 1.05, d.flee, (Math.sin(T * 48 + d.ph) + 1) / 2, tilt);
+      if (!d.flee) { ctx.strokeStyle = 'rgba(255,77,94,.5)'; ctx.lineWidth = 2; ctx.setLineDash([3, 4]); ctx.beginPath(); ctx.moveTo(d.x, d.y + 18); ctx.lineTo(d.tx, SHORE_Y); ctx.stroke(); ctx.setLineDash([]); }
+      ctx.globalAlpha = 1;
+    }
+    if (S.permit) drawPermit(ctx, S.permit.x, S.permit.y, S.permit.tool, S.permit.t);
+    for (const s of S.shots) drawShotSprite(ctx, s.x, s.y, s.tool, s.t);
+    drawTruck(ctx, S.truckX);
+    for (const rg of S.rings) {
+      ctx.strokeStyle = rg.color; ctx.globalAlpha = 1 - rg.t / 0.4; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(rg.x, rg.y, 6 + rg.t * 50, 0, 6.283); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+    for (const p of S.parts) { ctx.globalAlpha = 1 - p.t / p.life; ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill(); }
+    ctx.globalAlpha = 1;
+    for (const tx of S.texts) {
+      const k = tx.t / tx.life;
+      ctx.save();
+      ctx.globalAlpha = k < 0.75 ? 1 : 1 - (k - 0.75) / 0.25;
+      ctx.translate(tx.x, tx.y - k * 18); ctx.rotate(tx.rot);
+      ctx.font = `${tx.size}px ${FONT_D}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(7,38,56,.85)'; ctx.strokeText(tx.s, 0, 0);
+      ctx.fillStyle = tx.color; ctx.fillText(tx.s, 0, 0);
+      ctx.restore();
+    }
+    if (S.screen === 'play' || S.screen === 'pause' || S.screen === 'result') drawHud(ctx);
+    if (S.screen === 'play' && S.phase === 'ready') drawReady(ctx);
+  }
+
+  // ---------- screens ----------
+  const SCREENS = { title: 'titleScreen', levels: 'levelScreen', pause: 'pauseScreen', result: 'resultScreen' };
+  function show(name) {
+    S.screen = name;
+    for (const [k, id] of Object.entries(SCREENS)) $(id).hidden = k !== name;
+    $('hudBtns').hidden = name !== 'play';
+    if (name === 'levels') renderLevels();
+    if (name === 'title') { S.li = 0; S.grid = levelGrid(LEVELS[0]); S.P = params(S.mode, LEVELS[0]); S.fx = FX0; S.fy = FY0; S.shots = []; S.divers = []; S.permit = null; S.texts = []; }
+  }
+
+  function play(li) {
+    Sound.init();
+    begin(li);
+    show('play');
+    cv.focus({ preventScroll: true });
+  }
+
+  function pause() {
+    if (S.screen !== 'play') return;
+    S.input.firing = false; S.input.key = false; S.input.left = false; S.input.right = false;
+    show('pause');
+    $('resumeBtn').focus({ preventScroll: true });
+  }
+
+  function renderLevels() {
+    const list = $('levelList');
+    list.textContent = '';
+    LEVELS.forEach((lv, i) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'lvl';
+      const best = S.best[S.mode + ':' + i];
+      b.innerHTML = `<span class="mm"><small>MILE</small><span>${lv.mm}</span></span>` +
+        `<span class="name">${lv.name}<small>Make ${lv.target}% sterile${lv.tools.length ? ' · ' + lv.tools.map((t) => TOOLS[t].label).join(', ') : ''}</small></span>` +
+        `<span class="best">${best ? 'best<br>' + best.toLocaleString() : ''}</span>`;
+      b.addEventListener('click', () => play(i));
+      list.append(b);
+    });
+  }
+
+  function setMode(m) {
+    S.mode = m;
+    $('modeMurphy').setAttribute('aria-pressed', String(m === 'murphy'));
+    $('modeMelissa').setAttribute('aria-pressed', String(m === 'melissa'));
+    saveSettings();
+  }
+
+  function setSound(on) {
+    Sound.on = on;
+    $('optSound').checked = on;
+    $('soundBtn').setAttribute('aria-pressed', String(on));
+    $('soundBtn').setAttribute('aria-label', on ? 'Sound on' : 'Sound off');
+    $('soundWave').style.display = on ? '' : 'none';
+    if (!on) Sound.setHum(0);
+    saveSettings();
+  }
+
+  function saveSettings() { store.set('mk:settings', { mode: S.mode, sound: Sound.on }); }
+
+  // Little canvases for the title screen key.
+  function castIcon(drawFn) {
+    const c = document.createElement('canvas');
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    c.width = c.height = Math.round(46 * dpr);
+    const g = c.getContext('2d');
+    g.scale(c.width / 46, c.height / 46);
+    drawFn(g);
+    return c;
+  }
+
+  function buildCast() {
+    const cast = $('cast');
+    const items = [
+      [(g) => drawMosquito(g, 23, 25, 1.35, false, 0.6), 'Wild', 'bites, has babies'],
+      [(g) => drawMosquito(g, 23, 25, 1.35, true, 0.3), 'Sterile', 'no babies, no bites'],
+      [(g) => drawPermit(g, 23, 23, 'ox', 0), 'OX permit', '3 deep'],
+      [(g) => drawPermit(g, 23, 23, 'w', 0), 'W permit', 'the whole bunch'],
+    ];
+    for (const [fn, name, note] of items) {
+      const li = document.createElement('li');
+      const b = document.createElement('b'); b.textContent = name;
+      li.append(castIcon(fn), b, document.createTextNode(note));
+      cast.append(li);
+    }
+  }
+
+  // ---------- sizing ----------
+  const stage = $('stage'), frame = $('frame');
+  function fit() {
+    const cs = getComputedStyle(stage);
+    const aw = stage.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const ah = stage.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    const scale = Math.max(0.3, Math.min(aw / W, ah / H));
+    const fw = Math.floor(W * scale), fh = Math.floor(H * scale);
+    frame.style.width = fw + 'px';
+    frame.style.height = fh + 'px';
+    const dpr = Math.min(window.devicePixelRatio || 1, 3);
+    cv.width = Math.round(fw * dpr);
+    cv.height = Math.round(fh * dpr);
+  }
+  window.addEventListener('resize', fit);
+
+  // ---------- input ----------
+  function boardX(e) {
+    const rect = cv.getBoundingClientRect();
+    return (e.clientX - rect.left) / rect.width * W;
+  }
+  cv.addEventListener('pointerdown', (e) => {
+    if (S.screen !== 'play') return;
+    Sound.init();
+    e.preventDefault();
+    if (S.phase === 'ready') { go(); return; }
+    try { cv.setPointerCapture(e.pointerId); } catch { /* ignore */ }
+    S.input.target = boardX(e);
+    S.input.firing = true;
+  });
+  cv.addEventListener('pointermove', (e) => { if (S.input.firing) S.input.target = boardX(e); });
+  const release = () => { S.input.firing = false; };
+  cv.addEventListener('pointerup', release);
+  cv.addEventListener('pointercancel', release);
+  cv.addEventListener('lostpointercapture', release);
+
+  const KEYS = { ArrowLeft: 'left', a: 'left', A: 'left', ArrowRight: 'right', d: 'right', D: 'right' };
+  window.addEventListener('keydown', (e) => {
+    if (S.screen !== 'play') return;
+    if (KEYS[e.key]) { S.input[KEYS[e.key]] = true; e.preventDefault(); }
+    else if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      Sound.init();
+      if (S.phase === 'ready') go(); else S.input.key = true;
+    } else if (e.key === 'p' || e.key === 'P' || e.key === 'Escape') pause();
+  });
+  window.addEventListener('keyup', (e) => {
+    if (KEYS[e.key]) S.input[KEYS[e.key]] = false;
+    else if (e.key === ' ' || e.key === 'Enter') S.input.key = false;
+  });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+
+  $('modeMurphy').addEventListener('click', () => setMode('murphy'));
+  $('modeMelissa').addEventListener('click', () => setMode('melissa'));
+  $('playBtn').addEventListener('click', () => play(0));
+  $('levelsBtn').addEventListener('click', () => show('levels'));
+  $('levelsBack').addEventListener('click', () => show('title'));
+  $('optSound').addEventListener('change', (e) => setSound(e.target.checked));
+  $('soundBtn').addEventListener('click', () => { Sound.init(); setSound(!Sound.on); });
+  $('pauseBtn').addEventListener('click', pause);
+  $('resumeBtn').addEventListener('click', () => show('play'));
+  $('restartBtn').addEventListener('click', () => play(S.li));
+  $('quitBtn').addEventListener('click', () => show('title'));
+
+  // ---------- loop ----------
+  let last = performance.now();
+  function loop(now) {
+    const dt = Math.min(0.05, (now - last) / 1000);
+    last = now;
+    T += dt;
+    update(dt);
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  // ---------- boot ----------
+  function snapshot() { return { v: 1, mode: S.mode, li: S.li, playing: S.screen === 'play' || S.screen === 'pause' }; }
+
+  function start(data) {
+    const saved = store.get('mk:settings', null);
+    if (saved) { S.mode = saved.mode === 'melissa' ? 'melissa' : 'murphy'; setSound(saved.sound !== false); }
+    S.best = store.get('mk:best', {}) || {};
+    setMode(S.mode);
+    show('title');
+    if (data && data.v === 1 && data.playing && LEVELS[data.li]) { S.mode = data.mode === 'melissa' ? 'melissa' : 'murphy'; begin(data.li); show('pause'); }
+    requestAnimationFrame(loop);
+  }
+
+  fit();
+  buildCast();
+  const hot = window.claude && window.claude.hot;
+  if (hot && typeof hot.snapshot === 'function') { try { hot.snapshot(snapshot); } catch { /* optional */ } }
+  if (hot && typeof hot.ready === 'function') hot.ready(start);
+  else start((hot && hot.data) || {});
+
+  // Test hooks for the prototype (harmless in play).
+  window.__mk = {
+    S, LEVELS, MODES, TOOLS, update, counts, cellPos,
+    setSeed: (n) => { seed = n >>> 0; },
+    setMode: (m) => setMode(m),
+    begin: (li) => { begin(li); show('play'); go(); },
+    geometry: { W, H, COLS, ROWS, CW, CH, SHORE_Y, MUZZLE_Y, SHOT_V, HUD_H },
+  };
+})();
+</script>
+</body>
+</html>
