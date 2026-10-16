@@ -152,7 +152,7 @@
 <body>
 <main class="stage" id="stage">
   <div class="frame" id="frame">
-    <canvas id="game" tabindex="-1" aria-label="Mosquito Keys game. Hold to drive the truck and shoot sterile mosquitoes into the swarm."></canvas>
+    <canvas id="game" tabindex="-1" aria-label="Mosquito Keys game. Hold to drive the truck and shoot sterile mosquitoes into the swarm, or use the arrow keys and Space."></canvas>
 
     <div class="hud-btns" id="hudBtns" hidden>
       <button class="icon-btn" id="soundBtn" type="button" aria-label="Sound on" aria-pressed="true">
@@ -255,6 +255,7 @@
       rows: ['.MMMMMMM.', '.MMMMMMM.', 'MMMMMMMMM', '.MMMMMMM.'],
       islands: [[-20, 236], [270, 444]], towns: [30, 100, 172, 318, 392], palms: [62, 140, 214, 296, 356, 418],
       tip: 'Hold your finger down to drive and shoot. Hit a mosquito and the ones touching it turn sterile too.',
+      keyTip: 'The arrow keys drive the truck. Hold Space to shoot. Hit a mosquito and the ones touching it turn sterile too.',
       fact: 'Releasing specially bred male mosquitoes cut the wild ones in the <b>Cayman Islands by 80 percent</b>.' },
     { name: 'Islamorada', mm: 82, target: 85, tools: ['ox'], heat: 1,
       rows: ['MMMM.MMMM', 'MMMM.MMMM', 'MMMM.MMMM', 'MMM...MMM', 'MM.....MM'],
@@ -359,7 +360,7 @@
   const S = {
     screen: 'title', mode: 'murphy', li: 0, P: null,
     grid: [], fx: FX0, fy: FY0, dir: 1,
-    truckX: W / 2, input: { target: null, firing: false, left: false, right: false, key: false },
+    truckX: W / 2, input: { target: null, firing: false, left: false, right: false, key: false }, kbd: false,
     shots: [], divers: [], permit: null, ammo: null,
     cases: 0, score: 0, t: 0, genT: 0, diveT: 0, permitT: 0, cool: 0,
     phase: 'ready', phaseT: 0, bitten: {}, best: {},
@@ -1068,7 +1069,7 @@
     const lv = L();
     const x = 36, w = W - 72, y = 196;
     g.font = `15px ${FONT_R}`;
-    const lines = wrap(g, lv.tip, w - 36);
+    const lines = wrap(g, (S.kbd && lv.keyTip) || lv.tip, w - 36);
     const h = 178 + lines.length * 20;
     g.fillStyle = 'rgba(7,38,56,.9)'; roundRect(g, x, y, w, h, 14); g.fill();
     g.strokeStyle = '#f4f7f2'; g.lineWidth = 2; roundRect(g, x + 4, y + 4, w - 8, h - 8, 11); g.stroke();
@@ -1080,7 +1081,7 @@
     lines.forEach((ln, i) => g.fillText(ln, W / 2, y + 146 + i * 20));
     const pulse = 0.6 + 0.4 * Math.sin(T * 5);
     g.globalAlpha = pulse; g.font = `14px ${FONT_D}`; g.fillStyle = '#ffd23f';
-    g.fillText('TAP TO START', W / 2, y + h - 20);
+    g.fillText(S.kbd ? 'PRESS SPACE TO START' : 'TAP TO START', W / 2, y + h - 20);
     g.globalAlpha = 1;
   }
 
@@ -1142,6 +1143,11 @@
     S.input.firing = false; S.input.key = false; S.input.left = false; S.input.right = false;
     show('pause');
     $('resumeBtn').focus({ preventScroll: true });
+  }
+
+  function resume() {
+    show('play');
+    cv.focus({ preventScroll: true });
   }
 
   function renderLevels() {
@@ -1241,21 +1247,37 @@
   cv.addEventListener('pointercancel', release);
   cv.addEventListener('lostpointercapture', release);
 
+  // Keyboard: arrows (or A and D) drive, Space or Enter shoots, P or Escape pauses and resumes.
   const KEYS = { ArrowLeft: 'left', a: 'left', A: 'left', ArrowRight: 'right', d: 'right', D: 'right' };
+  const isGo = (k) => k === ' ' || k === 'Enter';
+  const isPause = (k) => k === 'p' || k === 'P' || k === 'Escape';
   window.addEventListener('keydown', (e) => {
-    if (S.screen !== 'play') return;
+    S.kbd = true;
+    if (S.screen !== 'play') {
+      // A held Space or Enter repeats: don't let it press the button that just took focus.
+      if (e.repeat && isGo(e.key)) e.preventDefault();
+      else if (S.screen === 'pause' && isPause(e.key)) { e.preventDefault(); resume(); }
+      else if (S.screen === 'title' && isGo(e.key) && !e.target.closest('button, a, input')) { e.preventDefault(); play(0); }
+      return;
+    }
     if (KEYS[e.key]) { S.input[KEYS[e.key]] = true; e.preventDefault(); }
-    else if (e.key === ' ' || e.key === 'Enter') {
+    else if (isGo(e.key)) {
       e.preventDefault();
       Sound.init();
-      if (S.phase === 'ready') go(); else S.input.key = true;
-    } else if (e.key === 'p' || e.key === 'P' || e.key === 'Escape') pause();
+      if (S.phase !== 'ready') S.input.key = true;
+      else if (!e.repeat) go();   // a fresh press, so a held key doesn't skip the start card
+    } else if (isPause(e.key)) pause();
   });
   window.addEventListener('keyup', (e) => {
     if (KEYS[e.key]) S.input[KEYS[e.key]] = false;
-    else if (e.key === ' ' || e.key === 'Enter') S.input.key = false;
+    else if (isGo(e.key)) S.input.key = false;
   });
+  // Keyboard hints on computers: a key or a mouse says so, a finger says not.
+  try { S.kbd = matchMedia('(hover: hover) and (pointer: fine)').matches; } catch { /* old browser */ }
+  window.addEventListener('pointerdown', (e) => { S.kbd = e.pointerType === 'mouse'; }, true);
   document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+  // Keys stop arriving once the window loses focus, so a held arrow would stick. Pause instead.
+  window.addEventListener('blur', () => pause());
 
   $('modeMurphy').addEventListener('click', () => setMode('murphy'));
   $('modeMelissa').addEventListener('click', () => setMode('melissa'));
@@ -1265,7 +1287,7 @@
   $('optSound').addEventListener('change', (e) => setSound(e.target.checked));
   $('soundBtn').addEventListener('click', () => { Sound.init(); setSound(!Sound.on); });
   $('pauseBtn').addEventListener('click', pause);
-  $('resumeBtn').addEventListener('click', () => show('play'));
+  $('resumeBtn').addEventListener('click', resume);
   $('restartBtn').addEventListener('click', () => play(S.li));
   $('quitBtn').addEventListener('click', () => show('title'));
 
