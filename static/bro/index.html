@@ -98,6 +98,14 @@
   .mode span { font-size: 12px; color: var(--dim); line-height: 1.25; }
   .mode[aria-pressed="true"] { background: var(--maze); border-color: var(--pellet); }
   .mode[aria-pressed="true"] span { color: #e7ebff; }
+  .rules { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 6px; }
+  .rules-label { font-family: var(--arcade); font-size: 10px; color: var(--dim); margin-right: 2px; }
+  .chip {
+    border: 2px solid var(--maze); background: transparent; color: var(--ink);
+    border-radius: 999px; padding: 6px 11px; font: 600 14px var(--round); cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { background: var(--maze); border-color: var(--pellet); }
+  .rule-note { margin: -6px 0 0; font-size: 13px; color: var(--dim); line-height: 1.3; text-wrap: balance; }
   .row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
   .btn {
     font-family: var(--arcade); font-size: 13px; line-height: 1.2;
@@ -227,6 +235,10 @@
             <span>Snood rules. Short aim line. Slade strikes after 5.</span>
           </button>
         </div>
+        <div class="rules" id="rules" role="group" aria-label="What pops">
+          <span class="rules-label">POP</span>
+        </div>
+        <p class="rule-note" id="ruleNote" aria-live="polite"></p>
         <div class="row tight">
           <button class="btn primary" type="button" id="playBtn">Play</button>
           <button class="btn ghost" type="button" id="levelsBtn">Levels</button>
@@ -338,6 +350,19 @@
     murphy:  { sladeMax: 8, guide: 'full',  preview: true },
     melissa: { sladeMax: 5, guide: 'short', preview: false },
   };
+
+  // What makes copies pop. Colors is the Snood rule. The rest are Bro! Numbers: every copy carries a
+  // number, and a shot pops each piece it lands next to that adds up with it to the target.
+  const span = (a, b, step = 1) => Array.from({ length: Math.floor((b - a) / step) + 1 }, (_, i) => a + i * step);
+  const RULES = {
+    colors:  { label: 'Colors', note: 'Match 3 or more of the same copy to pop them.' },
+    make10:  { label: 'Make 10', target: 10, nums: span(1, 9), example: [3, 7] },
+    make20:  { label: 'Make 20', target: 20, nums: span(1, 19), example: [13, 7] },
+    tens:    { label: '100 by tens', target: 100, nums: span(10, 90, 10), example: [30, 70] },
+    make100: { label: 'Make 100', target: 100, nums: span(11, 89).filter((n) => n % 10), example: [37, 63] },
+  };
+  const ruleNote = (k) => RULES[k].note ||
+    `Every copy has a number. Land yours next to its partner: ${RULES[k].example[0]} and ${RULES[k].example[1]} make ${RULES[k].target}.`;
 
   // Levels are text grids. Capital letters are Slade's copies: R Robin, O Starfire, P Raven,
   // G Beast Boy, B Cyborg. A small letter is that Titan locked in a cage. X is a Slade block,
@@ -453,8 +478,9 @@
 
   // ---------- state ----------
   const S = {
-    screen: 'title', mode: 'murphy', levelIndex: 0, free: false,
+    screen: 'title', mode: 'murphy', rule: 'colors', levelIndex: 0, free: false,
     grid: null, topY: CEIL0, meter: 0, score: 0,
+    nums: null, curNum: 0, nextNum: 0, pairs: 0, eq: null, toldRule: false,   // Bro! Numbers
     current: 0, next: 0, helpers: [], freedTotal: 0, toldReal: false, angle: Math.PI / 2,
     phase: 'idle', readyT: 0, shot: null, ceil: null, slade: null, bubble: null, throws: [], hidden: new Set(),
     anims: [], texts: [], parts: [], shake: 0, pointerDown: false, landing: null,
@@ -520,6 +546,60 @@
     return g;
   }
 
+  // ---------- Bro! Numbers ----------
+  const numbersOn = () => S.rule !== 'colors';
+  const numTarget = () => RULES[S.rule].target || 0;
+  function numberGrid(g) {   // a number for every copy on a new board
+    const out = makeGrid(), nums = RULES[S.rule].nums;
+    forEachPiece((r, c, v) => { if (isCopy(v)) out[r][c] = pick(nums); }, g);
+    return out;
+  }
+  // The copies a shot can land next to right now, found by sweeping the aim across the whole swing.
+  // A spot only counts when a few degrees of aim all land there, so a partner never needs a perfect shot.
+  const EASY_AIM = 3;   // sweep steps of 0.01 rad (about half a degree each)
+  let reachMemo = { key: '', list: [] };   // one sweep per board: it only changes when a shot lands or the ceiling drops
+  function reachableCopies() {
+    const key = S.topY + '|' + S.grid.map((row) => row.join(',')).join(';');
+    if (key !== reachMemo.key) reachMemo = { key, list: sweepReach() };
+    return reachMemo.list;
+  }
+  function sweepReach() {
+    const hits = new Map(), near = new Map();
+    for (let a = MIN_A; a <= MAX_A; a += 0.01) {
+      const { cell } = trace(a, true);
+      if (!cell) continue;
+      const key = cell[0] + ',' + cell[1], h = hits.get(key) || { cell, n: 0 };
+      h.n++; hits.set(key, h);
+    }
+    const spots = [...hits.values()], easy = spots.filter((h) => h.n >= EASY_AIM);
+    for (const { cell } of easy.length ? easy : spots) {
+      for (const [rr, cc] of nbrs(cell[0], cell[1])) if (isCopy(S.grid[rr][cc])) near.set(rr + ',' + cc, [rr, cc]);
+    }
+    return [...near.values()];
+  }
+  // The cannon's next number: the partner of a copy it can reach, so there's always somewhere for it
+  // to go. Copies holding up others come up more often, so pairs knock things loose.
+  function dealNum() {
+    if (!numbersOn() || !S.nums) return 0;
+    const reach = reachableCopies(), weights = [];
+    for (const [r, c] of reach) {
+      const v = S.grid[r][c];
+      S.grid[r][c] = EMPTY;
+      weights.push(1 + Math.min(6, orphans().length));
+      S.grid[r][c] = v;
+    }
+    let roll = Math.random() * weights.reduce((s, w) => s + w, 0);
+    for (let i = 0; i < reach.length; i++) {
+      roll -= weights[i];
+      if (roll < 0) return numTarget() - S.nums[reach[i][0]][reach[i][1]];
+    }
+    // nothing in reach: any copy's partner, or any number at all
+    const all = [];
+    forEachPiece((r, c, v) => { if (isCopy(v)) all.push(S.nums[r][c]); });
+    return all.length ? numTarget() - pick(all) : pick(RULES[S.rule].nums);
+  }
+  const reachableNums = () => new Set(reachableCopies().map(([r, c]) => S.nums[r][c]));
+
   function flood(r0, c0) {
     const k = S.grid[r0][c0], seen = new Set([r0 + ',' + c0]), out = [[r0, c0]], queue = [[r0, c0]];
     while (queue.length) {
@@ -580,16 +660,17 @@
   }
 
   // Follow a shot's path without firing it (aim guide and landing preview).
-  function trace(angle) {
+  // `whole` follows the shot all the way and says where it lands, whatever the mode shows.
+  function trace(angle, whole = false) {
     let x = CANNON_X, y = CANNON_Y, vx = Math.cos(angle), vy = -Math.sin(angle);
     const pts = [], mode = MODES[S.mode];
-    const maxLen = mode.guide === 'full' ? 1800 : 150;
+    const maxLen = whole || mode.guide === 'full' ? 1800 : 150;
     let travelled = 0, nextDot = 34;
     for (let i = 0; i < 1200; i++) {
       x += vx * 4; y += vy * 4; travelled += 4;
       if (x < BX + R) { x = 2 * (BX + R) - x; vx = Math.abs(vx); }
       else if (x > BX + BW - R) { x = 2 * (BX + BW - R) - x; vx = -Math.abs(vx); }
-      if (y - R <= S.topY || hitsPiece(x, y)) return { pts, cell: mode.preview ? snapCell(x, y) : null };
+      if (y - R <= S.topY || hitsPiece(x, y)) return { pts, cell: whole || mode.preview ? snapCell(x, y) : null };
       if (travelled >= nextDot) { pts.push([x, y]); nextDot += 22; }
       if (travelled > maxLen) break;
     }
@@ -605,7 +686,9 @@
     S.topY = CEIL0; S.meter = 0; S.score = 0;
     S.helpers = []; S.freedTotal = 0; S.toldReal = false; S.slade = null;
     S.anims = []; S.texts = []; S.parts = []; S.shot = null; S.ceil = null; S.shake = 0;
+    S.nums = numbersOn() ? numberGrid(S.grid) : null; S.pairs = 0; S.eq = null;
     S.current = randomKind(); S.next = randomKind();
+    S.curNum = dealNum(); S.nextNum = dealNum();
     S.angle = Math.PI / 2;
     S.phase = 'ready'; S.readyT = levelTip() ? 2.6 : 1.15;
     S.bubble = null; S.throws = []; S.hidden = new Set();
@@ -616,7 +699,7 @@
   // Level 1 opens with Slade throwing his copies onto the board, top row first. A tap skips it.
   function startThrows() {
     const order = [];
-    forEachPiece((r, c, v) => order.push({ r, c, v }));
+    forEachPiece((r, c, v) => order.push({ r, c, v, n: S.nums ? S.nums[r][c] : null }));
     order.sort((a, b) => a.r - b.r || Math.random() - 0.5);
     order.forEach((p, i) => {   // a handful per swing, let go as the arm comes forward
       p.t = -(Math.floor(i / 5) * THROW_EVERY + 0.68 * THROW_EVERY + (i % 5) * 0.025);
@@ -630,15 +713,20 @@
   function finishThrows() {
     S.throws = []; S.hidden = new Set();
     if (S.slade && S.slade.fx === 'throw') S.slade = null;
-    S.phase = 'ready'; S.readyT = 1.15;
+    S.phase = 'ready'; S.readyT = levelTip() ? 2.6 : 1.15;
     Sound.ready();
   }
-  function levelTip() { return S.free ? '' : LEVELS[S.levelIndex].tip || ''; }
+  function levelTip() {
+    // the first board after picking a number rule explains it; after that, levels show their own tip
+    if (numbersOn() && !S.toldRule) return `Land each number next to its partner. Together they make ${numTarget()}!`;
+    return S.free ? '' : LEVELS[S.levelIndex].tip || '';
+  }
 
   // Trade the loaded piece for the next one, so a color with nowhere to go can wait.
   function swap() {
     if (S.screen !== 'play' || S.phase !== 'aim') return;
     [S.current, S.next] = [S.next, S.current];
+    [S.curNum, S.nextNum] = [S.nextNum, S.curNum];
     S.swapT = 0.18;
     Sound.bounce();
   }
@@ -647,9 +735,10 @@
   function fire() {
     if (S.screen !== 'play' || S.phase !== 'aim') return;
     const a = S.angle;
-    S.shot = { x: CANNON_X, y: CANNON_Y, vx: Math.cos(a), vy: -Math.sin(a), kind: S.current };
-    S.current = S.next;
+    S.shot = { x: CANNON_X, y: CANNON_Y, vx: Math.cos(a), vy: -Math.sin(a), kind: S.current, num: S.curNum };
+    S.current = S.next; S.curNum = S.nextNum;
     S.next = S.helpers.length ? S.helpers.shift() : randomKind();
+    S.nextNum = dealNum();
     S.phase = 'fly';
     if (isReal(S.shot.kind)) Sound.hero(); else Sound.shoot();
   }
@@ -684,12 +773,25 @@
     const [r, c] = cell;
     Sound.stick();
     let group = [];
+    S.eq = null;
     if (isReal(sh.kind)) {
       // A real Titan beats the biggest bunch of copies it touches, whatever the color, then heads home.
-      for (const [rr, cc] of nbrs(r, c)) {
+      // In Numbers it pops every copy it touches, whatever the number.
+      if (numbersOn()) group = nbrs(r, c).filter(([rr, cc]) => isCopy(S.grid[rr][cc]));
+      else for (const [rr, cc] of nbrs(r, c)) {
         if (isCopy(S.grid[rr][cc])) { const g = flood(rr, cc); if (g.length > group.length) group = g; }
       }
       S.anims.push({ type: 'rise', x: cellX(r, c), y: cellY(r), v: sh.kind, t: 0 });
+    } else if (numbersOn()) {
+      // Bro! Numbers: the shot pops with each piece it touches that makes the target with it.
+      S.grid[r][c] = sh.kind; S.nums[r][c] = sh.num;
+      S.landing = { r, c, t: 0 };
+      const partners = nbrs(r, c).filter(([rr, cc]) => isCopy(S.grid[rr][cc]) && S.nums[rr][cc] + sh.num === numTarget());
+      if (partners.length) {
+        group = [[r, c], ...partners];
+        S.eq = [sh.num, numTarget() - sh.num];
+        S.pairs += partners.length;
+      }
     } else {
       S.grid[r][c] = sh.kind;
       S.landing = { r, c, t: 0 };
@@ -700,7 +802,7 @@
   }
 
   function clearGroup(group) {
-    const at = (rr, cc) => ({ x: cellX(rr, cc), y: cellY(rr), v: S.grid[rr][cc], rr, cc });
+    const at = (rr, cc) => ({ x: cellX(rr, cc), y: cellY(rr), v: S.grid[rr][cc], n: S.nums ? S.nums[rr][cc] : null, rr, cc });
     const cleared = group.map(([rr, cc]) => at(rr, cc));
     for (const [rr, cc] of group) S.grid[rr][cc] = EMPTY;
     const freed = [];
@@ -716,14 +818,34 @@
       S.grid[rr][cc] = EMPTY;
     }
     for (const p of cleared) {
-      S.anims.push({ type: 'pop', x: p.x, y: p.y, v: p.v, t: 0, life: 0.38 });
+      S.anims.push({ type: 'pop', x: p.x, y: p.y, v: p.v, n: p.n, t: 0, life: 0.38 });
       burst(p.x, p.y);
     }
     for (const p of dropped) {
-      S.anims.push({ type: 'fall', x: p.x, y: p.y, v: p.v, t: 0, vx: (Math.random() - 0.5) * 140, vy: -60 - Math.random() * 140, rot: 0, vr: (Math.random() - 0.5) * 7 });
+      S.anims.push({ type: 'fall', x: p.x, y: p.y, v: p.v, n: p.n, t: 0, vx: (Math.random() - 0.5) * 140, vy: -60 - Math.random() * 140, rot: 0, vr: (Math.random() - 0.5) * 7 });
     }
     for (const p of freed) freeTitan(p);
     return { cleared, dropped, freed };
+  }
+
+  // Numbers: copies walled in where no shot can land beside them can never be paired, so they fall
+  // (in Colors one match takes a whole row; pairs can leave the last few stranded behind Slade blocks).
+  function dropWalledIn() {
+    const gone = [];
+    forEachPiece((r, c, v) => { if (isCopy(v)) { gone.push([r, c]); } });
+    const fell = gone.map(([r, c]) => ({ x: cellX(r, c), y: cellY(r), v: S.grid[r][c], n: S.nums[r][c] }));
+    for (const [r, c] of gone) S.grid[r][c] = EMPTY;
+    for (const [r, c] of orphans()) {   // and whatever they held up
+      const p = { x: cellX(r, c), y: cellY(r), v: S.grid[r][c], n: null };
+      if (isCage(p.v)) freeTitan(p); else fell.push(p);
+      S.grid[r][c] = EMPTY;
+    }
+    for (const p of fell) {
+      S.anims.push({ type: 'fall', x: p.x, y: p.y, v: p.v, n: p.n, t: 0, vx: (Math.random() - 0.5) * 140, vy: -60 - Math.random() * 140, rot: 0, vr: (Math.random() - 0.5) * 7 });
+    }
+    S.score += fell.length * 20;
+    addText('THE REST FALL!', W / 2, (CEIL0 + DANGER_Y) / 2 - 40, { size: 14, color: '#ff9a2e', life: 1.8 });
+    Sound.drop();
   }
 
   function freeTitan(p) {
@@ -746,7 +868,12 @@
       addText('+' + pts, cx, cy + b.size + 8, { size: 11, color: '#ffffff', life: 0.9 });
       Sound.waka(cleared.length);
       if (dropped.length) Sound.drop();
-      Sound.say(b.say);
+      if (S.eq) {   // Numbers: show the sum and say it, then the bro
+        const [a, n] = S.eq;
+        addText(`${a} + ${n} = ${a + n}`, Math.max(BX + 100, Math.min(BX + BW - 100, cx)), cy + b.size + 34, { size: 22, color: '#7fe3ff', life: 1.7, round: true });
+        Sound.say([`${a} and ${n} make ${a + n}`, 1.1, 1.05]);
+        Sound.say(b.say, true);
+      } else Sound.say(b.say);
       if (!reduceMotion) S.shake = Math.max(S.shake, b.shake);
       S.meter = Math.max(0, S.meter - 1);
     } else {
@@ -763,15 +890,21 @@
       addText(freed.length > 1 ? `${freed.length} FREE!` : 'FREE!', fx, fy - 34, { size: 16, color: '#7fe3ff', life: 1.4 });
       if (!S.toldReal) {
         S.toldReal = true;
-        addText('REAL TITANS BEAT ANY COLOR', W / 2, DANGER_Y - 34, { size: 9, color: '#ffffff', life: 2.8 });
+        addText(numbersOn() ? 'REAL TITANS POP ANY NUMBER' : 'REAL TITANS BEAT ANY COLOR', W / 2, DANGER_Y - 34, { size: 9, color: '#ffffff', life: 2.8 });
       }
       Sound.free();
     }
+    if (numbersOn() && kindsPresent().size && !reachableCopies().length) dropWalledIn();
     const present = kindsPresent();
     if (!present.size) { win(); return; }
     const kinds = [...present];
     if (isCopy(S.current) && !present.has(S.current)) S.current = pick(kinds);
     if (isCopy(S.next) && !present.has(S.next)) S.next = pick(kinds);
+    if (numbersOn()) {   // a number whose partner fell, popped or got walled in gets a new one
+      const reach = reachableNums();
+      if (!reach.has(numTarget() - S.curNum)) S.curNum = dealNum();
+      if (!reach.has(numTarget() - S.nextNum)) S.nextNum = dealNum();
+    }
     if (S.helpers.length && !isReal(S.next)) S.next = S.helpers.shift();   // a freed Titan jumps the line
     if (S.meter >= mode.sladeMax) {
       S.meter = 0;
@@ -813,15 +946,17 @@
   }
 
   function levelKey() { return S.free ? 'free' : LEVELS[S.levelIndex].id; }
+  // Each rule keeps its own best scores. Colors keeps the key it always had.
+  const bestKey = (key, mode = S.mode, rule = S.rule) => (rule === 'colors' ? `bro:best:${mode}:${key}` : `bro:best:${mode}:${rule}:${key}`);
   function saveBest() {
-    const key = `bro:best:${S.mode}:${levelKey()}`;
+    const key = bestKey(levelKey());
     const prev = store.get(key, 0);
     if (S.score > prev) store.set(key, S.score);
     return Math.max(prev, S.score);
   }
 
   function addText(text, x, y, o) {
-    S.texts.push({ text, x: Math.max(70, Math.min(W - 70, x)), y, t: 0, life: o.life || 1.2, size: o.size || 18, color: o.color || '#fff' });
+    S.texts.push({ text, x: Math.max(70, Math.min(W - 70, x)), y, t: 0, life: o.life || 1.2, size: o.size || 18, color: o.color || '#fff', round: !!o.round });
   }
   function burst(x, y, color = '#ffd84a') {
     const n = reduceMotion ? 2 : 6;
@@ -853,7 +988,10 @@
       }
       if (!left) finishThrows();
     }
-    if (S.phase === 'ready') { S.readyT -= dt; if (S.readyT <= 0) S.phase = 'aim'; }
+    if (S.phase === 'ready') {
+      S.readyT -= dt;
+      if (S.readyT <= 0) { S.phase = 'aim'; if (numbersOn()) S.toldRule = true; }
+    }
     if (S.phase === 'fly' && S.shot) updateShot(dt);
     if (S.phase === 'ceiling' && S.ceil) {
       if (S.ceil.t < 0) {
@@ -1208,6 +1346,23 @@
     if (isReal(v)) heroRing(x, y, now, scale);
     drawSprite(v, x, y, scale);
   }
+  // Bro! Numbers: the number sits on a badge at the piece's lower right, so most of Murphy's drawing still shows.
+  function numBadge(n, x, y, scale = 1, alpha = 1) {
+    const text = String(n);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(x + R * 0.36 * scale, y + R * 0.4 * scale);
+    ctx.scale(scale, scale);
+    ctx.font = '700 17px "Fredoka", "Trebuchet MS", sans-serif';
+    const w = Math.max(24, ctx.measureText(text).width + 11), h = 24;
+    ctx.fillStyle = '#ffffff'; ctx.strokeStyle = '#0a0b1f'; ctx.lineWidth = 2.5;
+    ctx.beginPath(); ctx.roundRect(-w / 2, -h / 2, w, h, h / 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#0a0b1f'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(text, 0, 1);
+    ctx.restore();
+  }
+  // Only copies carry a number: cages, Slade blocks and real Titans don't.
+  function badge(v, n, x, y, scale = 1, alpha = 1) { if (numbersOn() && isCopy(v) && n != null) numBadge(n, x, y, scale, alpha); }
 
   // Slade's sword arm angle (radians, + swings down) and body offset for each thing he does.
   function sladePose(now) {
@@ -1373,6 +1528,14 @@
         // on the Build screen, a piece that isn't hanging from anything is faded
         drawSprite(v, cellX(r, c), cellY(r), sc, building && B.loose.has(r + ',' + c) ? 0.4 : 1);
       });
+      // numbers go on after every piece is down, so no neighbor covers one
+      if (!building && S.nums) {
+        forEachPiece((r, c, v) => {
+          if (S.hidden.has(r + ',' + c)) return;
+          const sc = S.landing && S.landing.r === r && S.landing.c === c ? 1 + 0.12 * Math.sin(S.landing.t / 0.2 * Math.PI) : 1;
+          badge(v, S.nums[r][c], cellX(r, c), cellY(r), sc);
+        });
+      }
     }
 
     // aim guide
@@ -1388,6 +1551,7 @@
         ctx.beginPath(); ctx.arc(cellX(r, c), cellY(r), R - 2, 0, Math.PI * 2); ctx.stroke();
         ctx.restore();
         drawSprite(S.current, cellX(r, c), cellY(r), 0.92, 0.35);
+        badge(S.current, S.curNum, cellX(r, c), cellY(r), 0.92, 0.6);
       }
     }
 
@@ -1396,12 +1560,14 @@
       if (a.type === 'pop') {
         const p = a.t / a.life;
         drawSprite(a.v, a.x, a.y, 1 + 0.55 * p, 1 - p, Math.sin(p * Math.PI * 3) * 0.35);
+        badge(a.v, a.n, a.x, a.y, 1 + 0.55 * p, 1 - p);
       } else if (a.type === 'rise') {
         const p = a.t / 1.1;
         heroRing(a.x, a.y, now, 1 + 0.2 * p);
         drawSprite(a.v, a.x, a.y, 1 + 0.2 * p, 1 - p * p);
       } else {
         drawSprite(a.v, a.x, a.y, 1, 1, a.rot);
+        badge(a.v, a.n, a.x, a.y);
       }
     }
     for (const p of S.parts) {
@@ -1412,7 +1578,7 @@
     ctx.globalAlpha = 1;
 
     // shot in flight
-    if (S.shot) drawPiece(S.shot.kind, S.shot.x, S.shot.y, now);
+    if (S.shot) { drawPiece(S.shot.kind, S.shot.x, S.shot.y, now); badge(S.shot.kind, S.shot.num, S.shot.x, S.shot.y); }
 
     // cannon (the Build screen's tray sits here instead)
     if (S.grid && !building) {
@@ -1428,7 +1594,7 @@
       ctx.fillStyle = '#1b2263'; ctx.strokeStyle = '#3355ff'; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.arc(CANNON_X, CANNON_Y + 14, 38, Math.PI, 0); ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.restore();
-      if (S.phase !== 'won' && S.phase !== 'lost') drawPiece(S.current, CANNON_X, CANNON_Y, now);
+      if (S.phase !== 'won' && S.phase !== 'lost') { drawPiece(S.current, CANNON_X, CANNON_Y, now); badge(S.current, S.curNum, CANNON_X, CANNON_Y); }
 
       // next piece
       arcadeText('NEXT', NEXT_X, CANNON_Y - 44, 10, '#a3a9dc');
@@ -1437,6 +1603,7 @@
       ctx.beginPath(); ctx.arc(NEXT_X, NEXT_Y, 27, 0, Math.PI * 2); ctx.stroke();
       ctx.restore();
       drawPiece(S.next, NEXT_X, NEXT_Y, now, 0.82 * (1 + (S.swapT || 0) * 1.2));
+      badge(S.next, S.nextNum, NEXT_X, NEXT_Y, 0.82 * (1 + (S.swapT || 0) * 1.2));
       roundText('tap to swap', NEXT_X, CANNON_Y + 42, 12, '#a3a9dc');
       if (S.helpers.length) arcadeText('+' + S.helpers.length, BX + 84, CANNON_Y + 22, 9, '#7fe3ff');
 
@@ -1448,6 +1615,12 @@
       for (let i = 0; i < mode.sladeMax; i++) {
         ctx.fillStyle = i < S.meter ? (S.meter >= mode.sladeMax - 1 ? '#ff5a4e' : '#ff9a2e') : 'rgba(163,169,220,0.25)';
         ctx.beginPath(); ctx.roundRect(mx + i * pipW + 1.5, my + 14, pipW - 3, 10, 3); ctx.fill();
+      }
+
+      // Numbers: the sum the loaded piece is looking for
+      if (numbersOn() && S.phase !== 'won' && S.phase !== 'lost') {
+        const ask = isReal(S.current) ? 'any number!' : `${S.curNum} + ? = ${numTarget()}`;
+        roundText(ask, mx + 40, DANGER_Y + 22, 16, '#7fe3ff');
       }
     }
 
@@ -1474,7 +1647,7 @@
       ctx.save();
       ctx.globalAlpha = p > 0.7 ? 1 - (p - 0.7) / 0.3 : 1;
       ctx.translate(t.x, t.y); ctx.scale(sc, sc);
-      arcadeText(t.text, 0, 0, t.size, color);
+      if (t.round) roundText(t.text, 0, 0, t.size, color); else arcadeText(t.text, 0, 0, t.size, color);
       ctx.restore();
     }
 
@@ -1485,12 +1658,13 @@
       const tx = cellX(p.r, p.c), ty = cellY(p.r);
       const x = sx + (tx - sx) * q, y = sy + (ty - sy) * q - Math.sin(q * Math.PI) * 60;
       drawSprite(p.v, x, y, 0.6 + 0.4 * q, 1, (1 - q) * 6);
+      badge(p.v, p.n, x, y, 0.6 + 0.4 * q);
     }
     if (S.phase === 'intro') roundText('tap to skip', W / 2, DANGER_Y - 40, 14, '#a3a9dc');
     drawBubble();
 
     if (S.screen === 'play' && S.phase === 'ready') {
-      arcadeText('READY!', W / 2, DANGER_Y - 110, 20, '#ffd84a');
+      arcadeText(numbersOn() ? `MAKE ${numTarget()}!` : 'READY!', W / 2, DANGER_Y - 110, 20, '#ffd84a');
       const tip = levelTip();
       if (tip) {
         ctx.save();
@@ -1597,7 +1771,27 @@
     saveSettings();
     renderLevelList();
   }
-  function saveSettings() { store.set('bro:settings', { mode: S.mode, sound: Sound.on, voice: Sound.voice }); }
+  function buildRules() {
+    for (const [key, rule] of Object.entries(RULES)) {
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'chip'; b.dataset.rule = key; b.textContent = rule.label;
+      b.addEventListener('click', () => setRule(key));
+      $('rules').append(b);
+    }
+  }
+  function setRule(rule) {
+    S.rule = RULES[rule] ? rule : 'colors';
+    S.toldRule = false;
+    for (const b of $('rules').querySelectorAll('.chip')) b.setAttribute('aria-pressed', String(b.dataset.rule === S.rule));
+    $('ruleNote').textContent = ruleNote(S.rule);
+    if (S.screen === 'title' && S.grid) {   // the board behind the title
+      S.nums = numbersOn() ? numberGrid(S.grid) : null;
+      S.curNum = dealNum(); S.nextNum = dealNum();
+    }
+    saveSettings();
+    renderLevelList();
+  }
+  function saveSettings() { store.set('bro:settings', { mode: S.mode, rule: S.rule, sound: Sound.on, voice: Sound.voice }); }
   function setSound(on) {
     Sound.on = on;
     $('optSound').checked = on;
@@ -1614,7 +1808,7 @@
     const entry = (label, name, key, go) => {
       const b = document.createElement('button');
       b.type = 'button'; b.className = 'lvl';
-      const best = store.get(`bro:best:${S.mode}:${key}`, 0);
+      const best = store.get(bestKey(key), 0);
       b.innerHTML = `<span class="n"></span><span class="name"></span><span class="best"></span>`;
       b.querySelector('.n').textContent = label;
       b.querySelector('.name').textContent = name;
@@ -1670,9 +1864,10 @@
     $('resultTitle').textContent = won ? (last && !home && !mine ? 'SLADE IS DONE! BRO!' : 'LEVEL CLEAR! BRO!') : 'SLADE GOT THROUGH';
     $('resultTitle').classList.toggle('bad', !won);
     $('resultScore').textContent = `Score ${S.score}  ·  Best ${best}`;
-    const freed = S.freedTotal ? `You freed ${S.freedTotal} real Titan${S.freedTotal > 1 ? 's' : ''}. ` : '';
+    const made = numbersOn() && S.pairs ? `${S.pairs} pair${S.pairs > 1 ? 's' : ''} made ${numTarget()}. ` : '';
+    const freed = made + (S.freedTotal ? `You freed ${S.freedTotal} real Titan${S.freedTotal > 1 ? 's' : ''}. ` : '');
     let note;
-    if (!won) note = 'Tip: clear a group to calm Slade down. Each clear takes one away from his meter.';
+    if (!won) note = made + (numbersOn() ? 'Tip: every pair you make takes one away from Slade\'s meter.' : 'Tip: clear a group to calm Slade down. Each clear takes one away from his meter.');
     else if (mine) note = freed + 'You built this one. Tap Edit to change it.';
     else if (last && home) note = freed + 'That was the last homemade level. Build your own, or draw one on a level sheet and we will add it.';
     else if (last) note = freed + `Every level is done. Try the ${ROUNDS.home}, or build your own.`;
@@ -1782,7 +1977,7 @@
   function saveBuild() {
     const rows = gridRows(S.grid), at = LEVELS.findIndex((l) => l.id === B.id);
     if (at >= 0 && rows.join() !== LEVELS[at].rows.join()) {   // a changed board starts its best score over
-      for (const mode of Object.keys(MODES)) store.set(`bro:best:${mode}:${B.id}`, 0);
+      for (const mode of Object.keys(MODES)) for (const rule of Object.keys(RULES)) store.set(bestKey(B.id, mode, rule), 0);
     }
     if (!rows.length) { if (at >= 0) LEVELS.splice(at, 1); }
     else if (at >= 0) Object.assign(LEVELS[at], { name: B.name, rows });
@@ -1802,7 +1997,7 @@
     Object.assign(B, { id: def ? def.id : 'mine-' + Date.now().toString(36), name: def ? def.name : freshName(), stroke: null, undo: [] });
     // a still, clean board: whatever the last game left behind is cleared away
     Object.assign(S, {
-      grid: def ? levelGrid(def) : makeGrid(), levelIndex: 0, free: false, topY: CEIL0, meter: 0, phase: 'idle',
+      grid: def ? levelGrid(def) : makeGrid(), nums: null, levelIndex: 0, free: false, topY: CEIL0, meter: 0, phase: 'idle',
       shot: null, ceil: null, slade: null, bubble: null, throws: [], hidden: new Set(), helpers: [],
       anims: [], texts: [], parts: [], shake: 0, landing: null, pointerDown: false,
     });
@@ -1955,19 +2150,23 @@
 
   function snapshot() {
     if (!S.grid || (S.screen !== 'play' && S.screen !== 'pause')) return { v: 2 };
-    return { v: 2, mode: S.mode, levelIndex: S.levelIndex, free: S.free, grid: S.grid, topY: S.topY, meter: S.meter, score: S.score, current: S.current, next: S.next, helpers: S.helpers, freedTotal: S.freedTotal };
+    return { v: 2, mode: S.mode, rule: S.rule, levelIndex: S.levelIndex, free: S.free, grid: S.grid, nums: S.nums, topY: S.topY, meter: S.meter, score: S.score, current: S.current, next: S.next, curNum: S.curNum, nextNum: S.nextNum, pairs: S.pairs, helpers: S.helpers, freedTotal: S.freedTotal };
   }
 
   function start(data) {
     const saved = store.get('bro:settings', null);
-    if (saved) { S.mode = saved.mode === 'melissa' ? 'melissa' : 'murphy'; Sound.voice = saved.voice !== false; setSound(saved.sound !== false); }
+    if (saved) { S.mode = saved.mode === 'melissa' ? 'melissa' : 'murphy'; S.rule = RULES[saved.rule] ? saved.rule : 'colors'; Sound.voice = saved.voice !== false; setSound(saved.sound !== false); }
     $('optVoice').checked = Sound.voice;
     setMode(S.mode);
     if (data && data.v === 2 && Array.isArray(data.grid) && (data.free || LEVELS[data.levelIndex])) {
-      Object.assign(S, { mode: data.mode, levelIndex: data.levelIndex, free: data.free, grid: data.grid, topY: data.topY, meter: data.meter, score: data.score, current: data.current, next: data.next, helpers: data.helpers || [], freedTotal: data.freedTotal || 0, phase: 'aim' });
+      // a game saved without numbers comes back as Colors
+      const rule = RULES[data.rule] && (data.rule === 'colors' || Array.isArray(data.nums)) ? data.rule : 'colors';
+      setRule(rule);
+      Object.assign(S, { mode: data.mode, levelIndex: data.levelIndex, free: data.free, grid: data.grid, nums: rule === 'colors' ? null : data.nums, topY: data.topY, meter: data.meter, score: data.score, current: data.current, next: data.next, curNum: data.curNum || 0, nextNum: data.nextNum || 0, pairs: data.pairs || 0, helpers: data.helpers || [], freedTotal: data.freedTotal || 0, toldRule: true, phase: 'aim' });
       show('pause');
     } else {
       S.grid = levelGrid(LEVELS[0]);   // attract board behind the title
+      setRule(S.rule);
       show('title');
     }
     requestAnimationFrame(loop);
@@ -1994,6 +2193,7 @@
     legendItem('r', CAGE, 'Cage');
     legendItem('X', STONE, 'Slade block');
     buildPalette();
+    buildRules();
     if (sladeGeo) $('sladeImg').src = sladePortrait().toDataURL('image/png');
     const hot = window.claude && window.claude.hot;
     if (hot && typeof hot.snapshot === 'function') { try { hot.snapshot(snapshot); } catch { /* optional */ } }
@@ -2002,7 +2202,7 @@
   });
 
   // Test hooks for the prototype (harmless in play).
-  window.__bro = { S, B, LEVELS, ART, fire, swap, startLevel, openBuilder, trace, update, setMode, setAngle: (a) => { S.angle = a; } };
+  window.__bro = { S, B, LEVELS, ART, RULES, fire, swap, startLevel, openBuilder, trace, update, setMode, setRule, nbrs, setAngle: (a) => { S.angle = a; } };
 })();
 </script>
 </body>
