@@ -242,6 +242,8 @@ header .brand { white-space: nowrap; font: 22px/1 var(--display); color: var(--g
 }
 .big.alt { background: var(--ivory); box-shadow: 0 4px 0 var(--ivory-lo), 0 6px 10px rgba(0,0,0,.35); }
 .big:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--gold-lo); }
+/* Ivory buttons turn gold only when pressed, so Hit and Stand look the same until you pick one. */
+.big.alt:active, .big.alt.on { background: var(--gold); transform: translateY(3px); box-shadow: 0 1px 0 var(--gold-lo); }
 .big small { display: block; font: 700 12px/1.2 var(--body); letter-spacing: .08em; text-transform: uppercase; opacity: .65; margin-top: 4px; }
 .unlock { animation: pop .3s ease-out; }
 .keys { font-size: 12px; color: var(--muted); letter-spacing: .04em; }
@@ -325,7 +327,7 @@ header .brand { white-space: nowrap; font: 22px/1 var(--display); color: var(--g
       <button data-k="del" class="del" aria-label="Delete">⌫</button><button data-k="0">0</button><button data-k="go" class="go" aria-label="Check">✓</button>
     </div>
     <div class="choices" id="choose" hidden>
-      <button class="big" id="hitBtn">Hit<small>one more card</small></button>
+      <button class="big alt" id="hitBtn">Hit<small>one more card</small></button>
       <button class="big alt" id="standBtn">Stand<small>keep what I have</small></button>
     </div>
     <div class="choices" id="next" hidden>
@@ -689,8 +691,14 @@ function drawFan() {
 
 // ---- input ----
 document.querySelectorAll('#pad button').forEach((b) => b.addEventListener('click', () => typeKey(b.dataset.k)));
-$('#hitBtn').onclick = () => go(hit);
-$('#standBtn').onclick = () => { if (S.phase === 'choose') go(dealerTurn); };
+// Hit and Stand light up gold for a moment when picked (tap or H/S), then the game moves on.
+function pick(btn, fn) {
+  if (S.phase !== 'choose' || $('#choose .on')) return;
+  btn.classList.add('on');
+  setTimeout(() => { btn.classList.remove('on'); go(fn); }, S.fast ? 0 : 200);
+}
+$('#hitBtn').onclick = () => pick($('#hitBtn'), hit);
+$('#standBtn').onclick = () => pick($('#standBtn'), dealerTurn);
 $('#nextBtn').onclick = () => { if (S.phase === 'next') go(newHand); };
 $('#murphyBtn').onclick = () => startMatch('murphy');
 $('#melissaBtn').onclick = () => startMatch('melissa');
@@ -709,8 +717,8 @@ addEventListener('keydown', (e) => {
     else if (k === 'Backspace') { typeKey('del'); e.preventDefault(); }
     else if (k === 'Enter' && !e.repeat) { typeKey('go'); e.preventDefault(); }
   } else if (S.phase === 'choose' && !e.repeat) {
-    if (k === 'h' || k === 'H') { go(hit); e.preventDefault(); }
-    else if (k === 's' || k === 'S') { go(dealerTurn); e.preventDefault(); }
+    if (k === 'h' || k === 'H') { pick($('#hitBtn'), hit); e.preventDefault(); }
+    else if (k === 's' || k === 'S') { pick($('#standBtn'), dealerTurn); e.preventDefault(); }
   } else if (S.phase === 'next' && !e.repeat && (k === 'Enter' || k === ' ')) { go(newHand); e.preventDefault(); }
 });
 
