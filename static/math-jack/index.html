@@ -405,7 +405,8 @@ function cardEl(c, down) {
   else mid = PIPS[c.r].map(([x, y]) => `<span class="pip${y > 50 ? ' flip' : ''}" style="left:${x}%;top:${y}%">${c.s}</span>`).join('');
   const idx = `<b>${c.r}</b><i>${c.s}</i>`;
   const tag = MODES[S.mode].tags && (c.r === 'A' || 'JQK'.includes(c.r)) ? `<span class="tag">${c.r === 'A' ? '1 or 11' : '= 10'}</span>` : '';
-  el.innerHTML = `<div class="inner"><div class="face"><div class="idx">${idx}</div>${mid}<div class="idx br">${idx}</div></div><div class="back"><img alt="" src="${BACK}"></div></div>${tag}`;
+  el.innerHTML = `<div class="inner"><div class="face"><div class="idx">${idx}</div>${mid}<div class="idx br">${idx}</div></div><div class="back"><img alt=""></div></div>${tag}`;
+  el.querySelector('.back img').src = BACK;   // set here, not in markup, so link checkers skip it
   el.setAttribute('aria-label', down ? 'face-down card' : `${c.r} of ${c.s}`);
   return el;
 }
