@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Games</title>
+<!-- Unlisted, like the games it links to: share the link, but keep it out of search. -->
+<meta name="robots" content="noindex">
+<meta name="description" content="Games we make at home. Murphy draws the characters and picks the names; AI agents write the code.">
+<meta property="og:title" content="Games">
+<meta property="og:description" content="Games we make at home. Murphy draws the characters and picks the names; AI agents write the code.">
+<meta property="og:image" content="https://gautsch.org/games/og-card.jpg">
+<meta property="og:url" content="https://gautsch.org/games/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23211e22'/%3E%3Cpath d='M12.5 5h7v7.5H27v7h-7.5V27h-7v-7.5H5v-7h7.5z' fill='%23f4b81c'/%3E%3Ccircle cx='16' cy='16' r='2.4' fill='%23211e22'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap">
+<!-- Each game's name is set in that game's own typeface. text= trims each font to the letters in the names. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Lilita+One&family=Instrument+Serif&family=Gaegu:wght@700&text=Bro!MathJackMosquitoKeysDogHGNwYrkExcite%20&display=swap">
+<style>
+:root{
+  --ground:#ebe7de;
+  --ink:#211e22;
+  --muted:#5f5960;
+  --line:rgb(33 30 34 / .22);
+  --lift:0 1px 2px rgb(33 30 34 / .14),0 14px 34px rgb(33 30 34 / .18);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#18171b; --ink:#f1ede6; --muted:#aaa3ac; --line:rgb(241 237 230 / .2);
+    --lift:0 1px 2px rgb(0 0 0 / .5),0 16px 38px rgb(0 0 0 / .55);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#18171b; --ink:#f1ede6; --muted:#aaa3ac; --line:rgb(241 237 230 / .2);
+  --lift:0 1px 2px rgb(0 0 0 / .5),0 16px 38px rgb(0 0 0 / .55);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:22px 16px 56px}
+.back{color:var(--muted);font-size:14px;text-decoration:none}
+.back:hover,.back:focus-visible{color:var(--ink);text-decoration:underline}
+a:focus-visible{outline:3px solid #f4b81c;outline-offset:3px;border-radius:4px}
+
+header{margin:22px 0 36px;max-width:640px}
+.kicker{margin:0 0 4px;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{margin:0;font:800 clamp(56px,12vw,96px)/.9 "Baloo 2",system-ui,sans-serif;letter-spacing:-.01em}
+.stripe{display:flex;gap:5px;width:168px;height:8px;margin:16px 0 18px}
+.stripe i{flex:1;border-radius:2px}
+.lede{margin:0;font-size:18px;color:var(--muted);text-wrap:pretty}
+
+.shelf{list-style:none;margin:0;padding:0;display:grid;gap:22px;grid-template-columns:minmax(0,1fr)}
+@media (min-width:640px){.shelf{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:960px){.shelf{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.game{height:100%;display:flex;flex-direction:column;padding:14px;border-radius:14px;background:var(--bg);color:var(--fg);box-shadow:var(--lift)}
+.art{display:block;aspect-ratio:4/5;border-radius:8px;overflow:hidden;box-shadow:0 0 0 1px var(--frame);transition:transform .2s ease}
+.art img{display:block;width:100%;height:100%;object-fit:cover}
+.game:hover .art{transform:rotate(-1.2deg) translateY(-3px)}
+.info{flex:1;display:flex;flex-direction:column;gap:10px;padding:18px 6px 6px}
+.game h2{margin:0;line-height:1.05;text-wrap:balance}
+.hook{margin:0;text-wrap:pretty}
+.facts{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.facts li{font-size:13px;line-height:1;padding:6px 10px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--chip)}
+.credit{margin:0;font-size:14px;color:var(--mu);text-wrap:pretty}
+.credit a{color:inherit}
+.actions{margin-top:auto;padding-top:8px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px}
+.play{display:inline-flex;align-items:center;gap:9px;min-height:46px;padding:0 20px 0 18px;border-radius:999px;background:var(--btn);color:var(--btn-fg);font:800 18px/1 "Baloo 2",system-ui,sans-serif;text-decoration:none;box-shadow:var(--btn-edge,none)}
+.play::before{content:"";border-left:11px solid currentColor;border-block:7px solid transparent}
+.play:hover{filter:brightness(1.06)}
+.extra{color:var(--fg);font-size:14px;text-decoration-thickness:1px;text-underline-offset:3px}
+
+/* Each card wears its game's colors and type. */
+.bro{--bg:#0a0b1f;--fg:#f2f1ff;--mu:#a9abd6;--chip:rgb(242 241 255 / .3);--frame:#2a3aa8;--btn:#ffd84a;--btn-fg:#14143a}
+.bro h2{font:24px/1.25 "Press Start 2P",ui-monospace,monospace;color:#ffd84a;text-shadow:3px 3px 0 #3a5cff}
+.jack{--bg:#133d2f;--fg:#fbf6ea;--mu:#bcd3c7;--chip:rgb(251 246 234 / .3);--frame:rgb(251 246 234 / .16);--btn:#f2b53e;--btn-fg:#1d1609}
+.jack h2{font:34px/1 "Lilita One","Baloo 2",system-ui,sans-serif;color:#f2b53e;text-shadow:0 3px 0 #b07d1c}
+.keys{--bg:#e8836a;--fg:#221d1a;--mu:#3f302a;--chip:rgb(34 29 26 / .35);--frame:rgb(34 29 26 / .22);--btn:#221d1a;--btn-fg:#f4f0e6}
+.keys h2{font:400 40px/1 "Instrument Serif",Georgia,serif;letter-spacing:-.01em}
+.hog{--bg:#fdfcf7;--fg:#1b1a1f;--mu:#55525a;--chip:rgb(27 26 31 / .35);--frame:rgb(27 26 31 / .18);--btn:#f4b81c;--btn-fg:#1b1a1f;--btn-edge:inset 0 0 0 2px #1b1a1f;
+  border:2px solid #1b1a1f;border-radius:6px;box-shadow:5px 5px 0 #1b1a1f}
+.hog .art{border-radius:3px}
+.hog h2{font:700 34px/1 Gaegu,"Comic Sans MS","Chalkboard SE",cursive}
+.hog h2 span{background:linear-gradient(transparent 55%,#f4b81c 55%,#f4b81c 92%,transparent 92%)}
+
+.howto{height:100%;padding:24px 22px;border:2px dashed var(--line);border-radius:14px}
+.howto h2{margin:0 0 14px;font:800 28px/1.05 "Baloo 2",system-ui,sans-serif}
+.howto ol{margin:0;padding:0;list-style:none;counter-reset:step;display:grid;gap:16px}
+.howto li{counter-increment:step;display:grid;grid-template-columns:30px 1fr;gap:12px;color:var(--muted);font-size:15px}
+.howto li::before{content:counter(step);display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--ground);font:800 15px/1 "Baloo 2",system-ui,sans-serif}
+.howto b{display:block;color:var(--ink)}
+
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+footer p{margin:0}
+footer a{color:var(--ink)}
+
+@media (prefers-reduced-motion:reduce){.art{transition:none}.game:hover .art{transform:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="/">&larr; gautsch.org</a>
+  <header>
+    <p class="kicker">Game Day</p>
+    <h1>Games</h1>
+    <div class="stripe" aria-hidden="true"><i style="background:#3a5cff"></i><i style="background:#2f8a66"></i><i style="background:#e8836a"></i><i style="background:#f4b81c"></i></div>
+    <p class="lede">Games we make at home. My son, Murphy, draws the characters and picks the names. AI agents write the code. Most have a Murphy mode, with help on screen, and a Melissa mode for his mom, with the real rules.</p>
+  </header>
+
+  <ul class="shelf">
+    <li>
+      <article class="game bro">
+        <a class="art" href="/bro/" tabindex="-1" aria-hidden="true"><img src="bro.webp" width="800" height="1000" alt=""></a>
+        <div class="info">
+          <h2>Bro!</h2>
+          <p class="hook">Slade captured the Teen Titans and made Pac-Man copies of them. Match three copies and they go <b>Bro!</b> Free the real Titans before Slade stomps the ceiling down.</p>
+          <ul class="facts"><li>25 levels</li><li>Build your own</li><li>Math picks</li></ul>
+          <p class="credit">Characters and names by Murphy, plus level 23, Titans Go Wild, which he drew on a level sheet.</p>
+          <div class="actions"><a class="play" href="/bro/">Play Bro!</a><a class="extra" href="/bro/worksheet/">Print a level sheet</a></div>
+        </div>
+      </article>
+    </li>
+    <li>
+      <article class="game jack">
+        <a class="art" href="/math-jack/" tabindex="-1" aria-hidden="true"><img src="math-jack.webp" width="800" height="1000" alt=""></a>
+        <div class="info">
+          <h2>Math Jack</h2>
+          <p class="hook">Blackjack, except Hit and Stand stay locked until you add up your own cards. Get closer to 21 than the dealer. First to win five hands takes the match.</p>
+          <ul class="facts"><li>Adding to 21</li><li>First to 5 hands</li></ul>
+          <p class="credit">Card back and face cards by Murphy. The jack is a turkey.</p>
+          <div class="actions"><a class="play" href="/math-jack/">Play Math Jack</a></div>
+        </div>
+      </article>
+    </li>
+    <li>
+      <article class="game keys">
+        <a class="art" href="/mosquito-keys/" tabindex="-1" aria-hidden="true"><img src="mosquito-keys.webp" width="800" height="1000" alt=""></a>
+        <div class="info">
+          <h2>Mosquito Keys</h2>
+          <p class="hook">Mosquitoes are coming for the Florida Keys. Shoot sterile ones into the swarm. Make enough of it sterile and the swarm dies out.</p>
+          <ul class="facts"><li>5 Keys</li><li>Touch or keyboard</li></ul>
+          <p class="credit">Working title, with stand-in mosquitoes until Murphy draws his. Inspired by <a href="https://worksinprogress.co/issue/mosquitoes-are-a-choice/">Mosquitoes Are a Choice</a> in Works in Progress.</p>
+          <div class="actions"><a class="play" href="/mosquito-keys/">Play Mosquito Keys</a></div>
+        </div>
+      </article>
+    </li>
+    <li>
+      <article class="game hog">
+        <a class="art" href="/dog-hog-nyc/" tabindex="-1" aria-hidden="true"><img src="dog-hog-nyc.webp" width="800" height="1000" alt=""></a>
+        <div class="info">
+          <h2><span>Dog Hog</span> Goes to New York</h2>
+          <p class="hook">The scientist dog from Murphy's comic flies to New York and rides from Central Park to the Statue of Liberty, with King Pizza Rat in the way and a jet ski for the harbor.</p>
+          <ul class="facts"><li>4 levels</li><li>Keyboard or touch pad</li></ul>
+          <p class="credit">Cover, King Pizza Rat, the jet ski and the plane by Murphy, traced from his worksheets.</p>
+          <div class="actions"><a class="play" href="/dog-hog-nyc/">Play Dog Hog NYC</a></div>
+        </div>
+      </article>
+    </li>
+    <li>
+      <article class="game hog">
+        <a class="art" href="/excite-dog/" tabindex="-1" aria-hidden="true"><img src="excite-hog.webp" width="800" height="1000" alt=""></a>
+        <div class="info">
+          <h2>Excite <span>Hog</span></h2>
+          <p class="hook">Dog Hog rides again. Race his motorcycle down Dogs Avenue, jump the bad guys from Murphy's comic, land flat, and don't cook the engine.</p>
+          <ul class="facts"><li>1 track</li><li>Keyboard or touch pad</li></ul>
+          <p class="credit">Characters drawn in code after Murphy's comic, Vol. 2.</p>
+          <div class="actions"><a class="play" href="/excite-dog/">Play Excite Hog</a><a class="extra" href="/excite-dog-astra/">Claude vs. Astra</a></div>
+        </div>
+      </article>
+    </li>
+    <li>
+      <section class="howto" aria-labelledby="howto-title">
+        <h2 id="howto-title">How they get made</h2>
+        <ol>
+          <li><span><b>An idea goes on the board.</b> Each one starts as a note on our family idea board, with questions for Murphy.</span></li>
+          <li><span><b>The robots build a first playable.</b> Small and quick, to find out if it's fun. Bro! was playable the day it was filed.</span></li>
+          <li><span><b>Murphy takes over the art.</b> His drawings get scanned and traced into the game, not redrawn. He names things and draws new levels on paper.</span></li>
+          <li><span><b>We play it.</b> What we notice becomes the next round.</span></li>
+        </ol>
+      </section>
+    </li>
+  </ul>
+
+  <footer>
+    <p>More of Murphy's work: <a href="/folding-surprises/">Folding Surprises</a>. More things I've built with AI: <a href="/projects/">Experiments in AI</a>.</p>
+  </footer>
+</div>
+</body>
+</html>
