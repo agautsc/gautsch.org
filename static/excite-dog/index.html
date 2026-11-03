@@ -661,12 +661,26 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) setPa
 // ---------- input ----------
 const held = { up: 0, down: 0, left: 0, right: 0, hop: 0, turbo: 0 }, pressed = {};
 const KEYMAP = { ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down', ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right', Space: 'hop', KeyX: 'hop', KeyK: 'hop', KeyZ: 'turbo', KeyJ: 'turbo', ShiftLeft: 'turbo', ShiftRight: 'turbo' };
+// Keys the browser would use to scroll the page. While the game is on screen they belong to the game.
+const SCROLL_KEYS = new Set(['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space']);
+function gameOnScreen() { const r = document.getElementById('game').getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; }
+const onControl = (t) => !!(t && t.closest && t.closest('button, input, select, textarea, a, [role="button"]'));
 addEventListener('keydown', e => {
   if (e.code === 'Enter' && (state === 'title' || state === 'results')) { e.preventDefault(); startRace(); return; }
   if (e.code === 'KeyP' || e.code === 'Escape') { setPaused(!paused); return; }
   if (e.code === 'KeyM') { muted = !muted; return; }
   const k = KEYMAP[e.code];
-  if (k && (state === 'race' || state === 'count')) { e.preventDefault(); if (!held[k]) pressed[k] = true; held[k] = 1; }
+  if (k && (state === 'race' || state === 'count')) { e.preventDefault(); if (!held[k]) pressed[k] = true; held[k] = 1; return; }
+  // Outside a race, the title's demo lap looks like play, and the arrows used to scroll the page
+  // under it. Now they never scroll while the game is on screen. On the title, an arrow starts
+  // the race and its lane move counts. Space on a focused button still presses it.
+  if (SCROLL_KEYS.has(e.code) && gameOnScreen() && !(e.code === 'Space' && onControl(e.target))) {
+    e.preventDefault();
+    if (state === 'title' && e.code !== 'Space' && !e.repeat) {
+      startRace();
+      if (k === 'up' || k === 'down') { pressed[k] = true; held[k] = 1; }
+    }
+  }
 });
 addEventListener('keyup', e => { const k = KEYMAP[e.code]; if (k) held[k] = 0; });
 addEventListener('blur', () => { for (const k in held) held[k] = 0; });
