@@ -505,6 +505,43 @@ header .brand { white-space: nowrap; font: 22px/1 var(--display); color: var(--g
 .ember { left: var(--x); top: var(--y); width: 9px; height: 9px; border-radius: 50%; background: #f08a24; box-shadow: 0 0 8px #f2b53e; animation: c-ember var(--dur) var(--delay) ease-out infinite; }
 @keyframes c-ember { 0% { opacity: 0; transform: translateY(0); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), -180px) scale(.4); } }
 
+/* Losing the match (math-jack#12): a Whammy, like on Press Your Luck. The board lights flash, Murphy's
+   3 pops up and dances, runs off with your chips, and comes back laughing. */
+.cele.whammy .cele-title {
+  color: #ff5a48; text-shadow: 0 4px 0 #6e1410, 0 8px 18px rgba(0,0,0,.4);
+  animation: cele-pop .7s .8s cubic-bezier(.2,1.6,.4,1) both, w-shake .1s 1.5s 6 linear;
+}
+@keyframes w-shake { 25% { translate: -4px 0; } 75% { translate: 4px 0; } }
+.stage.k-whammy { animation: w-lights .2s steps(1) 6; }
+@keyframes w-lights {
+  0% { box-shadow: 0 0 0 6px var(--red), 0 0 34px var(--red), 0 18px 40px rgba(0,0,0,.45); }
+  50% { box-shadow: 0 0 0 6px var(--gold), 0 0 34px var(--gold), 0 18px 40px rgba(0,0,0,.45); }
+}
+.k-whammy .actor { transform-origin: 50% 100%; animation: w-whammy 4.8s ease-in-out both; }
+@keyframes w-whammy {
+  0%, 15% { transform: translateY(120%) scale(.6); }
+  24% { transform: translateY(-10%) scale(1.08, .94); }
+  29% { transform: none; }
+  33%, 41%, 49% { transform: rotate(-10deg) translateY(-6%); }
+  37%, 45%, 53% { transform: rotate(10deg); }
+  56% { left: 50%; transform: none; }
+  70% { left: 150%; transform: rotate(12deg); }
+  70.1% { left: -50%; }
+  86% { left: 50%; transform: rotate(-6deg); }
+  91% { transform: scale(1.12, .9); }
+  96%, 100% { left: 50%; transform: none; }
+}
+/* Your chips sit on the card until he runs by and takes them with him. */
+.loot {
+  position: absolute; bottom: 5%; left: var(--x); width: 8%; aspect-ratio: 1; border-radius: 50%;
+  background: var(--gold); border: 4px solid var(--gold-lo); box-shadow: inset 0 0 0 4px rgba(255,255,255,.35);
+  animation: w-loot 4.8s ease-in both;
+}
+@keyframes w-loot {
+  0%, 59% { transform: none; }
+  63% { transform: translateY(-260%); }
+  70%, 100% { transform: translate(var(--run), -320%); }
+}
 @media (prefers-reduced-motion: reduce) {
   .cele, .cele * { animation: none !important; }
   .card, #msg.pop, .unlock, #ans.shake { animation: none !important; }
@@ -584,7 +621,7 @@ header .brand { white-space: nowrap; font: 22px/1 var(--display); color: var(--g
 
 <div class="cele" id="cele" hidden tabindex="-1" role="dialog" aria-label="You won the match">
   <div class="confetti" id="celeConfetti"></div>
-  <h2 class="cele-title">You won the match!</h2>
+  <h2 class="cele-title" id="celeTitle">You won the match!</h2>
   <div class="stage" id="celeStage"></div>
   <p class="cele-line" id="celeLine"></p>
   <p class="cele-skip">Tap to keep going</p>
@@ -683,6 +720,13 @@ const sfx = {
   win: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.18, 'triangle', i * 0.09)),
   cheer: () => [523, 659, 784, 1047, 784, 1047, 1319].forEach((f, i) => tone(f, i === 6 ? 0.5 : 0.2, 'triangle', i * 0.13, 0.13)),
   lose: () => [392, 330, 262].forEach((f, i) => tone(f, 0.2, 'triangle', i * 0.12, 0.1)),
+  // The Whammy: a buzzer, a pop when he jumps up, a slide-whistle as he runs off, then a laugh.
+  whammy: () => {
+    tone(110, 0.55, 'sawtooth', 0, 0.09); tone(117, 0.55, 'sawtooth', 0, 0.07);
+    [300, 450, 680].forEach((f, i) => tone(f, 0.08, 'square', 0.75 + i * 0.05, 0.06));
+    [900, 800, 700, 600, 500].forEach((f, i) => tone(f, 0.08, 'triangle', 2.75 + i * 0.07, 0.08));
+    [700, 640, 700, 640, 560].forEach((f, i) => tone(f, i === 4 ? 0.3 : 0.1, 'square', 3.9 + i * 0.16, 0.05));
+  },
 };
 
 // ---- drawing ----
@@ -902,8 +946,9 @@ function showEnd() {
     ['Math Jacks', S.stats.mathjacks],
   ].map(([k, v]) => `<span>${k}</span><b>${v}</b>`).join('');
   $('#end').hidden = false;
-  if (won && !S.fast) celebrate();   // the bots play with the pauses off and skip it
-  else $('#againBtn').focus({ preventScroll: true });
+  if (S.fast) $('#againBtn').focus({ preventScroll: true });   // the bots play with the pauses off and skip the scenes
+  else if (won) celebrate();
+  else whammy();
 }
 
 // ---- winning the match (math-jack#9): one of Murphy's drawings plays a short scene ----
@@ -1014,6 +1059,7 @@ function confetti() {
 function celebrate(key = nextCelebration()) {
   const el = $('#cele'), stage = $('#celeStage');
   clearTimeout(celeTimer);
+  scene(false);
   el.classList.remove('out'); el.hidden = false;   // shown first, so the scenes can measure the stage
   stage.className = 'stage k-' + key;
   stage.innerHTML = '';
@@ -1027,6 +1073,37 @@ function celebrate(key = nextCelebration()) {
   S.celebration = key;
   el.focus({ preventScroll: true });
   sfx.cheer();
+  celeTimer = setTimeout(endCelebration, CELE_MS);
+}
+// The win scene and the Whammy share the big card; this sets which one it is.
+function scene(lost) {
+  $('#cele').classList.toggle('whammy', lost);
+  $('#cele').setAttribute('aria-label', lost ? 'The dealer won the match' : 'You won the match');
+  $('#celeTitle').textContent = lost ? 'WHAMMY!' : 'You won the match!';
+}
+
+// ---- losing the match (math-jack#12): a Whammy, like on Press Your Luck, played by Murphy's 3 ----
+function whammy() {
+  const el = $('#cele'), stage = $('#celeStage');
+  clearTimeout(celeTimer);
+  scene(true);
+  el.classList.remove('out'); el.hidden = false;
+  stage.className = 'stage k-whammy';
+  stage.innerHTML = '';
+  const chips = S.score.you;   // he takes the hands you won
+  for (let i = 0; i < chips; i++) bit(stage, 'loot', '', { '--x': `${62 + i * 9}%`, '--run': `${stage.clientWidth}px` });
+  const actor = document.createElement('div');
+  actor.className = 'actor';
+  const img = new Image(); img.alt = ''; img.src = NUMS[3]; actor.appendChild(img);
+  stage.appendChild(actor);
+  [1.6, 3.9, 4.2].forEach((t, i) => bit(stage, 'shout', i ? 'HA!' : 'HA HA!', {
+    '--x': '50%', '--y': '20%', '--delay': `${t}s`, '--dx': `${rnd(-150, 150)}px`, '--dy': `${rnd(-120, -60)}px`, '--r': `${rnd(-20, 20)}deg`,
+  }));
+  $('#celeLine').textContent = chips ? `The Whammy took your ${chips === 1 ? 'chip' : chips + ' chips'}!` : 'The Whammy got you!';
+  $('#celeConfetti').innerHTML = '';
+  S.celebration = 'whammy';
+  el.focus({ preventScroll: true });
+  sfx.whammy();
   celeTimer = setTimeout(endCelebration, CELE_MS);
 }
 function endCelebration(now) {
@@ -1074,7 +1151,7 @@ $('#soundBtn').onclick = () => { S.sound = !S.sound; $('#soundBtn').textContent 
 addEventListener('keydown', (e) => {
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   const k = e.key;
-  if (!$('#cele').hidden) {   // the win scene: Enter, Space or Escape skips to the end screen
+  if (!$('#cele').hidden) {   // the win scene or the Whammy: Enter, Space or Escape skips to the end screen
     if (k === 'Enter' || k === ' ' || k === 'Escape') { e.preventDefault(); if (!e.repeat) endCelebration(); }
     return;
   }
@@ -1096,7 +1173,7 @@ drawFan(); renderChips(); panel('none'); $('#murphyBtn').focus({ preventScroll: 
 window.__mj = {
   S, totals, acceptedAnswers,
   rig: (codes) => { S.rigged = codes.map((x) => ({ r: x.slice(0, -1), s: x.slice(-1) })); },
-  CELE_KEYS, celebrate, endCelebration, nextCelebration,
+  CELE_KEYS, celebrate, endCelebration, nextCelebration, whammy,
   newCelebrationBag: () => { celeBag = []; },
 };
 })();
