@@ -184,6 +184,9 @@ dialog label{display:block;font-size:13px;font-weight:500;margin-bottom:5px}
 dialog input{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--desk);color:var(--fg);width:100%}
 .d-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
 .d-actions .primary{flex:1 1 auto}
+.xfer{margin:0;text-align:center}
+.gap{margin-top:18px}
+#x-msg{margin:10px 0 0;min-height:1.45em}
 </style>
 </head>
 <body>
@@ -220,6 +223,7 @@ dialog input{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid va
     <button class="btn" id="next" type="button">Next &rsaquo;</button>
   </nav>
   <p class="status" id="status" role="status">Fetching your stamps…</p>
+  <p class="xfer" id="xfer" hidden><button class="btn" id="x-open" type="button">Move stamps to another device</button></p>
 </div>
 
 <dialog id="dlg" aria-labelledby="d-name">
@@ -235,6 +239,21 @@ dialog input{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid va
       <button class="btn" id="d-cancel" type="button">Cancel</button>
     </div>
   </form>
+</dialog>
+
+<dialog id="xdlg" aria-labelledby="x-title">
+  <h2 id="x-title">Move your stamps</h2>
+  <p class="d-meta">Stamps are kept in this browser. Open this link on another phone or computer to copy them there.</p>
+  <label for="x-link">Transfer link</label>
+  <input id="x-link" readonly>
+  <div class="d-actions"><button class="btn primary" id="x-copy" type="button">Copy link</button></div>
+  <label class="gap" for="x-code">Or paste a link from another device</label>
+  <input id="x-code" autocomplete="off" spellcheck="false">
+  <p class="d-meta" id="x-msg" role="status"></p>
+  <div class="d-actions">
+    <button class="btn" id="x-add" type="button">Add stamps</button>
+    <button class="btn" id="x-close" type="button">Close</button>
+  </div>
 </dialog>
 
 <script>
@@ -559,12 +578,56 @@ document.addEventListener("keydown", e => {
 });
 mq.addEventListener("change", render);
 
+// ---------- moving stamps between browsers (only where stamps live in the browser) ----------
+// Code: "v1" + three base-36 digits per restaurant (days since 2000-01-01, 000 = no stamp).
+const DAY0 = Date.UTC(2000, 0, 1);
+function encodeStamps(s){
+  return "v1" + R.map(r => okDate(s[r.n]) ? Math.round((Date.parse(s[r.n] + "T00:00:00Z") - DAY0) / 864e5).toString(36).padStart(3, "0") : "000").join("");
+}
+function decodeStamps(text){
+  const m = /v1([0-9a-z]{150})(?![0-9a-z])/.exec(String(text).trim().toLowerCase());
+  if (!m) return null;
+  const out = {};
+  R.forEach((r, i) => {
+    const d = parseInt(m[1].substr(i * 3, 3), 36);
+    if (d > 0) out[r.n] = new Date(DAY0 + d * 864e5).toISOString().slice(0, 10);
+  });
+  return out;
+}
+const xdlg = $("xdlg");
+function openTransfer(incoming){
+  $("x-link").value = location.origin + location.pathname + "#stamps-" + encodeStamps(stamps);
+  $("x-code").value = incoming || "";
+  const got = incoming ? decodeStamps(incoming) : null;
+  $("x-msg").textContent = got ? "This link carries " + Object.keys(got).length + " stamps. Add them to this passport?" : "";
+  xdlg.showModal();
+}
+$("x-open").addEventListener("click", () => openTransfer(""));
+$("x-close").addEventListener("click", () => xdlg.close());
+$("x-copy").addEventListener("click", () => {
+  const el = $("x-link"), done = () => { $("x-msg").textContent = "Link copied. Open it on the other device."; };
+  const manual = () => { el.focus(); el.select(); $("x-msg").textContent = "Copy the selected link."; };
+  try { navigator.clipboard.writeText(el.value).then(done, manual); } catch (e) { manual(); }
+});
+$("x-add").addEventListener("click", () => {
+  const got = decodeStamps($("x-code").value);
+  if (!got){ $("x-msg").textContent = "That isn't a passport link. Copy the whole link and try again."; return; }
+  let n = 0;
+  for (const k in got) if (stamps[k] !== got[k]){ stamps[k] = got[k]; n++; }
+  persist(0); render();
+  $("x-msg").textContent = n ? "Added " + n + (n === 1 ? " stamp." : " stamps.") : "Nothing new. This passport already has those stamps.";
+  $("x-code").value = "";
+  try { history.replaceState(null, "", location.pathname); } catch (e) {}
+});
+
 // ---------- storage ----------
 function useLocal(){
   local = true;
   try { const s = JSON.parse(localStorage.getItem("adp-stamps") || "{}"); for (const k in s) if (okDate(s[k]) && R[k - 1]) stamps[k] = s[k]; } catch (e) {}
   status("Stamps are kept in this browser only.");
   render();
+  $("xfer").hidden = false;
+  if (/^#stamps-v1/.test(location.hash) && decodeStamps(location.hash)) openTransfer(location.hash.slice(8));
 }
 async function start(){
   render();
