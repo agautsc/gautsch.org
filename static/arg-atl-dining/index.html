@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1d4236">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2032%2032'%3E%3Crect%20x%3D'5'%20y%3D'2'%20width%3D'22'%20height%3D'28'%20rx%3D'3'%20fill%3D'%231d4236'%2F%3E%3Cpath%20d%3D'M9%2019h2v-5h2v5h1v-9l1-3l1%203v9h1v-6h2v6h2'%20fill%3D'none'%20stroke%3D'%23cdaa5a'%20stroke-width%3D'1.3'%20stroke-linejoin%3D'round'%2F%3E%3Cpath%20d%3D'M9%2023h14M11%2026h10'%20stroke%3D'%23cdaa5a'%20stroke-width%3D'1.4'%20stroke-linecap%3D'round'%2F%3E%3C%2Fsvg%3E">
+<title>Atlanta Dining Passport</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@500;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Oswald:wght@500;600&display=swap">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>
+/* Layout: a passport lying on a desk. Closed cover, then two-page spreads (one page on a phone), four visa slots a page. */
+:root{
+  --desk:#dfe3dc; --fg:#1d2622; --muted:#55615b; --line:#b4bdb3; --ui:#f6f7f3;
+  --accent:#1f4a3c; --accent-fg:#f3ead0;
+  --cover:#1d4236; --cover2:#132c25; --gold:#cdaa5a;
+  --paper:#eef0e2; --paper2:#e2e6d4; --guil:rgba(52,110,96,.13); --paper-ink:#27302b; --paper-muted:#637068; --paper-line:#a9b3a2;
+  --shadow:rgba(20,30,25,.3);
+  --ink-blue:#23408f; --ink-red:#b3262f; --ink-green:#1f6b4a; --ink-violet:#5b2d86;
+  --ink-black:#2b2b33; --ink-teal:#0f6f7a; --ink-magenta:#a3246d; --ink-orange:#a8551c;
+  --f-cover:"Bodoni Moda",Didot,"Times New Roman",serif;
+  --f-ui:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-data:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --f-stamp:"Oswald","Arial Narrow",Impact,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --desk:#121715; --fg:#e4e9e3; --muted:#9aa69f; --line:#36423c; --ui:#1c2420;
+  --accent:#cdaa5a; --accent-fg:#16201b;
+  --cover:#1f463a; --cover2:#142f27; --gold:#d3b367;
+  --paper:#d6dac9; --paper2:#c8cdb9; --guil:rgba(40,90,78,.16); --paper-line:#98a291;
+  --shadow:rgba(0,0,0,.6); color-scheme:dark } }
+:root[data-theme="dark"]{
+  --desk:#121715; --fg:#e4e9e3; --muted:#9aa69f; --line:#36423c; --ui:#1c2420;
+  --accent:#cdaa5a; --accent-fg:#16201b;
+  --cover:#1f463a; --cover2:#142f27; --gold:#d3b367;
+  --paper:#d6dac9; --paper2:#c8cdb9; --guil:rgba(40,90,78,.16); --paper-line:#98a291;
+  --shadow:rgba(0,0,0,.6); color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--desk);color:var(--fg);font-family:var(--f-ui);font-size:15px;line-height:1.45}
+.wrap{max-width:940px;margin:0 auto;padding-block:20px 28px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:18px}
+.defs{position:absolute;width:0;height:0;overflow:hidden}
+
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:10px 24px}
+.top>div{min-width:0}
+h1{font-family:var(--f-cover);font-weight:700;font-size:26px;line-height:1.1;margin:0;text-wrap:balance}
+.sub{margin:4px 0 0;color:var(--muted);max-width:52ch}
+.count{font-family:var(--f-data);display:flex;align-items:baseline;gap:8px;white-space:nowrap}
+.count b{font-size:30px;font-weight:600;font-variant-numeric:tabular-nums}
+.count span{color:var(--muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+
+.stage{perspective:1900px}
+.book{display:flex;justify-content:center;filter:drop-shadow(0 14px 18px var(--shadow))}
+.page,.cover{flex:0 1 440px;min-width:0;max-width:100%;aspect-ratio:5/7.1;container-type:inline-size;overflow:hidden;position:relative;backface-visibility:hidden}
+
+/* cover */
+.cover{border:0;cursor:pointer;color:var(--gold);border-radius:6px 16px 16px 6px;font-family:var(--f-cover);
+  background:
+    linear-gradient(to right,rgba(0,0,0,.45) 0,rgba(0,0,0,0) 2.5%,rgba(255,255,255,.09) 4.6%,rgba(0,0,0,.32) 5.6%,rgba(0,0,0,0) 8.5%),
+    linear-gradient(140deg,var(--cover),var(--cover2))}
+/* leather grain, scuffs and rubbed edges */
+.cover::before,.cover::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit}
+.cover::before{mix-blend-mode:overlay;opacity:.75;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1.5 -.35'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E")}
+.cover::after{
+  background:
+    linear-gradient(118deg,transparent 31.6%,rgba(255,255,255,.07) 31.8%,transparent 32.1%),
+    linear-gradient(74deg,transparent 62.2%,rgba(255,255,255,.07) 62.4%,transparent 62.7%),
+    linear-gradient(156deg,transparent 77.5%,rgba(255,255,255,.08) 77.7%,transparent 77.9%),
+    radial-gradient(ellipse at 100% 100%,rgba(255,255,255,.2),transparent 24%),
+    radial-gradient(ellipse at 100% 0,rgba(255,255,255,.15),transparent 20%),
+    radial-gradient(ellipse at 6% 100%,rgba(255,255,255,.13),transparent 18%),
+    radial-gradient(ellipse at 62% 44%,rgba(255,255,255,.06),transparent 45%);
+  box-shadow:inset 0 0 9cqw rgba(0,0,0,.5),inset -1px -1px 0 rgba(255,255,255,.16),inset 0 1px 0 rgba(255,255,255,.1)}
+.cover-in{position:absolute;inset:4cqw 4cqw 4cqw 8cqw;border:1px solid var(--gold);border-radius:3px 10px 10px 3px;opacity:.94;
+  box-shadow:1px 1px 0 rgba(255,255,255,.1),inset 1px 1px 0 rgba(0,0,0,.55),-1px -1px 0 rgba(0,0,0,.45);
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:9cqw 4cqw 7cqw}
+/* pressed-in foil: dark lip above and left, light catch below and right, with patches rubbed away */
+.cover-in>*{filter:url(#worn) drop-shadow(-1px -1px 0 rgba(0,0,0,.65)) drop-shadow(1px 1px 0 rgba(255,255,255,.17))}
+.c-top{font-size:5.2cqw;letter-spacing:.34em;margin-right:-.34em;font-weight:500}
+.c-sky{width:74cqw;height:auto;display:block}
+.c-title{font-size:11.5cqw;letter-spacing:.2em;margin-right:-.2em;font-weight:700;line-height:1}
+.c-sub{font-size:4.2cqw;letter-spacing:.24em;margin-right:-.24em;text-transform:uppercase;font-weight:500}
+.c-hint{font-family:var(--f-data);font-size:max(11px,2.8cqw);letter-spacing:.14em;text-transform:uppercase;opacity:.75}
+
+/* pages */
+.page{color:var(--paper-ink);background-color:var(--paper);
+  background-image:repeating-radial-gradient(circle at 0 0,transparent 0 9px,var(--guil) 9px 10px),
+    repeating-radial-gradient(circle at 100% 100%,transparent 0 11px,var(--guil) 11px 12px),
+    linear-gradient(160deg,var(--paper),var(--paper2))}
+.page.verso{border-radius:12px 0 0 12px}
+.page.recto{border-radius:0 12px 12px 0}
+.single .page{border-radius:4px 12px 12px 4px}
+.page::after{content:"";position:absolute;inset:0;pointer-events:none}
+.page.verso::after{background:linear-gradient(to left,rgba(0,0,0,.2),transparent 9%)}
+.page.recto::after,.single .page::after{background:linear-gradient(to right,rgba(0,0,0,.2),transparent 9%)}
+.pg{height:100%;display:flex;flex-direction:column;gap:2.4cqw;padding:4cqw 4.4cqw 3cqw;font-size:clamp(11px,3.05cqw,14px)}
+.p-head,.p-foot{display:flex;justify-content:space-between;font-family:var(--f-data);color:var(--paper-muted);
+  font-size:.82em;letter-spacing:.16em;text-transform:uppercase}
+.p-head{border-bottom:1px solid var(--paper-line);padding-bottom:1.6cqw}
+.verso .p-foot{justify-content:flex-start}.recto .p-foot{justify-content:flex-end}
+
+.grid{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2.4cqw}
+.slot{min-width:0;min-height:0;border:0;background:none;padding:0;cursor:pointer;color:inherit;font:inherit;
+  display:flex;flex-direction:column;border-radius:6px}
+.ghost{flex:1;border:1.5px dashed var(--paper-line);border-radius:6px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:.5em;padding:2.5cqw;text-align:center}
+.slot:hover .ghost{border-color:var(--paper-ink)}
+.g-no{font-family:var(--f-data);font-size:.82em;letter-spacing:.14em;color:var(--paper-muted)}
+.g-name{font-family:var(--f-stamp);font-weight:600;font-size:1.25em;line-height:1.15;text-transform:uppercase;letter-spacing:.03em;overflow-wrap:anywhere}
+.g-meta{font-size:.85em;color:var(--paper-muted);line-height:1.25}
+.g-cta{font-family:var(--f-data);font-size:.74em;letter-spacing:.14em;text-transform:uppercase;color:var(--paper-muted);margin-top:.3em}
+.ink{flex:1;min-height:0;display:block}
+.stamp{width:100%;height:100%;display:block;transform:rotate(var(--rot,0deg));mix-blend-mode:multiply}
+.stamp text{stroke:none;fill:currentColor;text-anchor:middle}
+.st-name{font-family:var(--f-stamp);font-weight:600;letter-spacing:.6px}
+.st-area{font-family:var(--f-stamp);font-weight:600;letter-spacing:1.2px}
+.st-date{font-family:var(--f-data);font-weight:600}
+.st-no{font-family:var(--f-data);font-weight:600;letter-spacing:.3px}
+.st-glyph{stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.cap{font-size:.82em;color:var(--paper-muted);text-align:center;line-height:1.2;padding-top:.2em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thunk{animation:thunk .34s cubic-bezier(.2,1.5,.4,1)}
+@keyframes thunk{from{transform:scale(1.8);opacity:0}60%{opacity:1}to{transform:scale(1);opacity:1}}
+
+/* identity page */
+.idrow{display:flex;gap:4cqw;align-items:center}
+.dial{flex:0 0 30cqw;position:relative}
+.dial svg{display:block;width:100%}
+.dial b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-data);font-weight:600;font-size:7cqw;font-variant-numeric:tabular-nums}
+dl{margin:0;flex:1;min-width:0;display:grid;gap:.55em}
+dt{font-family:var(--f-data);font-size:.7em;letter-spacing:.14em;text-transform:uppercase;color:var(--paper-muted)}
+dd{margin:0;font-weight:600;line-height:1.2;overflow-wrap:anywhere}
+.dots{display:grid;grid-template-columns:repeat(10,1fr);gap:1.2cqw}
+.dots button{aspect-ratio:1;min-width:0;padding:0;border:1px solid var(--paper-line);border-radius:50%;background:none;
+  color:var(--paper-muted);font-family:var(--f-data);font-size:.72em;cursor:pointer}
+.dots button.on{border-color:transparent;background:var(--c);color:var(--paper);font-weight:600}
+.lbl{font-family:var(--f-data);font-size:.72em;letter-spacing:.14em;text-transform:uppercase;color:var(--paper-muted);margin:0}
+.mrz{margin-top:auto;font-family:var(--f-data);font-size:min(3.55cqw,15px);letter-spacing:.06em;line-height:1.5;white-space:nowrap;overflow:hidden;color:var(--paper-ink)}
+.prose{display:flex;flex-direction:column;gap:.9em;flex:1;min-height:0}
+.prose p{margin:0}
+.prose h2{font-family:var(--f-stamp);font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:1.5em;margin:0;line-height:1.1}
+.prose a{color:var(--ink-blue)}
+.seal{flex:1;min-height:0;display:grid;place-items:center}
+.seal .stamp{max-height:100%}
+.seal.locked .stamp{opacity:.16;mix-blend-mode:normal;filter:grayscale(1)}
+
+/* page turn */
+.out-next{transform-origin:left center;animation:outN .2s ease-in forwards}
+.in-next{transform-origin:right center;animation:inN .24s ease-out}
+.out-prev{transform-origin:right center;animation:outP .2s ease-in forwards}
+.in-prev{transform-origin:left center;animation:inP .24s ease-out}
+.single .in-next,.single .out-prev,.closed .in-next,.closed .in-prev{animation:fade .22s ease-out}
+.single .out-prev{animation-direction:reverse;animation-fill-mode:forwards}
+@keyframes outN{to{transform:rotateY(-88deg);filter:brightness(.7)}}
+@keyframes inN{from{transform:rotateY(88deg);filter:brightness(.7)}}
+@keyframes outP{to{transform:rotateY(88deg);filter:brightness(.7)}}
+@keyframes inP{from{transform:rotateY(-88deg);filter:brightness(.7)}}
+@keyframes fade{from{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.thunk,.out-next,.in-next,.out-prev,.in-prev{animation:none!important}}
+
+/* controls */
+.nav{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}
+.nav span{font-family:var(--f-data);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);min-width:13ch;text-align:center}
+.btn{font:500 14px var(--f-ui);padding:9px 16px;border-radius:8px;border:1px solid var(--line);background:var(--ui);color:var(--fg);cursor:pointer}
+.btn:disabled{opacity:.4;cursor:default}
+.btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.status{margin:0;text-align:center;color:var(--muted);font-size:13px;min-height:1.45em}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.page :focus-visible{outline-color:var(--paper-ink)}
+.cover:focus-visible{outline-color:var(--gold);outline-offset:-8px}
+
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--ui);color:var(--fg);padding:22px;width:min(400px,calc(100vw - 32px));font-family:var(--f-ui)}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+.d-no{font-family:var(--f-data);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0}
+dialog h2{font-family:var(--f-stamp);font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:26px;line-height:1.1;margin:4px 0 6px;text-wrap:balance}
+.d-meta{margin:0 0 16px;color:var(--muted)}
+dialog label{display:block;font-size:13px;font-weight:500;margin-bottom:5px}
+dialog input{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--desk);color:var(--fg);width:100%}
+.d-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.d-actions .primary{flex:1 1 auto}
+</style>
+</head>
+<body>
+<svg class="defs" aria-hidden="true"><defs>
+  <filter id="ink" x="-6%" y="-6%" width="112%" height="112%">
+    <feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="3" result="w"/>
+    <feDisplacementMap in="SourceGraphic" in2="w" scale="1.7" result="d"/>
+    <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="8" result="n"/>
+    <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.7 1.62" result="m"/>
+    <feComposite in="d" in2="m" operator="in"/>
+  </filter>
+  <filter id="worn" x="-5%" y="-10%" width="110%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency=".045" numOctaves="3" seed="11" result="p"/>
+    <feColorMatrix in="p" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -3 2.62" result="pm"/>
+    <feTurbulence type="fractalNoise" baseFrequency="1.1" numOctaves="2" seed="5" result="s"/>
+    <feColorMatrix in="s" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.6 1.62" result="sm"/>
+    <feComposite in="SourceGraphic" in2="pm" operator="in" result="a"/>
+    <feComposite in="a" in2="sm" operator="in"/>
+  </filter>
+</defs></svg>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Atlanta Dining Passport</h1>
+      <p class="sub">Fifty places from the AJC's 2026 ATL50 list. Each one you try earns its own stamp.</p>
+    </div>
+    <div class="count"><b id="count">0</b><span>of 50 stamped</span></div>
+  </header>
+  <div class="stage"><div class="book closed" id="book"></div></div>
+  <nav class="nav" aria-label="Pages">
+    <button class="btn" id="prev" type="button">&lsaquo; Back</button>
+    <span id="where">Cover</span>
+    <button class="btn" id="next" type="button">Next &rsaquo;</button>
+  </nav>
+  <p class="status" id="status" role="status">Fetching your stamps…</p>
+</div>
+
+<dialog id="dlg" aria-labelledby="d-name">
+  <form id="d-form" method="dialog">
+    <p class="d-no" id="d-no"></p>
+    <h2 id="d-name"></h2>
+    <p class="d-meta" id="d-meta"></p>
+    <label for="d-date">Date of visit</label>
+    <input type="date" id="d-date" required>
+    <div class="d-actions">
+      <button class="btn primary" id="d-ok" type="submit">Stamp it</button>
+      <button class="btn" id="d-remove" type="button">Remove stamp</button>
+      <button class="btn" id="d-cancel" type="button">Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+// [rank, name, stamp name, area, cuisine, frame, ink, glyph, recognition]
+const R = [
+[1,"Mujō","MUJŌ","Marietta Street Artery","Japanese / Sushi","ring","black","nigiri","Michelin star"],
+[2,"Lazy Betty","LAZY BETTY","Midtown","American","oct","blue","star","Michelin star"],
+[3,"O by Brush","O BY BRUSH","Buckhead Village","Japanese / Sushi","oval","violet","brush","Michelin star"],
+[4,"Du Bu Gong Bang","DU BU GONG BANG","Duluth","Korean","box","red","tofu",""],
+[5,"Season Marietta","SEASON","Marietta","American","hex","green","leaf",""],
+[6,"Avize","AVIZE","Marietta Street Artery","","arch","blue","peak","Michelin Recommended"],
+[7,"Pink Lotus Thai Restaurant","PINK LOTUS","Marietta Street Artery","Thai","dots","magenta","lotus","Michelin Recommended"],
+[8,"So. Fox","SO. FOX","Virginia Highland","American","ticket","orange","fox","Michelin star"],
+[9,"Ryokou","RYOKOU","Adair Park","Japanese / Sushi","ring","teal","compass","Michelin Recommended"],
+[10,"Southern National","SOUTHERN NATIONAL","Summerhill","Southern","oct","green","tree","James Beard nominee"],
+[11,"Charm Thai Cuisine","CHARM THAI","Atlanta","Thai","oval","red","chili",""],
+[12,"Weepa Puerto Rico","WEEPA","Hapeville","Puerto Rican","box","teal","palm",""],
+[13,"Jang Su Jang","JANG SU JANG","Alpharetta","Korean","hex","black","pot",""],
+[14,"The Deer and The Dove","DEER & DOVE","Decatur","American","arch","violet","antler","Michelin Recommended"],
+[15,"Gunshow","GUNSHOW","Ormewood Park","American","dots","red","pan","James Beard nominee"],
+[16,"Sugar Loaf Bakery & Café","SUGAR LOAF","Reynoldstown","Bakery café","ticket","magenta","loaf",""],
+[17,"Bovino After Dark","BOVINO AFTER DARK","West End","","ring","violet","horns",""],
+[18,"Kamayan ATL","KAMAYAN ATL","Doraville","Filipino","hex","blue","sun","Michelin Recommended"],
+[19,"ENZO Steakhouse & Bar","ENZO","Fayetteville","Steakhouse","box","black","steak",""],
+[20,"The Porter Beer Bar","THE PORTER","Inman Park","American","oval","orange","mug","James Beard nominee"],
+[21,"Delbar","DELBAR","Atlanta","Middle Eastern","arch","magenta","pom","Michelin Recommended"],
+[22,"The Chastain","THE CHASTAIN","Chastain Park","American","oct","teal","shoe","Michelin Recommended"],
+[23,"Sammy's","SAMMY'S","Adair Park","","ticket","blue","deli",""],
+[24,"Southern Belle","SOUTHERN BELLE","Poncey-Highland","Southern","dots","violet","bell","Michelin Recommended"],
+[25,"Talat Market","TALAT MARKET","Atlanta","Thai","box","green","basket","Michelin Recommended"],
+[26,"Best BBQ","BEST BBQ","Chamblee","Chinese","hex","red","cleaver","Michelin Recommended"],
+[27,"Ginya Izakaya","GINYA IZAKAYA","Berkeley Park","Japanese","ring","orange","lantern",""],
+[28,"Le Nouveau Maquis","LE NOUVEAU MAQUIS","Stone Mountain","West African","oct","magenta","fish",""],
+[29,"BoccaLupo","BOCCALUPO","Atlanta","Italian","oval","green","fork","Michelin Recommended"],
+[30,"Brainwave Pizza","BRAINWAVE PIZZA","Decatur","Pizza","ticket","violet","bolt",""],
+[31,"Urban Hai","URBAN HAI","Midtown","Chinese","dots","blue","dumpling",""],
+[32,"Bey Mediterranean Kitchen + Bar","BEY","Roswell","Middle Eastern","arch","green","olive",""],
+[33,"Tio Lucho's","TIO LUCHO'S","Poncey-Highland","Latin American","hex","teal","lime",""],
+[34,"JD's Summerhill Variety Deli","JD'S SUMMERHILL","Summerhill","Deli","oct","black","pickle",""],
+[35,"Tipsy Thaiger","TIPSY THAIGER","Roswell","Thai","ring","red","paw",""],
+[36,"LanZhou Ramen","LANZHOU RAMEN","Doraville","Chinese","box","blue","noodle",""],
+[37,"La Semilla","LA SEMILLA","Reynoldstown","Plant-based","oval","teal","sprout",""],
+[38,"Tum Pok Pok","TUM POK POK","Chamblee","Thai","dots","green","mortar",""],
+[39,"Ruki's Kitchen","RUKI'S KITCHEN","Peoplestown","Ethiopian","arch","orange","jebena",""],
+[40,"The Consulate","THE CONSULATE","Midtown","","ticket","black","flag",""],
+[41,"Kimball House","KIMBALL HOUSE","Decatur","Seafood","ring","blue","shell","Michelin Recommended"],
+[42,"Spring 2nd Branch","SPRING","Marietta","Korean","hex","magenta","flower","Michelin Recommended"],
+[43,"Hen Mother Cookhouse","HEN MOTHER","Alpharetta","American","oval","black","egg","Michelin Recommended"],
+[44,"Broad Street BBQ","BROAD STREET BBQ","Downtown","Barbecue","box","orange","flame",""],
+[45,"Casa Coya","CASA COYA","Reynoldstown","Latin American","oct","violet","house",""],
+[46,"Bertolozi's Pizzeria","BERTOLOZI'S","North Buckhead","Pizza","dots","teal","slice",""],
+[47,"Umi","UMI","Atlanta","Japanese / Sushi","arch","teal","wave",""],
+[48,"Twisted Soul Cookhouse & Pours","TWISTED SOUL","Blandtown","Southern","hex","violet","glass","Michelin Recommended"],
+[49,"Ikara","IKARA","Midtown","Indian","ring","magenta","lamp",""],
+[50,"Nam Phuong","NAM PHUONG","Norcross","Vietnamese","ticket","red","bowl",""]
+].map(a=>({n:a[0],name:a[1],s:a[2],a:a[3],c:a[4],f:a[5],k:a[6],g:a[7],note:a[8]}));
+
+// Glyphs drawn in a 48 x 48 box, stroked in the stamp's ink.
+const G = {
+nigiri:'<rect x="7" y="27" width="34" height="11" rx="5.5"/><path d="M5 27c2-9 12-13 22-13c8 0 14 4 16 13M15 17l-3 10M24 14l-2 13M33 16l-1 11"/>',
+star:'<path d="M24 5l5.5 13l14 1l-11 9l3.5 14L24 34l-12 8l3.5-14l-11-9l14-1z"/>',
+brush:'<path d="M30 4l8 8L20 30l-8-8z"/><path d="M12 22c-6 4-2 12-8 18c8 2 14-2 16-10"/>',
+tofu:'<path d="M10 22h28v20H10z"/><path d="M18 16c-3-4 3-5 0-9M30 16c-3-4 3-5 0-9"/>',
+leaf:'<path d="M10 38C8 18 22 8 40 8C40 28 30 40 10 38z"/><path d="M10 38L30 18"/>',
+peak:'<path d="M4 38L18 12l8 12l5-7l13 21z"/><path d="M14 20l4 3l4-4"/>',
+lotus:'<path d="M24 38c-8-8-8-20 0-30c8 10 8 22 0 30z"/><path d="M24 38C12 38 6 30 5 20c8 0 14 4 19 18zM24 38c12 0 18-8 19-18c-8 0-14 4-19 18z"/>',
+fox:'<path d="M8 8l8 10h16l8-10v16L24 42L8 24z"/><circle cx="18" cy="25" r="1.5"/><circle cx="30" cy="25" r="1.5"/>',
+compass:'<circle cx="24" cy="24" r="19"/><path d="M24 10l5 14l-5 14l-5-14z"/>',
+tree:'<path d="M24 44V26M24 34l-8-6M24 30l7-6"/><path d="M24 4c12 0 18 10 12 20c-6 8-18 8-24 0C6 14 12 4 24 4z"/>',
+chili:'<path d="M14 12c-6 12 2 28 24 28c-10-4-12-14-12-24c0-6-8-8-12-4z"/><path d="M22 10c0-3 2-5 5-5"/>',
+palm:'<path d="M24 44V20M24 20C18 12 10 12 5 16M24 20c6-8 14-8 19-4M24 20C20 10 12 6 7 7M24 20c4-10 12-14 17-13M24 20V6"/>',
+pot:'<path d="M8 18h32v14a10 10 0 0 1-10 10H18A10 10 0 0 1 8 32z"/><path d="M4 22h4M40 22h4M18 12h12"/>',
+antler:'<path d="M24 44V28M24 28C14 26 10 18 10 6M24 28c10-2 14-10 14-22M10 16l-6-4M12 22H5M38 16l6-4M36 22h7"/>',
+pan:'<circle cx="18" cy="27" r="13"/><path d="M28 19L44 7"/>',
+loaf:'<path d="M6 36V22c0-10 36-10 36 0v14z"/><path d="M16 18l-3 7M24 16l-3 8M32 18l-3 7"/>',
+horns:'<path d="M6 8c0 12 6 16 12 16M42 8c0 12-6 16-12 16"/><path d="M14 22h20l-4 20H18z"/>',
+sun:'<circle cx="24" cy="24" r="8"/><path d="M24 4v7M24 37v7M4 24h7M37 24h7M10 10l5 5M33 33l5 5M38 10l-5 5M15 33l-5 5"/>',
+steak:'<path d="M8 20c0-10 14-14 24-10c10 4 10 18 2 24s-26 2-26-14z"/><path d="M18 19h10M23 19v9"/>',
+mug:'<path d="M10 14h22v26H10z"/><path d="M32 20h6v12h-6M12 14c0-6 6-6 8-3c2-5 10-4 10 3"/>',
+pom:'<circle cx="24" cy="27" r="15"/><path d="M19 12l-2-7l7 4l7-4l-2 7"/><circle cx="19" cy="26" r="1.5"/><circle cx="27" cy="24" r="1.5"/><circle cx="25" cy="33" r="1.5"/>',
+shoe:'<path d="M12 42V22a12 12 0 0 1 24 0v20h-7V22a5 5 0 0 0-10 0v20z"/>',
+deli:'<path d="M6 20c0-12 36-12 36 0z"/><path d="M6 27l4 4l4-4l4 4l4-4l4 4l4-4l4 4l4-4l4 4"/><path d="M6 36h36v4H6z"/>',
+bell:'<path d="M10 34c4-4 4-10 4-16a10 10 0 0 1 20 0c0 6 0 12 4 16z"/><path d="M20 38a4 4 0 0 0 8 0M24 8V4"/>',
+basket:'<path d="M6 20h36l-5 22H11z"/><path d="M14 20c0-16 20-16 20 0M16 28h16M17 35h14"/>',
+cleaver:'<path d="M6 10h26v14H6z"/><path d="M32 20l10 18"/><circle cx="11" cy="14" r="1.5"/>',
+lantern:'<path d="M17 9h14M17 39h14M24 4v5M24 39v5M10 19h28M10 29h28"/><rect x="9" y="9" width="30" height="30" rx="13"/>',
+fish:'<path d="M6 24c8-10 22-10 30 0c-8 10-22 10-30 0z"/><path d="M36 24l8-7v14z"/><circle cx="14" cy="22" r="1.5"/>',
+fork:'<path d="M24 44V22M16 4v12a8 6 0 0 0 16 0V4M24 4v12"/>',
+bolt:'<path d="M28 4L10 26h12l-4 18l20-24H26z"/>',
+dumpling:'<path d="M4 32c0-14 40-14 40 0z"/><path d="M10 22l3 4M17 19l2 5M24 18v5M31 19l-2 5M38 22l-3 4"/>',
+olive:'<path d="M6 40C16 30 30 14 42 8"/><ellipse cx="18" cy="20" rx="6" ry="3.5" transform="rotate(-40 18 20)"/><ellipse cx="32" cy="26" rx="6" ry="3.5" transform="rotate(40 32 26)"/><ellipse cx="30" cy="10" rx="5" ry="3" transform="rotate(-40 30 10)"/>',
+lime:'<circle cx="24" cy="24" r="19"/><circle cx="24" cy="24" r="13"/><path d="M24 11v26M11 24h26M15 15l18 18M33 15L15 33"/>',
+pickle:'<path d="M10 36C6 26 22 8 34 8c8 0 8 8 4 14C32 32 16 44 10 36z"/><circle cx="20" cy="29" r="1.2"/><circle cx="27" cy="20" r="1.2"/><circle cx="30" cy="27" r="1.2"/>',
+paw:'<ellipse cx="24" cy="32" rx="10" ry="8"/><circle cx="10" cy="20" r="4"/><circle cx="19" cy="12" r="4"/><circle cx="29" cy="12" r="4"/><circle cx="38" cy="20" r="4"/>',
+noodle:'<path d="M6 24h36a18 15 0 0 1-36 0z"/><path d="M20 24L38 6M26 24L42 10"/>',
+sprout:'<path d="M24 44V22"/><path d="M24 24C24 14 16 10 8 10c0 10 6 14 16 14zM24 20c0-8 6-12 16-12c0 10-6 14-16 12z"/>',
+mortar:'<path d="M8 20h32l-5 20H13z"/><path d="M28 20L40 4"/>',
+jebena:'<circle cx="22" cy="32" r="11"/><path d="M19 22V8h6v14M33 30l9-8M12 28c-6-2-6-12 2-14"/>',
+flag:'<path d="M10 44V6M10 8h28l-6 8l6 8H10"/>',
+shell:'<path d="M24 40C8 40 4 24 8 14c4 6 6 6 8 0c2 6 6 6 8 0c2 6 6 6 8 0c2 6 4 6 8 0c4 10 0 26-16 26z"/><path d="M24 40V22M24 40l-9-16M24 40l9-16"/>',
+flower:'<circle cx="24" cy="24" r="5"/><circle cx="24" cy="11" r="6"/><circle cx="24" cy="37" r="6"/><circle cx="11" cy="24" r="6"/><circle cx="37" cy="24" r="6"/>',
+egg:'<path d="M24 5c9 0 15 14 15 23a15 15 0 0 1-30 0C9 19 15 5 24 5z"/><path d="M17 30a7 7 0 0 0 7 6"/>',
+flame:'<path d="M24 4c2 10 14 14 14 26a14 14 0 0 1-28 0c0-6 4-10 6-14c2 4 4 5 6 5c0-6 0-12 2-17z"/>',
+house:'<path d="M6 24L24 8l18 16M10 22v20h28V22M20 42V30h8v12"/>',
+slice:'<path d="M6 10c12-6 24-6 36 0L24 44z"/><circle cx="20" cy="18" r="2"/><circle cx="29" cy="20" r="2"/><circle cx="24" cy="29" r="2"/>',
+wave:'<path d="M4 20c5-8 10-8 15 0s10 8 15 0s8-6 10-3M4 32c5-8 10-8 15 0s10 8 15 0s8-6 10-3"/>',
+glass:'<path d="M8 8h32L24 26z"/><path d="M24 26v14M14 42h20"/>',
+lamp:'<path d="M6 30h36c-2 8-10 12-18 12S8 38 6 30z"/><path d="M24 26c-5-6 0-10 0-18c4 6 6 12 0 18z"/>',
+bowl:'<path d="M6 22h36a18 16 0 0 1-36 0z"/><path d="M17 16c-3-4 3-5 0-9M25 16c-3-4 3-5 0-9M33 16c-3-4 3-5 0-9"/>'
+};
+
+// Straight-edged frames: [name width, area width, outline, layout] (side = icon beside the date, stack = centred, tall = icon on top)
+const FR = {
+box:[150,150,'<rect x="10" y="34" width="180" height="126" rx="6" stroke-width="5"/><rect x="18" y="42" width="164" height="110" rx="2" stroke-width="1.5"/>',"side"],
+ticket:[138,138,'<path d="M22 34H178A12 12 0 0 0 190 46V148A12 12 0 0 0 178 160H22A12 12 0 0 0 10 148V46A12 12 0 0 0 22 34Z" stroke-width="4.5"/><rect x="24" y="45" width="152" height="104" stroke-width="1.5" stroke-dasharray="4 4"/>',"side"],
+oval:[128,112,'<ellipse cx="100" cy="97" rx="95" ry="67" stroke-width="5"/><ellipse cx="100" cy="97" rx="87" ry="59" stroke-width="1.5"/>',"stack"],
+hex:[146,120,'<path d="M4 100L52 22H148L196 100L148 178H52Z" stroke-width="5"/><path d="M15 100L57 31H143L185 100L143 169H57Z" stroke-width="1.5"/>',"tall"],
+oct:[150,150,'<path d="M62 8H138L192 62V138L138 192H62L8 138V62Z" stroke-width="5"/><path d="M66 17H134L183 66V134L134 183H66L17 134V66Z" stroke-width="1.5"/>',"tall"],
+arch:[112,112,'<path d="M30 188V84A70 70 0 0 1 170 84V188Z" stroke-width="5"/><path d="M38 180V84A62 62 0 0 1 162 84V180Z" stroke-width="1.5"/>',"tall"]
+};
+const MON = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const okDate = d => typeof d === "string" && /^\d{4}-\d{2}-\d{2}$/.test(d);
+const fmt = d => okDate(d) ? d.slice(8) + " " + (MON[+d.slice(5,7)-1] || "???") + " " + d.slice(0,4) : "";
+const pad2 = n => String(n).padStart(2,"0");
+function today(){ const t = new Date(); return t.getFullYear() + "-" + pad2(t.getMonth()+1) + "-" + pad2(t.getDate()); }
+
+const fit = (s, w, max, k) => Math.min(max, w / (s.length * k)).toFixed(1);
+function stampSVG(r, d){
+  const A = r.a.toUpperCase(), nm = esc(r.s), area = esc(A), dt = fmt(d), no = esc(r.x || ("ATL50 · N°" + pad2(r.n)));
+  const rot = r.rot != null ? r.rot : ((r.n * 37) % 15) - 7;
+  const T = (cls, x, y, fs, s) => '<text class="' + cls + '" x="' + x + '" y="' + y + '" font-size="' + fs + '">' + s + '</text>';
+  const glyph = (x, y, k) => '<g class="st-glyph" transform="translate(' + x + ' ' + y + ') scale(' + k + ')">' + G[r.g] + '</g>';
+  let frame, body;
+  if (r.f === "ring" || r.f === "dots"){
+    frame = (r.f === "ring"
+      ? '<circle cx="100" cy="100" r="92" stroke-width="5"/><circle cx="100" cy="100" r="85" stroke-width="1.5"/>'
+      : '<circle cx="100" cy="100" r="92" stroke-width="5" stroke-dasharray="1 9" stroke-linecap="round"/><circle cx="100" cy="100" r="84" stroke-width="2.5"/>')
+      + '<circle cx="100" cy="100" r="56" stroke-width="1.5"/>'
+      + '<circle cx="29" cy="100" r="2.6" fill="currentColor" stroke="none"/><circle cx="171" cy="100" r="2.6" fill="currentColor" stroke="none"/>';
+    body = '<path id="t' + r.n + '" d="M35 100A65 65 0 0 1 165 100" stroke="none"/>'
+      + '<path id="b' + r.n + '" d="M21 100A79 79 0 0 0 179 100" stroke="none"/>'
+      + '<text class="st-name" font-size="' + fit(r.s, 172, 20, .66) + '"><textPath href="#t' + r.n + '" startOffset="50%">' + nm + '</textPath></text>'
+      + '<text class="st-area" font-size="' + fit(A, 205, 12, .74) + '"><textPath href="#b' + r.n + '" startOffset="50%">' + area + '</textPath></text>'
+      + glyph(71, 52, 1.2) + T("st-date", 100, 127, 12.5, dt) + T("st-no", 100, 142, 9.5, no);
+  } else {
+    const F = FR[r.f], L = F[3];
+    frame = F[2];
+    if (L === "side"){
+      body = T("st-name", 100, 68, fit(r.s, F[0], 22, .62), nm) + glyph(27, 76, 1)
+        + '<path d="M86 80V124" stroke-width="1.3"/>'
+        + T("st-date", 133, 99, 12, dt) + T("st-no", 133, 116, 9.5, no)
+        + T("st-area", 100, 144, fit(A, F[1], 11.5, .74), area);
+    } else if (L === "stack"){
+      body = T("st-no", 100, 55, 9.5, no) + T("st-name", 100, 77, fit(r.s, F[0], 22, .62), nm)
+        + glyph(81, 81, .8) + T("st-area", 100, 131, fit(A, F[1], 11, .74), area) + T("st-date", 100, 146, 12, dt);
+    } else {
+      body = glyph(75, 38, 1.04) + T("st-name", 100, 113, fit(r.s, F[0], 23, .62), nm)
+        + T("st-area", 100, 130, fit(A, F[1], 11.5, .74), area)
+        + T("st-date", 100, 147, 12, dt) + T("st-no", 100, 162, 9.5, no);
+    }
+  }
+  return '<svg class="stamp" viewBox="0 0 200 200" aria-hidden="true" style="color:var(--ink-' + r.k + ');--rot:' + rot + 'deg">'
+    + '<g filter="url(#ink)" fill="none" stroke="currentColor">' + frame + body + '</g></svg>';
+}
+
+// ---------- state ----------
+const $ = id => document.getElementById(id);
+const book = $("book"), dlg = $("dlg");
+const PAGES = 16;              // 0 identity, 1-13 visas, 14 final seal, 15 notes
+let stamps = {};               // rank -> "YYYY-MM-DD"
+let pos = -1;                  // -1 is the closed cover
+let just = 0, busy = false, db = null, local = false, readOnly = false, current = null;
+const mq = window.matchMedia("(max-width: 760px)");
+const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+try { const p = parseInt(localStorage.getItem("adp-pos"), 10); if (p >= -1 && p < PAGES) pos = p; } catch (e) {}
+
+function status(msg){ $("status").textContent = msg; }
+const total = () => R.filter(r => stamps[r.n]).length;
+
+// ---------- pages ----------
+function slotHTML(r){
+  const d = stamps[r.n];
+  if (d) return '<button class="slot got" type="button" data-id="' + r.n + '" aria-label="' + esc(r.name) + ', stamped ' + fmt(d) + '">'
+    + '<span class="ink' + (just === r.n ? " thunk" : "") + '">' + stampSVG(r, d) + '</span><span class="cap">' + esc(r.name) + '</span></button>';
+  return '<button class="slot" type="button" data-id="' + r.n + '" aria-label="' + esc(r.name) + ', not stamped yet"><span class="ghost">'
+    + '<span class="g-no">N° ' + pad2(r.n) + '</span><span class="g-name">' + esc(r.name) + '</span>'
+    + '<span class="g-meta">' + esc(r.a) + (r.c ? '<br>' + esc(r.c) : '') + '</span><span class="g-cta">Tap to stamp</span></span></button>';
+}
+function mrz(s){ return esc((s + "<".repeat(30)).slice(0, 30)); }
+function pageHTML(p){
+  const foot = '<div class="p-foot"><span>' + pad2(p + 1) + '</span></div>';
+  if (p === 0){
+    const n = total(), c = 2 * Math.PI * 42;
+    const done = R.filter(r => stamps[r.n]).sort((a, b) => stamps[b.n].localeCompare(stamps[a.n]));
+    const top = R.slice(0, 10).filter(r => stamps[r.n]).length;
+    return '<div class="pg"><div class="p-head"><span>Passport</span><span>ATL · 2026</span></div>'
+      + '<div class="idrow"><div class="dial"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" fill="none" stroke="var(--paper-line)" stroke-width="5"/>'
+      + '<circle cx="50" cy="50" r="42" fill="none" stroke="var(--ink-green)" stroke-width="5" stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="' + (c * n / 50).toFixed(1) + ' ' + c.toFixed(1) + '"/></svg><b>' + n + '/50</b></div>'
+      + '<dl><div><dt>Type</dt><dd>Dining</dd></div><div><dt>Top ten visited</dt><dd>' + top + ' of 10</dd></div>'
+      + '<div><dt>Latest entry</dt><dd>' + (done[0] ? esc(done[0].name) + ', ' + fmt(stamps[done[0].n]) : 'None yet') + '</dd></div></dl></div>'
+      + '<p class="lbl">Entries. Tap a number to find its page.</p><div class="dots">'
+      + R.map(r => '<button type="button" data-jump="' + r.n + '" class="' + (stamps[r.n] ? "on" : "") + '" style="--c:var(--ink-' + r.k + ')" aria-label="' + esc(r.name) + (stamps[r.n] ? ", stamped" : "") + '">' + r.n + '</button>').join("")
+      + '</div><div class="mrz">' + mrz("P<ATL<DINING<<FIFTY<TABLES") + '<br>' + mrz("ATL502026<<" + pad2(n) + "OF50<<GA<USA") + '</div>' + foot + '</div>';
+  }
+  if (p <= 13){
+    const rs = R.slice((p - 1) * 4, p * 4);
+    return '<div class="pg"><div class="p-head"><span>Visas</span><span>N° ' + rs[0].n + '–' + rs[rs.length - 1].n + '</span></div><div class="grid">'
+      + rs.map(slotHTML).join("") + '</div>' + foot + '</div>';
+  }
+  if (p === 14){
+    const n = total(), all = n === 50;
+    const last = all ? R.map(r => stamps[r.n]).sort().pop() : "";
+    return '<div class="pg"><div class="p-head"><span>Final seal</span><span>50 of 50</span></div><div class="prose">'
+      + '<h2>' + (all ? "All fifty tables" : "The last stamp") + '</h2><p>' + (all ? "Every place on the list, visited and stamped." : "This seal is inked when all fifty are stamped. " + (50 - n) + " to go.") + '</p>'
+      + '<div class="seal' + (all ? "" : " locked") + '">' + stampSVG({n:"S", s:"ALL FIFTY TABLES", a:"Atlanta, Georgia", f:"ring", k:"red", g:"star", x:"COMPLETE", rot:-6}, last) + '</div></div>' + foot + '</div>';
+  }
+  return '<div class="pg"><div class="p-head"><span>Notes</span><span>Endorsements</span></div><div class="prose">'
+    + '<h2>About this passport</h2>'
+    + '<p>The fifty places and their order come from The Atlanta Journal-Constitution\'s ATL50 guide, published 17 November 2026.</p>'
+    + '<p>Numbers 4 to 32 were read from a summary of the list, not the page itself. Check those against the <a href="https://www.ajc.com/atlanta50bestrestaurants/" target="_blank" rel="noopener">AJC list</a> before you plan a night around one.</p>'
+    + '<p>Tap a place to stamp it with the date you went. Tap a stamp to change its date or remove it.</p></div>' + foot + '</div>';
+}
+function coverHTML(){
+  return '<button class="cover" type="button" aria-label="Open the passport"><span class="cover-in">'
+    + '<span class="c-top">ATLANTA</span>'
+    + '<svg class="c-sky" viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M2 100H10V82H22V92H24V58H30V64H35V70H40V92H44V47A5 4 0 0 1 54 47V92H58V42H60V36H64V42H68V36H72V42H74V92H78V50H81V44H84V38H90V44H93V50H96V92H102V30H104L111 14H112V3V14H113L120 30H122V92H128V40L136 22V16V22L144 40V92H148V60H153V50V60H160V92H166V84H172V78A6 7 0 0 1 178 71V66V71A6 7 0 0 1 184 78V84H190V92H194V74H206V86H218V100H238"/><path d="M2 106H238" stroke-width="1.2"/></svg>'
+    + '<span class="c-title">PASSPORT</span><span class="c-sub">Fifty tables · 2026</span><span class="c-hint">Tap to open</span></span></button>';
+}
+
+function render(){
+  const single = mq.matches;
+  if (pos >= 0 && !single) pos -= pos % 2;
+  if (pos < 0){
+    book.className = "book closed";
+    book.innerHTML = coverHTML();
+  } else {
+    const ps = single ? [pos] : [pos, pos + 1];
+    book.className = "book open" + (single ? " single" : "");
+    book.innerHTML = ps.map(p => '<section class="page ' + (p % 2 ? "recto" : "verso") + '" aria-label="Page ' + (p + 1) + '">' + pageHTML(p) + '</section>').join("");
+  }
+  $("count").textContent = total();
+  $("where").textContent = pos < 0 ? "Cover" : single ? "Page " + (pos + 1) + " of " + PAGES : "Pages " + (pos + 1) + "–" + (pos + 2) + " of " + PAGES;
+  $("prev").disabled = pos < 0;
+  $("next").disabled = pos >= PAGES - (single ? 1 : 2);
+  try { localStorage.setItem("adp-pos", String(pos)); } catch (e) {}
+}
+
+function turn(to){
+  if (!mq.matches && to >= 0) to -= to % 2;
+  if (busy || to === pos || to < -1 || to >= PAGES) return;
+  const dir = to > pos ? 1 : -1, kids = book.children;
+  if (reduce.matches || !kids.length){ pos = to; render(); return; }
+  busy = true;
+  (dir > 0 ? kids[kids.length - 1] : kids[0]).classList.add(dir > 0 ? "out-next" : "out-prev");
+  setTimeout(() => {
+    pos = to; render();
+    const k = book.children, inn = dir > 0 ? k[0] : k[k.length - 1], cls = dir > 0 ? "in-next" : "in-prev";
+    inn.classList.add(cls);
+    setTimeout(() => { inn.classList.remove(cls); busy = false; }, 250);
+  }, 200);
+}
+const step = () => mq.matches ? 1 : 2;
+
+// ---------- stamping ----------
+function openDialog(r){
+  current = r;
+  const d = stamps[r.n];
+  $("d-no").textContent = "N° " + pad2(r.n) + (r.note ? " · " + r.note : "");
+  $("d-name").textContent = r.name;
+  $("d-meta").textContent = [r.a, r.c].filter(Boolean).join(" · ");
+  $("d-date").value = d || today();
+  $("d-date").max = today();
+  $("d-ok").textContent = d ? "Save date" : "Stamp it";
+  $("d-ok").disabled = readOnly;
+  $("d-remove").hidden = !d || readOnly;
+  dlg.showModal();
+}
+const chains = {};
+function persist(n){
+  if (local){ try { localStorage.setItem("adp-stamps", JSON.stringify(stamps)); } catch (e) {} return; }
+  if (!db) return;
+  const ref = db.collection("stamps").doc("r" + pad2(n));
+  chains[n] = (chains[n] || Promise.resolve()).then(() => {
+    const d = stamps[n];
+    return d ? ref.set({ date: d, rank: n }) : ref.delete();
+  }).then(() => status("Saved."), e => {
+    if (e && e.code === "invalid_argument"){ readOnly = true; status("Only this passport's owner can add stamps."); }
+    else status("That change didn't save. Check your connection and try again.");
+  });
+}
+$("d-form").addEventListener("submit", e => {
+  e.preventDefault();
+  const d = $("d-date").value;
+  if (!current || !okDate(d) || readOnly) return;
+  const fresh = !stamps[current.n];
+  stamps[current.n] = d;
+  if (fresh) just = current.n;
+  dlg.close(); render(); persist(current.n);
+  setTimeout(() => { just = 0; }, 500);
+});
+$("d-remove").addEventListener("click", () => {
+  if (!current) return;
+  delete stamps[current.n];
+  dlg.close(); render(); persist(current.n);
+});
+$("d-cancel").addEventListener("click", () => dlg.close());
+
+book.addEventListener("click", e => {
+  const t = e.target.closest("[data-id],[data-jump],.cover");
+  if (!t) return;
+  if (t.dataset.id) openDialog(R[t.dataset.id - 1]);
+  else if (t.dataset.jump) turn(1 + Math.floor((t.dataset.jump - 1) / 4));
+  else turn(0);
+});
+$("prev").addEventListener("click", () => turn(pos <= 0 || (!mq.matches && pos < 2) ? -1 : pos - step()));
+$("next").addEventListener("click", () => turn(pos < 0 ? 0 : pos + step()));
+document.addEventListener("keydown", e => {
+  if (dlg.open || e.target.closest("input")) return;
+  if (e.key === "ArrowRight") $("next").click();
+  if (e.key === "ArrowLeft") $("prev").click();
+});
+mq.addEventListener("change", render);
+
+// ---------- storage ----------
+function useLocal(){
+  local = true;
+  try { const s = JSON.parse(localStorage.getItem("adp-stamps") || "{}"); for (const k in s) if (okDate(s[k]) && R[k - 1]) stamps[k] = s[k]; } catch (e) {}
+  status("Stamps are kept in this browser only.");
+  render();
+}
+async function start(){
+  render();
+  let store = null;
+  try { store = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) {}
+  if (!store) return useLocal();
+  db = store;
+  const timer = setTimeout(() => status("Can't reach your saved stamps yet. Still trying."), 10000);
+  db.collection("stamps").onSnapshot(snap => {
+    const next = {};
+    snap.docs.forEach(doc => {
+      const v = doc.data(), n = parseInt(doc.id.slice(1), 10);
+      if (v && okDate(v.date) && R[n - 1]) next[n] = v.date;
+    });
+    stamps = next;
+    if (!snap.metadata.fromCache){ clearTimeout(timer); if (!readOnly) status(""); }
+    if (!busy) render();
+  }, () => { clearTimeout(timer); status("Your saved stamps can't be loaded right now."); });
+}
+start();
+</script>
+</body>
+</html>
