@@ -16,9 +16,11 @@ visit. What was said is left out unless that visit has `public: true`, which onl
 such note is shown.
 
 --push is for a folder kept only for this job: it moves the folder to origin/main first, then commits
-stamps.json and pushes it when it changed. It refuses when the folder has other changes. Needs PyYAML.
+stamps.json and pushes it when it changed. It refuses when the folder has other changes. --log <file> is for a
+run nobody watches (a scheduled task with no window): a change or a failure adds a line to it. Needs PyYAML.
 """
 import argparse
+import datetime
 import json
 import re
 import subprocess
@@ -100,37 +102,52 @@ def main():
     parser.add_argument("--site", default=SITE, type=Path, help="this repository (default: where this script is)")
     parser.add_argument("--check", action="store_true", help="print what would be written, and write nothing")
     parser.add_argument("--push", action="store_true", help="move to origin/main, then commit and push a change")
+    parser.add_argument("--log", type=Path, help="add a line to this file when something changed or failed")
     args = parser.parse_args()
+    failed = False
+    try:
+        said = run(args)
+    except (OSError, yaml.YAMLError) as error:   # a record half written: publish nothing, try again next time
+        said, failed = [f"nothing published: {error}"], True
+    except SystemExit as stop:
+        if not isinstance(stop.code, str):
+            raise
+        said, failed = [stop.code], True
+    print("\n".join(said))
+    if args.log and (failed or "no change" not in said) and not args.check:
+        args.log.parent.mkdir(parents=True, exist_ok=True)
+        with open(args.log, "a", encoding="utf-8") as log:
+            log.write(f"{datetime.datetime.now():%Y-%m-%d %H:%M} {'; '.join(said)}\n")
+    sys.exit(1 if failed else 0)
+
+
+def run(args):
+    """Do it, and return what to say, a line each."""
     if not (Path(args.library) / "README.md").is_file():
         raise SystemExit(f"{args.library} isn't a library folder (no README.md)")
     if args.push and not args.check:
         other = [line for line in git(args.site, "status", "--porcelain").splitlines() if not line.endswith(OUT)]
         if other:
-            raise SystemExit("this folder has other changes, so nothing was published:\n" + "\n".join(other))
+            raise SystemExit("this folder has other changes, so nothing was published: " + ", ".join(other))
         git(args.site, "fetch", "--quiet", "origin", "main")
         git(args.site, "checkout", "--quiet", "--detach", "origin/main")
     found, others = stamps(args.library, places(args.site / PAGE))
     text = json.dumps({"stamps": {str(k): found[k] for k in sorted(found)}}, ensure_ascii=False, indent=1) + "\n"
     target = args.site / OUT
-    same = target.is_file() and target.read_text(encoding="utf-8") == text
-    print(f"{len(found)} stamped" + (f"; not on the list: {', '.join(others)}" if others else ""))
+    said = [f"{len(found)} stamped" + (f"; not on the list: {', '.join(others)}" if others else "")]
     if args.check:
-        print(text, end="")
-        return
-    if same:
-        print("no change")
-        return
+        return [*said, text.rstrip("\n")]
+    if target.is_file() and target.read_text(encoding="utf-8") == text:
+        return [*said, "no change"]
     target.write_text(text, encoding="utf-8", newline="\n")
-    print(f"wrote {OUT}")
+    said.append(f"wrote {OUT}")
     if args.push:
         git(args.site, "add", OUT)
         git(args.site, "commit", "--quiet", "-m", f"Dining passport: {len(found)} of 50 stamped")
         git(args.site, "push", "--quiet", "origin", "HEAD:main")
-        print("pushed " + git(args.site, "rev-parse", "--short", "HEAD"))
+        said.append("pushed " + git(args.site, "rev-parse", "--short", "HEAD"))
+    return said
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except (OSError, yaml.YAMLError) as error:   # a record half written: publish nothing, try again next time
-        sys.exit(f"nothing published: {error}")
+    main()
