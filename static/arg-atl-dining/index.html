@@ -180,6 +180,8 @@ dialog::backdrop{background:rgba(0,0,0,.5)}
 .d-no{font-family:var(--f-data);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0}
 dialog h2{font-family:var(--f-stamp);font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:26px;line-height:1.1;margin:4px 0 6px;text-wrap:balance}
 .d-meta{margin:0 0 16px;color:var(--muted)}
+.d-said{margin:0 0 16px;white-space:pre-line}
+.d-said b{display:block;font-family:var(--f-data);font-size:12px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
 dialog label{display:block;font-size:13px;font-weight:500;margin-bottom:5px}
 dialog input{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--desk);color:var(--fg);width:100%}
 .d-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
@@ -190,6 +192,7 @@ dialog input{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid va
 </style>
 </head>
 <body>
+<script>window.ADP_PUBLISHED = "stamps.json";</script>
 <svg class="defs" aria-hidden="true"><defs>
   <filter id="ink" x="-6%" y="-6%" width="112%" height="112%">
     <feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="3" result="w"/>
@@ -231,8 +234,9 @@ dialog input{font:inherit;padding:8px 10px;border-radius:8px;border:1px solid va
     <p class="d-no" id="d-no"></p>
     <h2 id="d-name"></h2>
     <p class="d-meta" id="d-meta"></p>
-    <label for="d-date">Date of visit</label>
-    <input type="date" id="d-date" required>
+    <p class="d-said" id="d-said" hidden></p>
+    <div id="d-when"><label for="d-date">Date of visit</label>
+    <input type="date" id="d-date" required></div>
     <div class="d-actions">
       <button class="btn primary" id="d-ok" type="submit">Stamp it</button>
       <button class="btn" id="d-remove" type="button">Remove stamp</button>
@@ -426,7 +430,8 @@ const book = $("book"), dlg = $("dlg");
 const PAGES = 16;              // 0 identity, 1-13 visas, 14 final seal, 15 notes
 let stamps = {};               // rank -> "YYYY-MM-DD"
 let pos = -1;                  // -1 is the closed cover
-let just = 0, busy = false, db = null, local = false, readOnly = false, current = null;
+let just = 0, busy = false, db = null, local = false, readOnly = false, current = null, published = false;
+const notes = {};              // rank -> what was said about the visit, when it is shared
 const mq = window.matchMedia("(max-width: 760px)");
 const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 try { const p = parseInt(localStorage.getItem("adp-pos"), 10); if (p >= -1 && p < PAGES) pos = p; } catch (e) {}
@@ -441,7 +446,7 @@ function slotHTML(r){
     + '<span class="ink' + (just === r.n ? " thunk" : "") + '">' + stampSVG(r, d) + '</span><span class="cap">' + esc(r.name) + '</span></button>';
   return '<button class="slot" type="button" data-id="' + r.n + '" aria-label="' + esc(r.name) + ', not stamped yet"><span class="ghost">'
     + '<span class="g-no">N° ' + pad2(r.n) + '</span><span class="g-name">' + esc(r.name) + '</span>'
-    + '<span class="g-meta">' + esc(r.a) + (r.c ? '<br>' + esc(r.c) : '') + '</span><span class="g-cta">Tap to stamp</span></span></button>';
+    + '<span class="g-meta">' + esc(r.a) + (r.c ? '<br>' + esc(r.c) : '') + '</span>' + (published ? '' : '<span class="g-cta">Tap to stamp</span>') + '</span></button>';
 }
 function mrz(s){ return esc((s + "<".repeat(30)).slice(0, 30)); }
 function pageHTML(p){
@@ -475,7 +480,8 @@ function pageHTML(p){
     + '<h2>About this passport</h2>'
     + '<p>The fifty places and their order come from The Atlanta Journal-Constitution\'s ATL50 guide, published 17 November 2026.</p>'
     + '<p>Numbers 4 to 32 were read from a summary of the list, not the page itself. Check those against the <a href="https://www.ajc.com/atlanta50bestrestaurants/" target="_blank" rel="noopener">AJC list</a> before you plan a night around one.</p>'
-    + '<p>Tap a place to stamp it with the date you went. Tap a stamp to change its date or remove it.</p></div>' + foot + '</div>';
+    + (published ? '<p>A place is stamped once we have eaten there, with the date of the visit. Tap any place to read about it.</p>'
+      : '<p>Tap a place to stamp it with the date you went. Tap a stamp to change its date or remove it.</p>') + '</div>' + foot + '</div>';
 }
 function coverHTML(){
   return '<button class="cover" type="button" aria-label="Open the passport"><span class="cover-in">'
@@ -525,6 +531,18 @@ function openDialog(r){
   $("d-no").textContent = "N° " + pad2(r.n) + (r.note ? " · " + r.note : "");
   $("d-name").textContent = r.name;
   $("d-meta").textContent = [r.a, r.c].filter(Boolean).join(" · ");
+  if (published){
+    const said = $("d-said");
+    said.textContent = "";
+    const b = document.createElement("b");
+    b.textContent = d ? "Stamped " + fmt(d) : "Not stamped yet";
+    said.append(b, d && notes[r.n] ? notes[r.n] : "");
+    said.hidden = false;
+    $("d-when").hidden = $("d-ok").hidden = $("d-remove").hidden = true;
+    $("d-date").required = false;
+    $("d-cancel").textContent = "Close";
+    return dlg.showModal();
+  }
   $("d-date").value = d || today();
   $("d-date").max = today();
   $("d-ok").textContent = d ? "Save date" : "Stamp it";
@@ -629,7 +647,29 @@ function useLocal(){
   $("xfer").hidden = false;
   if (/^#stamps-v1/.test(location.hash) && decodeStamps(location.hash)) openTransfer(location.hash.slice(8));
 }
+// The copy on gautsch.org: nobody stamps it there. Its stamps are read from a file written from the family's
+// own dining record, {stamps: {"30": {date: "2026-11-20", note: "…"}}}.
+async function usePublished(url){
+  published = readOnly = true;
+  document.querySelector(".sub").textContent = "Fifty places from the AJC's 2026 ATL50 list. Each one we try earns its own stamp.";
+  status("Fetching the stamps…");
+  render();
+  try {
+    const res = await fetch(url, { cache: "no-cache" });
+    if (!res.ok) throw new Error(res.status);
+    const all = (await res.json()).stamps || {};
+    for (const k in all){
+      const v = all[k], n = parseInt(k, 10);
+      if (!v || !okDate(v.date) || !R[n - 1]) continue;
+      stamps[n] = v.date;
+      if (typeof v.note === "string" && v.note.trim()) notes[n] = v.note.trim();
+    }
+    status("");
+  } catch (e) { status("The stamps can't be loaded right now."); }
+  render();
+}
 async function start(){
+  if (window.ADP_PUBLISHED) return usePublished(window.ADP_PUBLISHED);
   render();
   let store = null;
   try { store = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch (e) {}
