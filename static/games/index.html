@@ -18,6 +18,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&display=swap">
 <!-- Each game's name is set in that game's own typeface. text= trims each font to the letters in the names. -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Lilita+One&family=Instrument+Serif&family=Gaegu:wght@700&text=Bro!MathJackMosquitoKeysDogHGNwYrkExcite%20&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Patrick+Hand&text=The%20Fly&display=swap">
 <style>
 :root{
   --ground:#ebe7de;
@@ -88,6 +89,10 @@ h1{margin:0;font:800 clamp(56px,12vw,96px)/.9 "Baloo 2",system-ui,sans-serif;let
 .boom{--bg:#f4ecd9;--fg:#2b2f5c;--mu:#5a5d80;--chip:rgb(43 47 92 / .35);--frame:rgb(43 47 92 / .2);--btn:#2b2f5c;--btn-fg:#f4ecd9}
 .boom h2{font:800 32px/1 "Baloo 2",system-ui,sans-serif}
 .boom h2 span{color:#e0623a}
+.fly{--bg:#fbf1c4;--fg:#1c1e28;--mu:#55503f;--chip:rgb(28 30 40 / .35);--frame:#1c1e28;--btn:#e3402f;--btn-fg:#fffbe9;--btn-edge:inset 0 0 0 2px #1c1e28;
+  border:3px solid #1c1e28;border-radius:14px 20px 12px 22px;box-shadow:5px 6px 0 #1c1e28}
+.fly h2{font:400 44px/1 "Patrick Hand","Comic Sans MS","Chalkboard SE",cursive}
+.fly h2 span{color:#e3402f}
 
 .howto{height:100%;padding:24px 22px;border:2px dashed var(--line);border-radius:14px}
 .howto h2{margin:0 0 14px;font:800 28px/1.05 "Baloo 2",system-ui,sans-serif}
@@ -135,6 +140,18 @@ footer a{color:var(--ink)}
           <ul class="facts"><li>Adding to 21</li><li>First to 5 hands</li></ul>
           <p class="credit">Card back and face cards by Murphy. The jack is a turkey.</p>
           <div class="actions"><a class="play" href="/math-jack/">Play Math Jack</a></div>
+        </div>
+      </article>
+    </li>
+    <li>
+      <article class="game fly">
+        <a class="art" href="/the-fly/" tabindex="-1" aria-hidden="true"><img src="the-fly.webp" width="800" height="1000" alt=""></a>
+        <div class="info">
+          <h2>The <span>Fly</span></h2>
+          <p class="hook">You are the fly, and the kitchen is full of swatters. Eat the apples to open the window, then get out. Turn on the fly's-eye view to see the room the way he does.</p>
+          <ul class="facts"><li>Fly's-eye view</li><li>Touch, mouse or keyboard</li></ul>
+          <p class="credit">Every character and prop is cut from Murphy's comic, The Fly. The colors and the kitchen are added.</p>
+          <div class="actions"><a class="play" href="/the-fly/">Play The Fly</a></div>
         </div>
       </article>
     </li>
