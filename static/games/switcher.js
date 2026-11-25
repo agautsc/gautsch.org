@@ -16,6 +16,7 @@
     { path: '/the-fly/',        name: 'The Fly',          art: 'the-fly.webp',       color: '#e3402f' },
     { path: '/the-fly-bosses/', name: 'The Fly: Bosses',  art: 'the-fly.webp',       color: '#6aa84f', badge: 'Bosses' },
     { path: '/turkey-escape/',  name: 'Turkey Escape',    art: 'turkey-escape.webp', color: '#c0552a' },
+    { path: '/turkey-maze/',    name: 'Turkey Escape 2',  art: 'turkey-maze.webp',   color: '#c0552a' },
     { path: '/boom-square/',    name: 'Boom Square',      art: 'boom-square.webp',   color: '#e0623a' },
     { path: '/mosquito-keys/',  name: 'Mosquito Keys',    art: 'mosquito-keys.webp', color: '#e8836a' },
     { path: '/dog-hog-nyc/',    name: 'Dog Hog NYC',      art: 'dog-hog-nyc.webp',   color: '#f4b81c', tab: '27%' },
