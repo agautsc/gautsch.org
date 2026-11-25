@@ -51,7 +51,8 @@ button.big { font-size: 30px; padding: 6px 30px; background: var(--straw); }
 .card ol { text-align: left; margin: 8px auto; padding-left: 1.4em; line-height: 1.3; width: fit-content; max-width: 100%; }
 .row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 12px; align-items: center; }
 .sub { font-size: 17px; opacity: .8; }
-#hudbtns { position: absolute; right: 12px; top: 12px; display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+#hudbtns { position: absolute; right: 12px; top: 12px; display: flex; gap: 8px; align-items: center; }
+#hint { background: var(--straw); }
 #hudbtns button { font-size: 16px; padding: 3px 10px; }
 @media (max-height: 420px) { #hudbtns { gap: 4px; top: 6px; right: 6px; } #hudbtns button { font-size: 12px; padding: 1px 6px; box-shadow: 2px 2px 0 var(--ink); border-width: 2px; } }
 </style>
@@ -59,7 +60,7 @@ button.big { font-size: 30px; padding: 6px 30px; background: var(--straw); }
 <body>
 <div id="stage">
   <canvas id="game" aria-label="Turkey Escape 2: the maze in the farm yard"></canvas>
-  <div id="hudbtns" hidden><button id="quit">Menu</button><button id="again">Start over</button><button id="mute" aria-pressed="false">Sound on</button></div>
+  <div id="hudbtns" hidden><button id="hint">Hint</button><button id="quit">Menu</button><button id="again">Start over</button><button id="mute" aria-pressed="false">Sound on</button></div>
 
   <div class="card" id="title">
     <h1>Turkey Escape 2 <small>The Maze</small></h1>
@@ -68,6 +69,7 @@ button.big { font-size: 30px; padding: 6px 30px; background: var(--straw); }
       <li>Tap a square to put <b>wood</b> in Farmer Bob's way.</li>
       <li>Then every turkey takes <b>one</b> step to the gate.</li>
       <li>Then Farmer Bob takes <b>two</b> steps. Don't let him reach a turkey!</li>
+      <li>Stuck? Tap <b>Hint</b>.</li>
     </ol>
     <div class="row"><button class="big" id="play">Play</button></div>
     <p class="sub" id="saved"></p>
@@ -213,6 +215,20 @@ button.big { font-size: 30px; padding: 6px 30px; background: var(--straw); }
     { gate: 6, wood: 2, needs: 2, rows: ['T.......', '.###.##.', '.#.B.#..', '.#.#.#..', 'T.......'] },
     // Four doors and three pieces of wood.
     { gate: 6, wood: 3, needs: 3, rows: ['.T......', 'T.......', 'T.......', '.##.#.#.', '.....B..'] },
+    // Bob in a side pocket with a long way round. Plenty of first moves work, and so does waiting.
+    { gate: 6, wood: 2, needs: 2, rows: ['T.......', '.#.####.', '.#.#B...', '.#.#.##.', 'T.......'] },
+    // Bob in a chimney by the gate. Two first moves win.
+    { gate: 7, wood: 2, needs: 2, rows: ['T.......', '.####.#.', '....#.#.', '.##.#B#.', 'T.......'] },
+    // Bob in the open on the gate side. Nine first moves win, but the wood has to last.
+    { gate: 6, wood: 3, needs: 3, rows: ['T.#.....', '..#.##..', '....#B..', '.##.#...', 'T.......'] },
+    // Two long halls and a spare piece of wood. Holding it for a turn or two is fine.
+    { gate: 6, wood: 3, needs: 2, rows: ['T......B', '.#####.#', '........', '#.####.#', 'T.......'] },
+    // Four turkeys and Bob in the middle of them. Two first moves win.
+    { gate: 7, wood: 3, needs: 3, rows: ['TT......', 'T..##.#.', '.#.B..#.', '.#.##...', 'T.......'] },
+    // Bob starts by the gate with three ways down to the turkeys. Two first moves win.
+    { gate: 6, wood: 3, needs: 3, rows: ['.T......', '####.#..', '...#.#..', '.#...#B.', 'T#.#....'] },
+    // The last one: Bob in the middle, three turkeys, four pieces of wood, one first move.
+    { gate: 7, wood: 4, needs: 4, rows: ['T.......', '##.##.#.', 'T...B...', '##.##.#.', 'T.......'] },
   ];
   const api = { COLS, ROWS, CELLS, id, col, row, start, clone, cant, place, advance, won, settled, bobPath, turkeyPath, steps, solve, LEVELS };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.RULES = api;
@@ -294,7 +310,7 @@ function shadow(g, x, y, rx) { g.beginPath(); g.ellipse(x, y, rx, rx * 0.3, 0, 0
 
 // ---- State. S.g is the maze as the rules see it; M is where things are drawn while they walk.
 const S = { screen: 'title', level: 0, mute: false, learned: false, t: 0, g: null, phase: 'you', plan: null, stuck: false,
-  tw: [], timers: [], puffs: [], shake: 0, dropped: null, hover: -1, tries: 0 };
+  tw: [], timers: [], puffs: [], shake: 0, dropped: null, hover: -1, tries: 0, hint: null };
 const M = { t: {}, bob: null, away: [], held: null };
 const KEY = 'turkey-maze-v1';
 function save() { try { localStorage.setItem(KEY, JSON.stringify({ level: S.level, mute: S.mute, learned: S.learned })); } catch (e) { /* a private window: play without saving */ } }
@@ -353,7 +369,7 @@ const levelNow = () => R.LEVELS[Math.min(S.level, R.LEVELS.length - 1)];
 const mover = (i, face) => ({ x: cx(i), y: fy(i), face, step: 0, moving: false });
 function startLevel() {
   if (S.level >= R.LEVELS.length) S.level = 0;
-  S.g = R.start(levelNow()); S.screen = 'play'; S.phase = 'you'; S.stuck = false; S.tw = []; S.timers = []; S.puffs = []; S.shake = 0; S.dropped = null; S.hover = -1;
+  S.g = R.start(levelNow()); S.screen = 'play'; S.phase = 'you'; S.stuck = false; S.tw = []; S.timers = []; S.puffs = []; S.shake = 0; S.dropped = null; S.hover = -1; S.hint = null;
   M.t = {}; for (const t of S.g.turkeys) M.t[t.n] = mover(t.at, 1);
   M.bob = mover(S.g.bob, -1); M.away = []; M.held = null;
   paintBG(); look(); show();
@@ -379,7 +395,7 @@ function turn(i) {
   go(i >= 0 ? 0.32 : 0.05); return true;
 }
 function go(wait) {
-  S.phase = 'moving'; S.plan = null; S.hover = -1;
+  S.phase = 'moving'; S.plan = null; S.hover = -1; S.hint = null;
   const ev = R.advance(S.g); let at = wait;
   for (const m of ev.turkeys) {
     tween(M.t[m.n], cx(m.to), fy(m.to), at, 0.34);
@@ -391,6 +407,18 @@ function go(wait) {
   if (ev.caught != null) after(at, () => lose(ev.caught));
   else if (R.won(S.g)) after(at + 0.9, win);
   else after(at + 0.1, () => { if (R.settled(S.g)) go(0.15); else { S.phase = 'you'; look(); } });
+}
+// A hint, on your turn: a square where wood still leads to a win (one on Farmer Bob's way if there is one),
+// or to wait, or that this maze can't be won any more. It tries every square with the rules' own solver.
+function hint() {
+  if (S.screen !== 'play' || S.phase !== 'you') return null;
+  const memo = new Map(), budget = { n: 900000 };
+  const wins = (i) => { const c = R.clone(S.g); if (i >= 0 && !R.place(c, i)) return false; R.advance(c); return !!R.solve(c, memo, budget); };
+  const way = S.plan ? [...S.plan.via, ...S.plan.rest] : [], all = way.slice();
+  for (let i = R.COLS; i < R.CELLS; i++) if (!way.includes(i)) all.push(i);
+  const i = all.find((q) => !R.cant(S.g, q) && wins(q));
+  S.hint = i != null ? { i } : wins(-1) ? { wait: true } : budget.n < 0 ? { unsure: true } : { lost: true };
+  blip([880, 1320], 0.06, 'sine', 0.06); return S.hint;
 }
 function lose(n) {
   S.phase = 'over'; S.shake = 1; S.tries++; M.held = n; delete M.t[n]; SND.caught(); puff(M.bob.x, M.bob.y - 200, 'Gotcha!', INK);
@@ -501,6 +529,7 @@ function drawPlan(g) {                   // on your turn: the turkeys' way out, 
   if (S.hover >= 0 && !R.cant(S.g, S.hover)) { const x = X0 + R.col(S.hover) * CW, y = Y0 + R.row(S.hover) * CH; g.strokeStyle = '#2f6fc0'; g.lineWidth = 6; wob(g, rect(x + 7, y + 7, x + CW - 7, y + CH - 7, 4), S.hover, true); g.stroke(); }
 }
 function note() {                        // what the top note says to do
+  if (S.hint && S.phase === 'you') return S.hint.i != null ? 'Hint: put wood on the blue square.' : S.hint.wait ? 'Hint: wait this turn.' : S.hint.lost ? "Hint: it's too late for this maze. Tap Start over." : "Hint: I can't tell. Try your best!";
   if (S.stuck) return 'Farmer Bob is stuck. Run, turkeys, run!';
   if (S.g.left <= 0) return 'No wood left. Run, turkeys, run!';
   return "Tap a square to put wood in Farmer Bob's way.";
@@ -527,20 +556,25 @@ function render() {
       if (S.stuck && S.screen === 'play') { g.font = "bold 34px 'Patrick Hand', cursive"; g.fillStyle = INK; g.textAlign = 'center'; g.lineWidth = 7; g.strokeStyle = '#fffbe9'; g.strokeText('Grr!', b.x, b.y - 186); g.fillText('Grr!', b.x, b.y - 186); }
     }]);
     all.sort((p, q) => p[0] - q[0]).forEach(([, draw]) => draw());
+    if (S.screen === 'play' && S.phase === 'you' && S.hint && S.hint.i != null) {      // the hint: a blue square (the top note says what it means)
+      const i = S.hint.i, x = X0 + R.col(i) * CW, y = Y0 + R.row(i) * CH, grow = 3 + Math.sin(S.t * 6) * 3;
+      g.fillStyle = 'rgba(47,111,192,.28)'; g.strokeStyle = '#2f6fc0'; g.lineWidth = 8; wob(g, rect(x + 8 - grow, y + 8 - grow, x + CW - 8 + grow, y + CH - 8 + grow, 4), i + 40, true); g.fill(); g.stroke();
+    }
     // the first time, a note points at a square on Farmer Bob's way (past the two he is about to step on, so it doesn't cover him)
-    if (S.screen === 'play' && S.phase === 'you' && !S.learned && S.plan && S.plan.via.length) { const way = [...S.plan.via, ...S.plan.rest], i = way[Math.min(2, way.length - 1)]; tag(g, cx(i), my(i) - 30, 'Farmer Bob is going this way. Tap here!', 501); }
+    if (S.screen === 'play' && S.phase === 'you' && !S.learned && !S.hint && S.plan && S.plan.via.length) { const way = [...S.plan.via, ...S.plan.rest], i = way[Math.min(2, way.length - 1)]; tag(g, cx(i), my(i) - 30, 'Farmer Bob is going this way. Tap here!', 501); }
     for (const p of S.puffs) { const a = Math.max(0, Math.min(1, (1.7 - p.t) * 2)), pop = Math.min(1, p.t * 8); g.globalAlpha = a; g.font = `bold ${Math.round(44 * pop)}px 'Patrick Hand', cursive`; g.textAlign = 'center'; g.lineWidth = 9; g.lineJoin = 'round'; g.strokeStyle = '#fffbe9'; g.strokeText(p.text, p.x, p.y - p.t * 22); g.fillStyle = p.color; g.fillText(p.text, p.x, p.y - p.t * 22); g.globalAlpha = 1; }
     // the note at the top: which maze, the wood you have left, the turkeys that are out, and what to do
     shape(g, rect(214, 16, 882, 120, 7), '#fffbe9', 400, 4);
     g.font = "34px 'Patrick Hand', cursive"; g.fillStyle = INK; g.textAlign = 'left'; g.fillText('Maze ' + (S.level + (S.screen === 'won' ? 0 : 1)), 234, 62);
     for (let k = 0; k < L.wood; k++) piece(g, 'wood', 384 + k * 50, 76, 54, { alpha: k < S.g.left ? 1 : 0.2 });
-    for (let k = 0; k < S.g.total; k++) piece(g, 'turkey', 590 + k * 46, 76, 54, { alpha: k < M.away.length ? 1 : 0.25 });
+    for (let k = 0; k < S.g.total; k++) piece(g, 'turkey', 588 + k * 40, 76, 54, { alpha: k < M.away.length ? 1 : 0.25 });
     g.font = "25px 'Patrick Hand', cursive"; g.fillStyle = INK; g.fillText(note(), 234, 104);
     const can = S.screen === 'play' && S.phase === 'you';
     g.globalAlpha = can ? 1 : 0.35;
     shape(g, rect(WAIT.x, WAIT.y, WAIT.x + WAIT.w, WAIT.y + WAIT.h, 4), '#f6cf4d', 410, 4);
     g.fillStyle = INK; g.textAlign = 'center'; g.font = "bold 34px 'Patrick Hand', cursive"; g.fillText('Wait', WAIT.x + WAIT.w / 2, WAIT.y + 42);
     g.font = "19px 'Patrick Hand', cursive"; g.fillText('no wood this turn', WAIT.x + WAIT.w / 2, WAIT.y + 67); g.globalAlpha = 1;
+    if (can && S.hint && S.hint.wait) { const grow = 4 + Math.sin(S.t * 6) * 3; g.strokeStyle = '#2f6fc0'; g.lineWidth = 7; wob(g, rect(WAIT.x - grow, WAIT.y - grow, WAIT.x + WAIT.w + grow, WAIT.y + WAIT.h + grow, 4), 411, true); g.stroke(); }
   } else {                               // the cover
     arch(g);
     shadow(g, 190, 690, 120); piece(g, 'turkey', 190, 700, 360, { rot: Math.sin(S.t * 2) * 0.03 });
@@ -573,6 +607,9 @@ $('retry').onclick = () => startLevel();
 $('next').onclick = () => startLevel();
 $('again').onclick = () => startLevel();
 $('quit').onclick = () => { S.screen = 'title'; show(); };
+$('hint').onclick = () => hint();
+// After a tap on one of these, Space should wait a turn, not press the button again.
+$('hudbtns').addEventListener('click', (e) => { if (e.detail && e.target.blur) e.target.blur(); });
 $('mute').onclick = () => { S.mute = !S.mute; save(); show(); };
 
 // ---- Taps: a square puts wood there; the Wait button (or Space) lets a turn go by.
@@ -588,6 +625,7 @@ cv.addEventListener('pointermove', (e) => { if (e.pointerType === 'mouse' && S.s
 addEventListener('keydown', (e) => {
   if (e.target && e.target.tagName === 'BUTTON') return;
   if ((e.key === ' ' || e.key === 'Enter') && S.screen === 'play') { e.preventDefault(); turn(-1); }
+  if ((e.key === 'h' || e.key === 'H') && S.screen === 'play') hint();
 });
 addEventListener('resize', fit);
 
@@ -597,7 +635,7 @@ function frame(now) {
   step(dt); render(); requestAnimationFrame(frame);
 }
 load();
-window.__tm = { S, M, R, W, H, X0, Y0, CW, CH, WAIT, PIECE, cx, my, turn, startLevel, step, show, render, ready: false };
+window.__tm = { S, M, R, W, H, X0, Y0, CW, CH, WAIT, PIECE, cx, my, turn, hint, startLevel, step, show, render, ready: false };
 loadArt().then(() => { fit(); show(); window.__tm.ready = true; requestAnimationFrame(frame); });
 </script>
 <script src="/games/switcher.js" defer></script>
