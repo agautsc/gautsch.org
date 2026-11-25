@@ -76,6 +76,17 @@ def main(root):
         except Exception as err:  # noqa: BLE001 - report any parse failure
             problems.append(f"{os.path.relpath(feed, root)}: does not parse ({err})")
 
+    # Every game on the switcher's shelf has to load the switcher. A game's page is a
+    # built file copied in from its own repo, so a fresh copy can arrive without the tag.
+    switcher = os.path.join(root, "games", "switcher.js")
+    if os.path.isfile(switcher):
+        for game in re.findall(r"path:\s*'(/[^']+/)'", open(switcher, encoding="utf-8").read()):
+            page = os.path.join(root, game.strip("/"), "index.html")
+            if not os.path.isfile(page):
+                problems.append(f"games/switcher.js: lists {game}, which has no page")
+            elif "/games/switcher.js" not in open(page, encoding="utf-8").read():
+                problems.append(f"{game}index.html: missing <script src=\"/games/switcher.js\" defer></script> before </body>")
+
     for name in ("robots.txt", "llms.txt"):
         if not os.path.isfile(os.path.join(root, name)):
             problems.append(f"{name}: missing")
