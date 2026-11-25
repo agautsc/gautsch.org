@@ -74,14 +74,29 @@ button[aria-pressed=true] { background: var(--straw); }
 #maker .opts button[aria-pressed=true] { outline: 4px solid var(--sky); outline-offset: 1px; }
 #maker input { width: 9em; padding: 3px 10px; }
 @media (max-width: 560px) { #maker .cols { grid-template-columns: 1fr; justify-items: center; } }
-#soon { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; font-size: 16px; }
-#soon img { height: 46px; display: block; margin: 0 auto; }
+/* The shop: Murphy's four things at his prices. The tray holds the traps you bought, in the yard. */
+#wonshop, #toshop { font-size: 24px; }
+#shop { width: min(640px, calc(100% - 24px)); }
+#shop .items { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 10px; margin-top: 8px; }
+#shop .item { border: 3px solid var(--ink); border-radius: 14px 18px 12px 20px; padding: 8px 6px; background: #fff; }
+#shop .item img { height: 70px; display: block; margin: 0 auto; }
+#shop .item b { display: block; font-size: 24px; line-height: 1.1; }
+#shop .item span { display: block; font-size: 16px; line-height: 1.15; min-height: 3.5em; margin: 3px 0; }
+#shop .item em { display: block; font-style: normal; font-size: 16px; margin-top: 6px; }
+#shop #sign { height: 64px; }
+#tray { position: absolute; left: 12px; top: 12px; display: grid; grid-template-columns: auto auto; gap: 8px; justify-content: start; }
+#tray button { padding: 3px 6px 1px; font-size: 17px; line-height: 1; width: 64px; }
+#tray button img { height: 40px; display: block; margin: 0 auto; pointer-events: none; }
+#tray button[aria-pressed=true] { outline: 4px solid var(--sky); outline-offset: 1px; background: var(--straw); }
+#tray span { grid-column: 1 / -1; width: 136px; box-sizing: border-box; background: var(--card); border: 3px solid var(--ink); border-radius: 12px; padding: 2px 6px; font-size: 16px; line-height: 1.1; text-align: center; }
+@media (max-height: 420px) { #tray { gap: 5px; } #tray button img { height: 24px; } #tray button { width: 50px; font-size: 13px; } #tray span { width: 105px; font-size: 13px; } }
 </style>
 </head>
 <body>
 <div id="stage">
   <canvas id="game" aria-label="Turkey Escape: the farm yard"></canvas>
   <button id="throw" hidden aria-label="Throw a veggie at Farmer Bob">Grab a veggie</button>
+  <div id="tray" hidden></div>
   <div id="hudbtns" hidden><button id="quit">Menu</button><button id="mute" aria-pressed="false">Sound on</button></div>
 
   <div class="card" id="title">
@@ -90,7 +105,7 @@ button[aria-pressed=true] { background: var(--straw); }
     <p>The turkeys sold feather brooms at the farmers market all year and made a million dollars.
       Now they're paying <span id="names">Murphy, Maya and Sadie</span> to help them escape from Farmer Bob!</p>
     <div class="who" id="up"></div>
-    <div class="row"><button class="big" id="play">Play</button><button id="make">Make your kid</button></div>
+    <div class="row"><button class="big" id="play">Play</button><button id="make">Make your kid</button><button id="toshop">Shop</button></div>
     <p class="sub" id="saved"></p>
   </div>
 
@@ -108,9 +123,16 @@ button[aria-pressed=true] { background: var(--straw); }
     <h2 id="wonhead">They got away!</h2>
     <canvas id="payart" width="520" height="210" style="width:260px;height:105px" aria-hidden="true"></canvas>
     <p id="wonpay"></p>
-    <div class="row"><button class="big" id="next">Next yard</button></div>
-    <p class="sub">Saving up for Murphy's shop (coming soon):</p>
-    <div id="soon"></div>
+    <div class="row"><button class="big" id="next">Next yard</button><button id="wonshop">Shop</button></div>
+    <p class="sub" id="shopnote"></p>
+  </div>
+
+  <div class="card" id="shop" hidden>
+    <img id="sign" alt="Iorn, in Murphy's writing">
+    <h2>Murphy's shop <span class="sub">(you have <span class="cash" id="shopcash"></span>)</span></h2>
+    <p class="sub">Traps to slow down Farmer Bob. In the yard, tap a trap, then tap where it goes. Each one works for one yard.</p>
+    <div class="items" id="items"></div>
+    <div class="row"><button class="big" id="shopdone">Done</button></div>
   </div>
 </div>
 <script>
@@ -174,8 +196,15 @@ const LEVELS = [
   { turkeys: 5, bob: 140, things: [['hay', 520, 455], ['hay', 520, 610], ['mud', 760, 450], ['trough', 930, 580], ['hay', 900, 455]], gardens: [[720, 660], [1070, 500]] },
   { turkeys: 6, bob: 152, things: [['hay', 480, 455], ['mud', 640, 600], ['hay', 730, 455], ['trough', 820, 600], ['hay', 1010, 620], ['mud', 960, 440]], gardens: [[330, 665], [1090, 520]] },
 ];
-const SIZE = { hay: [130, 78], trough: [190, 54], mud: [220, 120] };
-const SOON = [['rope', 'Rope', 40], ['wood', 'Wood', 50], ['glass', 'Glass', 50], ['iorn', 'Iorn', 60]];   // his page, his prices
+const SIZE = { hay: [130, 78], trough: [190, 54], mud: [220, 120], wood: [116, 44] };
+// The shop: the four things on Murphy's page, at his prices. They are traps: each one slows Farmer Bob down
+// (Adam, turkey-escape#1). How each one does it is a guess until Murphy says.
+const SHOP = [
+  { id: 'rope', name: 'Rope', price: 40, does: 'A trip rope. Farmer Bob falls flat on his face.' },
+  { id: 'wood', name: 'Wood', price: 50, does: 'A wall only Farmer Bob has to walk around.' },
+  { id: 'glass', name: 'Glass', price: 50, does: "A window he can't see. Bonk! Twice." },
+  { id: 'iorn', name: 'Iorn', price: 60, does: 'It snaps on his leg. He is slow all yard.' },
+];
 
 // ---- The kids. Murphy's page shows a kid with hair, shirts and pants to pick from; these are the choices.
 const SKIN = ['#fde0c8', '#f6c9a8', '#e3a878', '#c58a5c', '#96623e', '#6b4429'];
@@ -275,16 +304,18 @@ function shadow(g, x, y, rx) { g.beginPath(); g.ellipse(x, y, rx, rx * 0.3, 0, 0
 // ---- State
 const S = {
   screen: 'title', level: 0, cash: 0, kids: JSON.parse(JSON.stringify(DEFAULT_KIDS)), me: 0, turns: true, learned: false, mute: false,
+  bag: { rope: 0, wood: 0, glass: 0, iorn: 0 }, traps: [], placing: null, trapped: 0,
   t: 0, time: 0, out: 0, catches: 0, bonks: 0, turkeys: [], kid: null, bob: null, things: [], gardens: [], veg: [], shots: [],
   puffs: [], target: null, keys: {}, pay: 0, shake: 0,
 };
 const KEY = 'turkey-escape-v2';
-function save() { try { localStorage.setItem(KEY, JSON.stringify({ level: S.level, cash: S.cash, kids: S.kids, me: S.me, turns: S.turns, learned: S.learned, mute: S.mute })); } catch (e) { /* a private window: play without saving */ } }
+function save() { try { localStorage.setItem(KEY, JSON.stringify({ level: S.level, cash: S.cash, bag: S.bag, kids: S.kids, me: S.me, turns: S.turns, learned: S.learned, mute: S.mute })); } catch (e) { /* a private window: play without saving */ } }
 function load() {
   try {
     const d = JSON.parse(localStorage.getItem(KEY) || 'null'); if (!d) return;
     if (Array.isArray(d.kids) && d.kids.length === 3) S.kids = d.kids.map((k, i) => ({ ...DEFAULT_KIDS[i], ...k }));
     S.level = d.level | 0; S.cash = d.cash | 0; S.me = Math.min(2, d.me | 0); S.turns = d.turns !== false; S.learned = !!d.learned; S.mute = !!d.mute;
+    for (const it of SHOP) S.bag[it.id] = Math.max(0, Math.min(9, (d.bag && d.bag[it.id]) | 0));
   } catch (e) { /* start fresh */ }
 }
 
@@ -343,11 +374,11 @@ const SND = { bonk, gobble: () => { gobble(1.1); gobble(0.95, 0.12, 0.3); }, run
 const levelOf = (n) => { const L = LEVELS[Math.min(n, LEVELS.length - 1)], extra = Math.max(0, n - LEVELS.length + 1); return { ...L, bob: L.bob + extra * 8 }; };
 function startLevel() {
   const L = levelOf(S.level);
-  S.screen = 'play'; S.t = 0; S.time = 0; S.out = 0; S.catches = 0; S.bonks = 0; S.shots = []; S.puffs = []; S.target = null; S.veg = []; S.shake = 0;
+  S.screen = 'play'; S.t = 0; S.time = 0; S.out = 0; S.catches = 0; S.bonks = 0; S.shots = []; S.puffs = []; S.target = null; S.veg = []; S.shake = 0; S.traps = []; S.placing = null; S.trapped = 0;
   S.things = L.things.map(([kind, x, y]) => ({ kind, x, y, w: SIZE[kind][0], h: SIZE[kind][1] }));
   S.gardens = L.gardens.map(([x, y], i) => ({ x, y, grow: 1 + i }));
   S.turkeys = Array.from({ length: L.turkeys }, (_, i) => ({ x: PEN.x - 80 + (i % 3) * 75, y: PEN.y - 70 + Math.floor(i / 3) * 110 + (i % 3) * 26, r: 26, state: 'wait', wait: 2.5 + i * 3.5, vx: 0, vy: 0, face: 1, step: i, n: i, turkey: true, slowIn: true, auto: true }));
-  S.bob = { x: 760, y: 480, r: 36, speed: L.bob, base: L.bob, state: 'chase', dizzy: 0, wait: 2.6, woke: false, face: -1, step: 0, vx: 0, vy: 0, held: null, slowIn: true, auto: true };
+  S.bob = { x: 760, y: 480, r: 36, speed: L.bob, base: L.bob, state: 'chase', dizzy: 0, wait: 2.6, woke: false, face: -1, step: 0, vx: 0, vy: 0, held: null, slowIn: true, auto: true, bob: true, heavy: 0 };
   S.kid = { look: S.kids[S.me], x: 400, y: 610, r: 22, veg: null, face: 1, step: 0, moving: false, slowIn: true };
   for (const g of S.gardens) for (let i = 0; i < 2; i++) grow(g);
   paintBG(); show();
@@ -362,7 +393,7 @@ function grow(gdn) {
 const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 function pushOut(m) {                  // keep a mover out of hay bales and troughs, and inside the yard
   for (const th of S.things) {
-    if (th.kind === 'mud') continue;
+    if (th.kind === 'mud' || (th.kind === 'wood' && !m.bob)) continue;
     const cx = Math.max(th.x - th.w / 2, Math.min(m.x, th.x + th.w / 2)), cy = Math.max(th.y - th.h / 2, Math.min(m.y, th.y + th.h / 2));
     let dx = m.x - cx, dy = m.y - cy, d = Math.hypot(dx, dy);
     if (d < m.r) {
@@ -380,7 +411,7 @@ function go(m, tx, ty, speed, dt) {
   dx /= d; dy /= d; let sx = dx, sy = dy; const bx = m.x, by = m.y;
   if (m.detour > 0) { m.detour -= dt; sx = m.ddx; sy = m.ddy; }      // backing out of a corner
   else for (const th of S.things) {
-    if (th.kind === 'mud') continue;
+    if (th.kind === 'mud' || (th.kind === 'wood' && !m.bob)) continue;
     const ox = th.x - m.x, oy = th.y - m.y, od = Math.hypot(ox, oy), R = Math.hypot(th.w, th.h) / 2 + m.r + 46;
     if (od < R && od < d + 30 && ox * dx + oy * dy > 0) {
       let side = (dx * oy - dy * ox) > 0 ? -1 : 1; const k = (1 - od / R) * 2.6, py = dx * side;   // step to the side the thing isn't on,
@@ -417,6 +448,48 @@ function throwVeg() {
   S.shots.push({ kind: k.veg, x: k.x, y: k.y, vx: dx / dd * speed, vy: dy / dd * speed, left: RANGE / speed, all: RANGE / speed, spin: 0 });
   k.veg = null; k.face = dx > 0 ? 1 : -1; SND.toss(); return true;
 }
+// Farmer Bob is knocked silly for a while: he drops his turkey and every turkey sprints.
+function stun(sec, text) {
+  const b = S.bob; b.dizzy = Math.max(b.dizzy, sec); b.wait = 0; b.woke = true; S.shake = 1; SND.bonk(); SND.run(); puff(b.x, b.y - 250, text, '#e3402f');
+  if (b.held) { const t = b.held; b.held = null; b.state = 'chase'; t.state = 'run'; t.x = b.x + 40; t.y = b.y + 14; puff(t.x, t.y - 130, 'Free!', '#2f6fc0'); return true; }
+  return false;
+}
+// ---- The shop and the traps
+function buy(id) {
+  const it = SHOP.find((s) => s.id === id); if (!it || S.cash < it.price || S.bag[id] >= 9) return false;
+  S.cash -= it.price; S.bag[id]++; SND.cash(); save(); show(); return true;
+}
+// Put a trap from the bag down in the yard. Not on the turkeys' straw, and not on top of hay or a trough.
+function place(id, p) {
+  if (S.screen !== 'play' || !(S.bag[id] > 0)) return false;
+  const x = Math.max(FIELD.x0 + 70, Math.min(FIELD.x1 - 70, p.x)), y = Math.max(FIELD.y0 + 50, Math.min(FIELD.y1 - 24, p.y));
+  const taken = S.things.some((th) => th.kind !== 'mud' && Math.abs(x - th.x) < th.w / 2 + 64 && Math.abs(y - th.y) < th.h / 2 + 44) || S.traps.some((tr) => Math.hypot(tr.x - x, tr.y - y) < 80);
+  if (taken || Math.hypot(x - PEN.x, y - PEN.y) < 240) { puff(x, y - 40, 'Not there!', INK); return false; }
+  S.bag[id]--; S.placing = null;
+  if (id === 'wood') S.things.push({ kind: 'wood', x, y, w: SIZE.wood[0], h: SIZE.wood[1], hp: 5 });
+  else S.traps.push({ kind: id, x, y, hits: 0 });
+  SND.grab(); puff(x, y - 90, 'Trap set!', '#2f6fc0'); save(); tray(); return true;
+}
+function trapsStep(dt) {
+  const b = S.bob; if (b.wait > 0 || b.dizzy > 0) return;
+  for (const tr of S.traps) {
+    const dx = b.x - tr.x, dy = b.y - tr.y, d = Math.hypot(dx, dy) || 1; if (d > b.r + 34) continue;
+    if (tr.kind === 'rope') { tr.gone = true; S.trapped++; stun(3.2, 'Tripped!'); }
+    if (tr.kind === 'glass') {                 // he walks into it, bounces off, and walks into it again; the second time it breaks
+      tr.hits++; S.trapped++; b.x += dx / d * 44; b.y += dy / d * 44; pushOut(b); stun(2.2, tr.hits > 1 ? 'SMASH!' : 'BONK!'); if (tr.hits > 1) tr.gone = true;
+    }
+    if (tr.kind === 'iorn') { tr.gone = true; S.trapped++; b.heavy++; b.speed = Math.max(b.base * 0.4, b.speed * 0.6); S.shake = 0.6; blip([160, 110], 0.12, 'square', 0.08); puff(b.x, b.y - 250, 'So heavy!', '#5d5a60'); }
+    break;
+  }
+  S.traps = S.traps.filter((tr) => !tr.gone);
+  // a wood wall he keeps pushing on cracks, so he can never be walled in for good
+  for (const th of S.things) {
+    if (th.kind !== 'wood') continue;
+    const cx = Math.max(th.x - th.w / 2, Math.min(b.x, th.x + th.w / 2)), cy = Math.max(th.y - th.h / 2, Math.min(b.y, th.y + th.h / 2));
+    if (Math.hypot(b.x - cx, b.y - cy) < b.r + 5 && (th.hp -= dt) <= 0) { th.gone = true; SND.bonk(); puff(th.x, th.y - 110, 'CRACK!', '#8a5d38'); }
+  }
+  if (S.things.some((th) => th.gone)) S.things = S.things.filter((th) => !th.gone);
+}
 function puff(x, y, text, color) { S.puffs.push({ x: Math.max(110, Math.min(W - 110, x)), y, text, color, t: 0 }); }
 
 // ---- One tick of the yard
@@ -436,12 +509,12 @@ function step(dt) {
     s.x += s.vx * dt; s.y += s.vy * dt; s.left -= dt; s.spin += dt * 12;
     if (S.things.some((th) => th.kind === 'hay' && Math.abs(s.x - th.x) < th.w / 2 && Math.abs(s.y - th.y) < th.h / 2 + 8)) { s.left = 0; puff(s.x, s.y - 90, 'splat', '#4f9a3c'); }
     else if (Math.hypot(s.x - b.x, s.y - b.y) < 52) {
-      s.left = 0; b.dizzy = 2.2; b.wait = 0; b.woke = true; S.bonks++; S.shake = 1; SND.bonk(); SND.run(); puff(b.x, b.y - 250, 'BONK!', '#e3402f');
-      if (b.held) { const t = b.held; b.held = null; b.state = 'chase'; t.state = 'run'; t.x = b.x + 40; t.y = b.y + 14; puff(t.x, t.y - 130, 'Free!', '#2f6fc0'); }
-      else if (S.bonks === 1) puff(PEN.x + 120, PEN.y - 190, 'Run, turkeys, run!', '#a8552a');
+      s.left = 0; b.dizzy = 0; S.bonks++;
+      if (!stun(2.2, 'BONK!') && S.bonks === 1) puff(PEN.x + 120, PEN.y - 190, 'Run, turkeys, run!', '#a8552a');
     }
   }
   S.shots = S.shots.filter((s) => s.left > 0);
+  trapsStep(dt);
   // Farmer Bob: he naps a moment, then goes after the nearest turkey out in the open and carries it back.
   b.moving = false;
   if (b.wait > 0) { b.wait -= dt; }
@@ -459,7 +532,7 @@ function step(dt) {
       const t = free.sort((p, q) => dist(b, p) - dist(b, q))[0];
       if (t) {
         go(b, t.x, t.y, b.speed, dt);
-        if (dist(b, t) < b.r + t.r - 8) { t.state = 'held'; t.wise = (t.wise || 0) + 1; b.held = t; b.state = 'carry'; S.catches++; b.speed = Math.max(b.base * 0.65, b.speed * 0.96);   // carrying turkeys wears him out
+        if (dist(b, t) < b.r + t.r - 8) { t.state = 'held'; t.wise = (t.wise || 0) + 1; b.held = t; b.state = 'carry'; S.catches++; b.speed = Math.min(b.speed, Math.max(b.base * 0.65, b.speed * 0.96));   // carrying turkeys wears him out
           SND.caught(); puff(b.x, b.y - 250, 'Gotcha!', '#262024'); }
       } else go(b, 760, 480, b.speed * 0.6, dt);
     }
@@ -561,12 +634,13 @@ function arch(g) {                      // the sign over the gate; turkeys walk 
 }
 function drawThing(g, th) {
   const { x, y, w, h } = th;
-  shadow(g, x, y + h / 2, w * 0.56);
+  shadow(g, x, y + h / 2, w * (th.kind === 'wood' ? 0.42 : 0.56));
   if (th.kind === 'hay') {
     shape(g, rect(x - w / 2, y - h / 2 - 40, x + w / 2, y + h / 2, 4), '#f6cf4d', x, 4.5);
     g.strokeStyle = '#b98a1e'; g.lineWidth = 2.5; for (let i = 0; i < 9; i++) { const sx = x - w / 2 + 10 + i * 13; g.beginPath(); g.moveTo(sx, y - h / 2 - 30 + rnd(i + x) * 14); g.lineTo(sx + 6, y + h / 2 - 10 - rnd(i * 3 + x) * 18); g.stroke(); }
     g.lineWidth = 5; g.strokeStyle = '#c0552a'; for (const o of [-w / 5, w / 5]) { g.beginPath(); g.moveTo(x + o, y - h / 2 - 39); g.lineTo(x + o + 1, y + h / 2 - 1); g.stroke(); }
   }
+  if (th.kind === 'wood') piece(g, 'wood', x, y + h / 2 + 4, 132, { rot: th.hp < 2.5 ? Math.sin(S.t * 30) * 0.05 : 0 });
   if (th.kind === 'trough') { shape(g, [[x - w / 2, y - h / 2 - 22], [x + w / 2, y - h / 2 - 24], [x + w / 2 - 16, y + h / 2], [x - w / 2 + 16, y + h / 2]], '#b98a54', x, 4.5); shape(g, [[x - w / 2 + 12, y - h / 2 - 15], [x + w / 2 - 12, y - h / 2 - 17], [x + w / 2 - 20, y - h / 2 + 2], [x - w / 2 + 20, y - h / 2 + 2]], '#7fc8ea', x + 1, 3); }
 }
 function drawTurkey(g, t, h = 124) {
@@ -584,7 +658,7 @@ function render() {
   g.setTransform(VIEW.k, 0, 0, VIEW.k, VIEW.ox + sh * VIEW.k, VIEW.oy);
   g.save(); g.beginPath(); g.rect(0, 0, W, H); g.clip();
   g.drawImage(BG, 0, 0, W, H);
-  if (S.screen === 'play' || S.screen === 'won') {
+  if (S.screen === 'play' || S.screen === 'won' || (S.screen === 'shop' && shopBack === 'won')) {
     const b = S.bob, k = S.kid, all = [];
     for (const t of S.turkeys) if (t.state === 'away' && t.away < 1.5) { const p = t.away / 1.5; drawTurkey(g, { ...t, x: GATE.x + p * 36, y: FENCE - p * 70, moving: true, step: S.t * 12, face: 1 }, 124 * (1 - p * 0.55)); }
     arch(g);
@@ -592,6 +666,14 @@ function render() {
     S.kids.forEach((look, i) => { if (look === k.look) return; const left = (i + 3 - S.kids.indexOf(k.look)) % 3 === 1; drawKid(g, look, GATE.x + (left ? -150 : 132), FIELD.y0 + 6, 1.3, S.t * 7 + i, null, !left, true); });
     for (const v of S.veg) veggie(g, v.kind, v.x, v.y - 14, 1.8);
     for (const th of S.things) if (th.kind !== 'mud') all.push([th.y + th.h / 2, () => drawThing(g, th)]);
+    for (const tr of S.traps) all.push([tr.y - (tr.kind === 'glass' ? 0 : 30), () => {
+      if (tr.kind === 'rope') piece(g, 'rope', tr.x, tr.y + 26, 78);
+      if (tr.kind === 'iorn') { shadow(g, tr.x, tr.y + 18, 40); piece(g, 'iorn', tr.x, tr.y + 24, 74); }
+      if (tr.kind === 'glass') {
+        shadow(g, tr.x, tr.y + 8, 46); piece(g, 'glass', tr.x, tr.y + 12, 138, { alpha: 0.8 });
+        if (tr.hits) { g.strokeStyle = INK; g.lineWidth = 3; g.lineCap = 'round'; g.beginPath(); for (const [ax, ay] of [[-30, -34], [26, -40], [34, 22], [-22, 30], [2, -52]]) { g.moveTo(tr.x, tr.y - 62); g.lineTo(tr.x + ax * 0.5, tr.y - 62 + ay * 0.5 + 4); g.lineTo(tr.x + ax, tr.y - 62 + ay); } g.stroke(); }
+      }
+    }]);
     for (const t of S.turkeys) if (t.state === 'run' || t.state === 'wait') all.push([t.y, () => { shadow(g, t.x, t.y + 6, 44); drawTurkey(g, t); }]);
     all.push([k.y, () => {
       g.beginPath(); g.ellipse(k.x, k.y + 2, 40, 13, 0, 0, 7); g.fillStyle = 'rgba(255,255,255,.6)'; g.fill(); g.strokeStyle = '#2f6fc0'; g.lineWidth = 4; g.stroke();
@@ -602,6 +684,7 @@ function render() {
       const dz = b.dizzy > 0, rot = dz ? Math.sin(S.t * 9) * 0.2 : (b.moving ? Math.sin(b.step) * 0.06 : 0);
       shadow(g, b.x, b.y + 6, 78);
       piece(g, 'farmer', b.x, b.y + 12 - (b.moving ? Math.abs(Math.sin(b.step)) * 8 : 0), 250, { flip: b.face < 0, rot });
+      for (let i = 0; i < b.heavy; i++) piece(g, 'iorn', b.x + b.face * (30 - i * 34), b.y + 22, 56);
       if (b.held) drawTurkey(g, { ...b.held, x: b.x - b.face * 58, y: b.y - 40, moving: true, step: S.t * 14, face: b.face }, 96);
       if (dz) for (let i = 0; i < 5; i++) { const a = S.t * 5 + i * 1.257; g.font = '38px serif'; g.fillStyle = '#ffc400'; g.strokeStyle = INK; g.lineWidth = 2.5; g.textAlign = 'center'; g.strokeText('★', b.x + Math.cos(a) * 66, b.y - 236 + Math.sin(a) * 16); g.fillText('★', b.x + Math.cos(a) * 66, b.y - 236 + Math.sin(a) * 16); }
       if (b.state === 'back' && !b.moving && !dz && b.wait <= 0) { g.font = "bold 34px 'Patrick Hand', cursive"; g.fillStyle = INK; g.textAlign = 'center'; g.fillText('phew...', b.x, b.y - 250); }
@@ -622,7 +705,7 @@ function render() {
     // the note at the top: which yard, turkeys out, cash
     const n = S.turkeys.length, tw = 250 + n * 46;
     shape(g, rect(318, 16, 318 + tw, 80, 5), '#fffbe9', 400, 4);
-    g.font = "34px 'Patrick Hand', cursive"; g.fillStyle = INK; g.textAlign = 'left'; g.fillText('Yard ' + (S.level + (S.screen === 'won' ? 0 : 1)), 336, 60);
+    g.font = "34px 'Patrick Hand', cursive"; g.fillStyle = INK; g.textAlign = 'left'; g.fillText('Yard ' + (S.level + (S.screen === 'play' ? 1 : 0)), 336, 60);
     for (let i = 0; i < n; i++) piece(g, 'turkey', 462 + i * 46, 76, 52, { alpha: i < S.out ? 1 : 0.25 });
     g.textAlign = 'right'; g.fillStyle = '#3f8f47'; g.fillText('$' + S.cash, 318 + tw - 18, 60);
   } else {                               // the cover
@@ -642,7 +725,8 @@ function chips(el, onpick, extra) {
   if (extra) el.append(extra);
 }
 function show() {
-  for (const id of ['title', 'maker', 'won']) $(id).hidden = S.screen !== id;
+  for (const id of ['title', 'maker', 'won', 'shop']) $(id).hidden = S.screen !== id;
+  tray();
   $('throw').hidden = $('hudbtns').hidden = S.screen !== 'play';
   const n = S.kids.map((k) => k.name); $('names').textContent = n[0] + ', ' + n[1] + ' and ' + n[2];
   $('mute').textContent = S.mute ? 'Sound off' : 'Sound on'; $('mute').setAttribute('aria-pressed', String(S.mute));
@@ -662,9 +746,36 @@ function show() {
     piece(g, 'turkey', 150, 205, 195);
     shape(g, [[300, 80], [330, 60], [360, 80], [395, 150], [380, 195], [280, 195], [265, 150]], '#dcae6a', 7, 5); shape(g, [[305, 78], [355, 78], [350, 92], [310, 92]], '#b98a54', 8, 4);
     g.font = "bold 70px 'Patrick Hand', cursive"; g.fillStyle = '#3f8f47'; g.textAlign = 'center'; g.fillText('$', 330, 172);
-    if (!$('soon').children.length) for (const [id, name, price] of SOON) { const d = document.createElement('div'), im = document.createElement('img'); im.alt = ''; im.src = PIECE[id] ? PIECE[id].toDataURL() : ''; d.append(im, name + ' $' + price); $('soon').append(d); }
+    const cheap = Math.min(...SHOP.map((it) => it.price)), have = SHOP.reduce((n, it) => n + S.bag[it.id], 0);
+    $('shopnote').textContent = (S.trapped ? 'Your traps got Farmer Bob ' + (S.trapped === 1 ? 'once' : S.trapped + ' times') + '! ' : '') + (S.cash >= cheap ? "You can buy a trap at Murphy's shop." : have ? 'You have ' + have + (have === 1 ? ' trap' : ' traps') + ' for the next yard.' : "Murphy's shop sells traps for Farmer Bob. They start at $" + cheap + '.');
+  }
+  if (S.screen === 'shop') {
+    $('shopcash').textContent = '$' + S.cash; $('sign').src = ART['word-iorn'] || ''; $('items').innerHTML = '';
+    for (const it of SHOP) {
+      const d = document.createElement('div'); d.className = 'item';
+      const im = document.createElement('img'); im.alt = ''; im.src = pic(it.id);
+      const n = document.createElement('b'); n.textContent = it.name; const w = document.createElement('span'); w.textContent = it.does;
+      const b = document.createElement('button'); b.textContent = 'Buy $' + it.price; b.disabled = S.cash < it.price || S.bag[it.id] >= 9; b.onclick = () => buy(it.id);
+      const h = document.createElement('em'); h.textContent = S.bag[it.id] ? 'You have ' + S.bag[it.id] : '\u00a0';
+      d.append(im, n, w, b, h); $('items').append(d);
+    }
   }
   if (S.screen === 'maker') maker();
+}
+const PICS = {};
+function pic(id) { return PICS[id] || (PICS[id] = PIECE[id] ? PIECE[id].toDataURL() : ''); }
+// The traps in your bag, bottom left in the yard. Tap one, then tap where it goes.
+function tray() {
+  const el = $('tray'), own = SHOP.filter((it) => S.bag[it.id] > 0);
+  el.hidden = S.screen !== 'play' || !own.length; el.innerHTML = ''; if (el.hidden) { S.placing = null; return; }
+  if (S.placing && !S.bag[S.placing]) S.placing = null;
+  for (const it of own) {
+    const b = document.createElement('button'), im = document.createElement('img'); im.alt = ''; im.src = pic(it.id);
+    b.dataset.trap = it.id; b.setAttribute('aria-label', it.name + ' trap, ' + S.bag[it.id] + ' left'); b.setAttribute('aria-pressed', String(S.placing === it.id));
+    b.append(im, it.name + (S.bag[it.id] > 1 ? ' x' + S.bag[it.id] : '')); b.onclick = () => { S.placing = S.placing === it.id ? null : it.id; S.target = null; tray(); };
+    el.append(b);
+  }
+  const s = document.createElement('span'); s.textContent = S.placing ? 'Now tap the yard' : 'Tap a trap'; el.append(s);
 }
 function maker() {
   const k = S.kids[S.me], ch = $('choices'); ch.innerHTML = '';
@@ -689,6 +800,10 @@ $('play').onclick = () => startLevel();
 $('make').onclick = () => { S.screen = 'maker'; show(); };
 $('makerdone').onclick = () => { S.screen = 'title'; save(); show(); };
 $('next').onclick = () => startLevel();
+let shopBack = 'title';
+$('toshop').onclick = () => { shopBack = 'title'; S.screen = 'shop'; show(); };
+$('wonshop').onclick = () => { shopBack = 'won'; S.screen = 'shop'; show(); };
+$('shopdone').onclick = () => { S.screen = shopBack; show(); };
 $('quit').onclick = () => { S.screen = 'title'; show(); };
 $('mute').onclick = () => { S.mute = !S.mute; save(); show(); };
 $('throw').addEventListener('pointerdown', (e) => { e.preventDefault(); throwVeg(); });
@@ -699,6 +814,7 @@ const aim = (p) => ({ x: Math.max(FIELD.x0, Math.min(FIELD.x1, p.x)), y: Math.ma
 let held = false;
 cv.addEventListener('pointerdown', (e) => {
   if (S.screen !== 'play') return; const p = at(e), b = S.bob;
+  if (S.placing) { place(S.placing, p); return; }
   if (Math.abs(p.x - b.x) < 100 && p.y > b.y - 270 && p.y < b.y + 30 && S.kid.veg) { throwVeg(); return; }
   held = true; S.target = aim(p); try { cv.setPointerCapture(e.pointerId); } catch (x) { /* fine */ }
 });
@@ -721,7 +837,7 @@ function frame(now) {
   render(); requestAnimationFrame(frame);
 }
 load();
-window.__te = { S, W, H, FIELD, GATE, PEN, FENCE, RANGE, LEVELS, HAIR, PIECE, startLevel, step, throwVeg, throwState, show, render, levelOf, ready: false };
+window.__te = { S, W, H, FIELD, GATE, PEN, FENCE, RANGE, LEVELS, SHOP, HAIR, PIECE, buy, place, startLevel, step, throwVeg, throwState, show, render, levelOf, ready: false };
 loadArt().then(() => { fit(); show(); window.__te.ready = true; requestAnimationFrame(frame); });
 </script>
 <script src="/games/switcher.js" defer></script>
