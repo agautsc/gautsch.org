@@ -13,6 +13,7 @@
   var GAMES = [
     { path: '/bro/',            name: 'Bro!',             art: 'bro.webp',           color: '#3a5cff' },
     { path: '/math-jack/',      name: 'Math Jack',        art: 'math-jack.webp',     color: '#2f8a66' },
+    { path: '/math-picture/',   name: 'Math Picture',     art: 'math-picture.webp',  color: '#3f9ded' },
     { path: '/the-fly/',        name: 'The Fly',          art: 'the-fly.webp',       color: '#e3402f' },
     { path: '/the-fly-bosses/', name: 'The Fly: Bosses',  art: 'the-fly.webp',       color: '#6aa84f', badge: 'Bosses' },
     { path: '/turkey-escape/',  name: 'Turkey Escape',    art: 'turkey-escape.webp', color: '#c0552a' },

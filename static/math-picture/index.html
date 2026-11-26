@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3e3bf">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2032%2032%27%3E%3Crect%20x%3D%271.5%27%20y%3D%271.5%27%20width%3D%2729%27%20height%3D%2729%27%20rx%3D%275%27%20fill%3D%27%23fffdf7%27%20stroke%3D%27%23262024%27%20stroke-width%3D%273%27/%3E%3Ccircle%20cx%3D%2711%27%20cy%3D%2711%27%20r%3D%276%27%20fill%3D%27%23ff9329%27/%3E%3Ccircle%20cx%3D%2722%27%20cy%3D%2713%27%20r%3D%275%27%20fill%3D%27%233f9ded%27/%3E%3Cpath%20d%3D%27M5%2027q11-12%2022%200z%27%20fill%3D%27%234fb04a%27/%3E%3Ctext%20x%3D%2716%27%20y%3D%2722%27%20font-family%3D%27Arial%27%20font-weight%3D%27900%27%20font-size%3D%2717%27%20text-anchor%3D%27middle%27%20fill%3D%27%23262024%27%3E%3F%3C/text%3E%3C/svg%3E">
+<title>Math Picture Guessing Game</title>
+<style>
+:root {
+  --desk: #f3e3bf; --desk2: #e9d3a3; --ink: #262024; --paper: #fffdf7; --card: #fff8e6;
+  --soft: #6b5a48; --go: #2f9e55; --go-ink: #fff; --line: #262024; --shadow: rgba(60, 40, 10, .28);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --desk: #3a3026; --desk2: #2e261e; --ink: #f6eedd; --card: #4a3e31; --soft: #d6c6a8; --shadow: rgba(0, 0, 0, .5); }
+}
+:root[data-theme="dark"] { --desk: #3a3026; --desk2: #2e261e; --ink: #f6eedd; --card: #4a3e31; --soft: #d6c6a8; --shadow: rgba(0, 0, 0, .5); }
+body { margin: 0; background: var(--desk); }
+[hidden] { display: none !important; }
+#game {
+  position: fixed; inset: 0; overflow: auto; color: var(--ink); -webkit-user-select: none; user-select: none;
+  font-family: ui-rounded, "Arial Rounded MT Bold", "Trebuchet MS", "Comic Sans MS", system-ui, sans-serif;
+  background: repeating-linear-gradient(90deg, var(--desk) 0 90px, var(--desk2) 90px 93px);
+  -webkit-tap-highlight-color: transparent; touch-action: manipulation;
+}
+:where(#game) button { font: inherit; color: inherit; cursor: pointer; }
+.paper { display: block; background: var(--paper); border-radius: 6px; box-shadow: 0 6px 18px var(--shadow); }
+.patch { opacity: 0; }
+.patch.on { opacity: 1; transition: opacity .25s; }
+.patch .scr { fill: none; stroke-width: 12.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; }
+.patch.on .scr { stroke-dashoffset: 0; transition: stroke-dashoffset var(--scr, .9s) linear; }
+.patch.now .scr { transition: none; }
+.lines { opacity: 0; fill: none; stroke: #262024; stroke-width: 5.5; stroke-linejoin: round; stroke-linecap: round; }
+.lines.on { opacity: 1; transition: opacity .9s; }
+.big { border: 3px solid var(--line); border-radius: 18px; background: var(--go); color: var(--go-ink) !important; font-weight: 800; font-size: 26px; padding: 12px 28px; min-height: 64px; box-shadow: 0 4px 0 var(--line); }
+.big:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--line); }
+.big:disabled { background: #b9b2a4; box-shadow: none; opacity: .75; cursor: default; }
+.plain { border: 3px solid var(--line); border-radius: 14px; background: var(--card); font-weight: 700; font-size: 18px; padding: 8px 16px; min-height: 48px; }
+
+/* ---- cover ---- */
+#cover { max-width: 980px; margin: 0 auto; padding: 20px 16px 40px; text-align: center; }
+#cover h1 { font-size: clamp(30px, 6vw, 56px); margin: 6px 0 4px; line-height: 1.05; }
+#cover h1 span { display: inline-block; }
+#how { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 0; margin: 16px 0 18px; }
+#how li { background: var(--card); border: 3px solid var(--line); border-radius: 16px; padding: 10px 14px; font-size: 19px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+#how b { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--line); color: var(--desk); font-size: 20px; flex: none; }
+#tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 20px; max-width: 620px; margin: 22px auto 0; }
+.tile { border: 0; background: none; padding: 0; text-align: center; }
+.tile .paper { width: 100%; height: auto; aspect-ratio: 1; }
+.tile .q { font-size: 110px; font-weight: 800; fill: #cfc4ad; }
+.tile .cap { display: block; margin-top: 6px; font-weight: 800; font-size: 18px; }
+.tile .stars { color: #e3a008; letter-spacing: 2px; font-size: 20px; }
+
+/* ---- play ---- */
+#play { height: 100%; display: flex; flex-direction: column; }
+#bar { display: flex; align-items: center; gap: 12px; padding: 8px 12px; height: 52px; flex: none; }
+#bar .where { font-weight: 800; font-size: 20px; }
+#bar .count { margin-left: auto; font-weight: 700; font-size: 18px; color: var(--soft); }
+#table { flex: 1; min-height: 0; display: flex; gap: 18px; padding: 0 14px 14px; align-items: center; justify-content: center; }
+#sheet { --s: min(calc(100vh - 86px), 56vw); width: var(--s); height: var(--s); flex: none; }
+#sheet .paper { width: 100%; height: 100%; }
+#panel { flex: 1; min-width: 0; max-width: 560px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+@media (orientation: portrait) {
+  #table { flex-direction: column; justify-content: flex-start; gap: 12px; }
+  #sheet { --s: min(calc(100vw - 28px), 46vh); }
+  #panel { width: 100%; flex: none; gap: 10px; }
+  .crayon { height: clamp(84px, 13vh, 150px); padding-top: 18px; }
+  #note { min-height: 2.2em; }
+}
+#problem { background: var(--card); border: 4px solid var(--line); border-radius: 22px; padding: 6px 26px; font-size: clamp(34px, min(9vh, 11vw), 84px); font-weight: 800; letter-spacing: 2px; white-space: nowrap; display: inline-block; }
+#note { font-size: clamp(18px, 2.6vh, 23px); font-weight: 700; min-height: 2.5em; display: flex; align-items: center; justify-content: center; margin: 0; }
+#crayons { display: flex; gap: clamp(4px, 1.2vw, 10px); justify-content: center; width: 100%; }
+.crayon { flex: 1; max-width: 62px; min-width: 0; height: clamp(104px, 20vh, 150px); border: 0; padding: 26px 0 0; background: var(--c); color: #262024 !important;
+  clip-path: polygon(34% 0, 66% 0, 100% 20%, 100% 100%, 0 100%, 0 20%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+  box-shadow: inset -7px 0 0 rgba(0, 0, 0, .13), inset 0 -10px 0 rgba(0, 0, 0, .18); }
+.crayon b { display: grid; place-items: center; width: 84%; aspect-ratio: 1; max-width: 46px; border-radius: 50%; background: #fffdf7; font-size: clamp(20px, 3.4vh, 28px); }
+.crayon small { font-size: 11px; font-weight: 800; background: rgba(255, 253, 247, .8); border-radius: 6px; padding: 1px 3px; max-width: 96%; overflow: hidden; }
+.crayon:active { transform: translateY(-6px); }
+.crayon.no { animation: shake .4s; }
+.crayon.yes { transform: translateY(-14px); }
+@keyframes shake { 20% { transform: translateX(-6px) rotate(-5deg); } 50% { transform: translateX(6px) rotate(5deg); } 80% { transform: translateX(-4px); } }
+#choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; }
+.choice { border: 3px solid var(--line); border-radius: 18px; background: var(--card); font-weight: 800; font-size: clamp(20px, 3.2vh, 28px); min-height: 78px; padding: 8px; box-shadow: 0 4px 0 var(--line); }
+.choice i { font-style: normal; font-size: 1.3em; margin-right: 6px; }
+.choice:disabled { opacity: .4; text-decoration: line-through; box-shadow: none; cursor: default; }
+#panel h2 { font-size: clamp(30px, 5.5vh, 50px); margin: 0; line-height: 1.1; }
+#winstars { font-size: clamp(44px, 9vh, 76px); color: #e3a008; letter-spacing: 6px; line-height: 1; }
+.stars s, #winstars s { text-decoration: none; opacity: .25; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+</style>
+</head>
+<body>
+<div id="game">
+  <section id="cover">
+    <h1><span>Math Picture</span> <span>Guessing Game</span></h1>
+    <ol id="how">
+      <li><b>1</b> Do the math.</li>
+      <li><b>2</b> Crayon colors in a hidden picture. No lines!</li>
+      <li><b>3</b> Guess what it is.</li>
+    </ol>
+    <button class="big" id="play-btn">Play</button>
+    <div id="tiles"></div>
+  </section>
+
+  <section id="play" hidden>
+    <div id="bar">
+      <button class="plain" id="home">&larr; Pictures</button>
+      <span class="where" id="where"></span>
+      <span class="count" id="count"></span>
+    </div>
+    <div id="table">
+      <div id="sheet"></div>
+      <div id="panel">
+        <div id="math">
+          <div id="problem"></div>
+        </div>
+        <p id="note" aria-live="polite"></p>
+        <div id="crayons"></div>
+        <button class="big" id="guess-btn">I know what it is!</button>
+
+        <div id="guess" hidden>
+          <div id="choices"></div>
+        </div>
+        <button class="plain" id="keep" hidden>Keep coloring</button>
+
+        <div id="win" hidden>
+          <h2 id="wintext"></h2>
+          <div id="winstars"></div>
+          <p id="winnote"></p>
+          <div class="row">
+            <button class="big" id="next">Next picture</button>
+            <button class="plain" id="all">All pictures</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+// The hidden pictures. Each one is a 600 x 600 page cut into patches, like a color-by-number sheet.
+// A patch is [number, path]: the number is the answer that colors it (the key is COLORS below).
+// Patches are listed back to front; a patch only shows where no later patch covers it.
+// `details` are the ink marks (eyes and such) that only show up once the picture is guessed.
+// `choices` are the four guesses, the right one first; the page shuffles them.
+
+const COLORS = {
+  3: ['pink', '#f58fb4'],
+  4: ['purple', '#8d5fd3'],
+  5: ['blue', '#3f9ded'],
+  6: ['green', '#4fb04a'],
+  7: ['yellow', '#ffd62e'],
+  8: ['brown', '#9b643a'],
+  9: ['orange', '#ff9329'],
+  10: ['red', '#e63c36'],
+};
+
+// an oval, optionally turned `rot` degrees
+const E = (cx, cy, rx, ry, rot = 0) => {
+  const a = rot * Math.PI / 180, dx = +(rx * Math.cos(a)).toFixed(1), dy = +(rx * Math.sin(a)).toFixed(1);
+  return `M${cx - dx} ${cy - dy}A${rx} ${ry} ${rot} 1 0 ${cx + dx} ${cy + dy}A${rx} ${ry} ${rot} 1 0 ${cx - dx} ${cy - dy}Z`;
+};
+const R = (x, y, w, h) => `M${x} ${y}h${w}v${h}h${-w}Z`;
+// a turkey tail feather: an oval pointing `deg` away from straight up, out of the hub at 300,400
+const feather = (deg) => {
+  const a = deg * Math.PI / 180;
+  return E(Math.round(300 + 175 * Math.sin(a)), Math.round(400 - 175 * Math.cos(a)), 120, 50, deg - 90);
+};
+const dot = (x, y, r = 7) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#262024" stroke="none"/>`;
+
+const PICS = [
+  {
+    id: 'fish', name: 'Fish',
+    choices: [['Fish', '🐟'], ['Whale', '🐳'], ['Duck', '🦆'], ['Balloon', '🎈']],
+    patches: [
+      [5, 'M0 0H330L270 250L0 300Z'],
+      [6, 'M330 0H600V280L270 250Z'],
+      [4, 'M0 300L270 250L600 280V530H0Z'],
+      [7, 'M0 480Q150 450 300 480T600 470V600H0Z'],
+      [6, 'M60 600C30 520 100 480 60 390C95 375 130 465 105 520C95 560 115 580 115 600Z'],
+      [8, 'M420 600Q430 520 500 520Q570 520 580 600Z'],
+      [10, 'M195 300L75 205Q110 300 75 395Z'],
+      [10, 'M255 215Q330 110 410 215Z'],
+      [9, E(330, 300, 160, 105)],
+      [7, 'M420 213.2A160 105 0 0 1 420 386.8Q385 300 420 213.2Z'],
+      [3, 'M290 305Q355 385 270 385Z'],
+    ],
+    details: dot(452, 272, 11) + '<path d="M476 322Q462 334 446 326"/><circle cx="535" cy="190" r="14"/><circle cx="560" cy="140" r="9"/>',
+  },
+  {
+    id: 'house', name: 'House',
+    choices: [['House', '🏠'], ['Castle', '🏰'], ['Tent', '⛺'], ['Bus', '🚌']],
+    patches: [
+      [5, 'M0 0H300V420H0Z'],
+      [3, 'M300 0H600V420H300Z'],
+      [7, E(505, 100, 55, 55)],
+      [6, 'M0 420H600V600H0Z'],
+      [8, 'M265 600L285 470H335L375 600Z'],
+      [8, R(60, 330, 30, 110)],
+      [6, E(75, 285, 62, 62)],
+      [9, R(375, 125, 42, 100)],
+      [10, R(170, 250, 280, 220)],
+      [8, 'M135 262L310 105L485 262Z'],
+      [9, R(283, 360, 54, 110)],
+      [7, R(198, 300, 62, 62)],
+      [7, R(360, 300, 62, 62)],
+    ],
+    details: dot(325, 418, 5) + '<path d="M229 300v62M198 331h62M391 300v62M360 331h62"/>',
+  },
+  {
+    id: 'sailboat', name: 'Sailboat',
+    choices: [['Sailboat', '⛵'], ['Tent', '⛺'], ['Mountain', '⛰️'], ['Shark', '🦈']],
+    patches: [
+      [5, 'M0 0H306V400H0Z'],
+      [3, 'M306 0H600V400H306Z'],
+      [7, E(105, 100, 52, 52)],
+      [4, 'M0 400H600V500H0Z'],
+      [6, 'M0 500H600V600H0Z'],
+      [8, R(299, 90, 14, 300)],
+      [10, 'M313 92V132L365 112Z'],
+      [9, 'M322 140L478 356H322Z'],
+      [7, 'M290 175L170 356H290Z'],
+      [10, 'M135 380H485L428 472H192Z'],
+    ],
+    details: '<path d="M30 545q20 -16 40 0t40 0M470 550q20 -16 40 0t40 0M250 560q20 -16 40 0t40 0"/><circle cx="230" cy="425" r="12"/><circle cx="310" cy="425" r="12"/><circle cx="390" cy="425" r="12"/>',
+  },
+  {
+    id: 'rocket', name: 'Rocket',
+    choices: [['Rocket', '🚀'], ['Pencil', '✏️'], ['Tree', '🌲'], ['Tower', '🗼']],
+    patches: [
+      [4, 'M0 0H600L0 350Z'],
+      [5, 'M600 0V600L0 350Z'],
+      [4, 'M0 350L600 600H0Z'],
+      [7, E(105, 105, 58, 58)],
+      [3, E(500, 480, 52, 52)],
+      [6, 'M242 320L165 445H242Z'],
+      [6, 'M358 320L435 445H358Z'],
+      [9, 'M255 420Q248 500 300 565Q352 500 345 420Z'],
+      [7, 'M278 420Q280 470 300 505Q320 470 322 420Z'],
+      [10, 'M240 420V230Q240 200 255 180H345Q360 200 360 230V420Z'],
+      [9, 'M250 186Q268 118 300 88Q332 118 350 186Z'],
+      [7, E(300, 272, 33, 33)],
+    ],
+    details: '<circle cx="300" cy="272" r="20"/><path d="M240 360H360"/><path d="M455 105l8 18 18 8-18 8-8 18-8-18-18-8 18-8zM90 380l6 13 13 6-13 6-6 13-6-13-13-6 13-6zM520 290l5 11 11 5-11 5-5 11-5-11-11-5 11-5z" fill="#fff"/>',
+  },
+  {
+    id: 'butterfly', name: 'Butterfly',
+    choices: [['Butterfly', '🦋'], ['Flower', '🌸'], ['Bird', '🐦'], ['Bow', '🎀']],
+    patches: [
+      [5, 'M0 0H600V230L0 290Z'],
+      [6, 'M0 290L600 230V430L0 470Z'],
+      [7, 'M0 470L600 430V600H0Z'],
+      [4, 'M292 295C230 150 90 105 68 200C52 285 180 335 292 312Z'],
+      [4, 'M308 295C370 150 510 105 532 200C548 285 420 335 308 312Z'],
+      [9, 'M292 310C200 318 115 380 148 455C180 515 272 445 296 345Z'],
+      [9, 'M308 310C400 318 485 380 452 455C420 515 328 445 304 345Z'],
+      [7, E(160, 215, 32, 32)],
+      [7, E(440, 215, 32, 32)],
+      [10, E(195, 410, 24, 24)],
+      [10, E(405, 410, 24, 24)],
+      [8, E(300, 325, 19, 88)],
+      [3, E(300, 222, 27, 27)],
+    ],
+    details: dot(291, 217, 4) + dot(309, 217, 4) + '<path d="M290 232q10 9 20 0M290 198Q270 150 245 150M310 198Q330 150 355 150"/>' + dot(243, 150, 6) + dot(357, 150, 6),
+  },
+  {
+    id: 'turkey', name: 'Turkey',
+    choices: [['Turkey', '🦃'], ['Peacock', '🦚'], ['Flower', '🌻'], ['Rainbow', '🌈']],
+    patches: [
+      [5, 'M0 0H300V470H0Z'],
+      [3, 'M300 0H600V470H300Z'],
+      [6, 'M0 470H600V600H0Z'],
+      [10, feather(-64)],
+      [4, feather(64)],
+      [9, feather(-32)],
+      [6, feather(32)],
+      [7, feather(0)],
+      [9, 'M250 500L232 562L254 546L265 568L276 546L298 562L282 500Z'],
+      [9, 'M318 500L302 562L324 546L335 568L346 546L368 562L350 500Z'],
+      [8, E(300, 410, 100, 110)],
+      [8, E(300, 265, 56, 56)],
+      [10, E(322, 300, 23, 10, 75)],
+      [7, 'M282 268H318L300 304Z'],
+    ],
+    details: dot(281, 248, 7) + dot(319, 248, 7),
+  },
+];
+
+
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const NS = 'http://www.w3.org/2000/svg';
+  const SAVE = 'math-picture-guess-v1';
+  const T = { speed: 1 };                       // the checks set speed to 0 to skip the waits
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms * T.speed));
+  const pick = (a) => a[Math.floor(Math.random() * a.length)];
+  const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(SAVE)) || {}; } catch (e) {}
+  const keep = () => { try { localStorage.setItem(SAVE, JSON.stringify(saved)); } catch (e) {} };
+
+  // ---------- drawing a page ----------
+  // Where each patch sits, measured once from a page nobody sees.
+  const BOX = {};
+  (() => {
+    const s = document.createElementNS(NS, 'svg');
+    s.setAttribute('viewBox', '0 0 600 600');
+    s.style.cssText = 'position:absolute;left:-9999px;top:0;width:600px;height:600px;visibility:hidden';
+    document.body.appendChild(s);
+    for (const pic of PICS) BOX[pic.id] = pic.patches.map(([, d]) => { const p = document.createElementNS(NS, 'path'); p.setAttribute('d', d); s.appendChild(p); const b = p.getBBox(); return { x: b.x, y: b.y, w: b.width, h: b.height }; });
+    s.remove();
+  })();
+
+  // A crayon scribble: one long zigzag wide enough to cover the patch, tilted a little differently each time.
+  function scribble(b) {
+    const cx = b.x + b.w / 2, cy = b.y + b.h / 2, r = Math.hypot(b.w, b.h) / 2 + 8;
+    let d = '', left = true;
+    for (let y = -r; y <= r; y += 13) {
+      const x = (left ? -r : r) + (Math.random() * 8 - 4), yy = y + (Math.random() * 3 - 1.5);
+      d += (d ? 'L' : 'M') + x.toFixed(1) + ' ' + yy.toFixed(1);
+      left = !left;
+    }
+    const ang = -52 + Math.random() * 34;
+    return { d, t: `translate(${cx.toFixed(1)} ${cy.toFixed(1)}) rotate(${ang.toFixed(1)})`, sec: Math.max(.45, Math.min(1.5, r / 260)) };
+  }
+
+  let uid = 0;
+  // Build one page. Patches start out invisible; .on colors one in. The ink lines stay hidden until show().
+  function page(pic, mark) {
+    const u = 'p' + (++uid), boxes = BOX[pic.id];
+    let defs = `<filter id="${u}w" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="${uid}" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="7" xChannelSelector="R" yChannelSelector="G"/></filter>`;
+    let fills = '', lines = '';
+    pic.patches.forEach(([n, d], i) => {
+      const above = pic.patches.slice(i + 1).map(([, e]) => `<path d="${e}"/>`).join('');
+      defs += `<clipPath id="${u}c${i}"><path d="${d}"/></clipPath>`
+        + `<mask id="${u}m${i}" maskUnits="userSpaceOnUse" x="-20" y="-20" width="640" height="640"><rect x="-20" y="-20" width="640" height="640" fill="#fff"/><g fill="#000" stroke="#000" stroke-width="2.5">${above}</g></mask>`;
+      const s = scribble(boxes[i]), c = COLORS[n][1];
+      fills += `<g mask="url(#${u}m${i})"><g class="patch" data-i="${i}" clip-path="url(#${u}c${i})" style="--scr:${s.sec.toFixed(2)}s">`
+        + `<path d="${d}" fill="${c}" opacity=".55"/><path class="scr" pathLength="1" d="${s.d}" transform="${s.t}" stroke="${c}"/></g></g>`;
+      lines += `<path d="${d}" mask="url(#${u}m${i})"/>`;
+    });
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('viewBox', '0 0 600 600');
+    svg.setAttribute('class', 'paper');
+    svg.innerHTML = `<defs>${defs}<clipPath id="${u}f"><rect width="600" height="600" rx="6"/></clipPath></defs>`
+      + `<g clip-path="url(#${u}f)"><g filter="url(#${u}w)">${fills}</g>`
+      + `<g class="lines" filter="url(#${u}w)">${lines}${pic.details}</g>${mark || ''}</g>`
+      + `<rect x="3" y="3" width="594" height="594" rx="5" fill="none" stroke="#262024" stroke-width="6"/>`;
+    return svg;
+  }
+  const colorIn = (svg, i, now) => { const p = svg.querySelector(`.patch[data-i="${i}"]`); if (now) p.classList.add('now'); p.classList.add('on'); };
+  const showLines = (svg) => svg.querySelector('.lines').classList.add('on');
+  const starText = (n) => '★'.repeat(n) + '<s>' + '★'.repeat(3 - n) + '</s>';
+
+  // ---------- the math ----------
+  // Every add and take-away fact up to 10 that makes `ans`. Facts with a zero come up less.
+  function fact(ans, used) {
+    const all = [];
+    for (let a = 0; a <= ans; a++) all.push({ a, b: ans - a, op: '+' });
+    for (let a = ans; a <= 10; a++) all.push({ a, b: a - ans, op: '−' });
+    let pool = all.filter((f) => !used.has(f.a + f.op + f.b));
+    if (!pool.length) pool = all;
+    const noZero = pool.filter((f) => f.a && f.b);
+    const f = noZero.length && Math.random() < .88 ? pick(noZero) : pick(pool);
+    used.add(f.a + f.op + f.b);
+    return { ...f, ans };
+  }
+
+  // ---------- the game ----------
+  const S = { screen: 'cover', pic: 0, order: [], filled: 0, cur: null, used: new Set(), wrong: new Set(), locked: false, busy: false, done: false, stars: 0, svg: null, mode: 'math' };
+
+  function cover() {
+    S.screen = 'cover';
+    $('play').hidden = true; $('cover').hidden = false;
+    const tiles = $('tiles'); tiles.innerHTML = '';
+    PICS.forEach((pic, p) => {
+      const stars = saved[pic.id] || 0;
+      const b = document.createElement('button');
+      b.className = 'tile'; b.dataset.p = p;
+      const svg = page(pic, stars ? '' : '<text class="q" x="300" y="340" text-anchor="middle">?</text>');
+      if (stars) { pic.patches.forEach((_, i) => colorIn(svg, i, true)); showLines(svg); }
+      b.appendChild(svg);
+      const cap = document.createElement('span'); cap.className = 'cap';
+      cap.innerHTML = stars ? `${pic.name}<br><span class="stars">${starText(stars)}</span>` : `Picture ${p + 1}`;
+      b.appendChild(cap);
+      b.setAttribute('aria-label', stars ? `${pic.name}, ${stars} stars. Play again` : `Picture ${p + 1}, not guessed yet`);
+      b.onclick = () => start(p);
+      tiles.appendChild(b);
+    });
+    const todo = PICS.findIndex((pic) => !saved[pic.id]);
+    $('play-btn').textContent = Object.keys(saved).length ? (todo < 0 ? 'Play again' : 'Keep playing') : 'Play';
+    $('play-btn').onclick = () => start(todo < 0 ? 0 : todo);
+  }
+
+  function start(p) {
+    const pic = PICS[p];
+    Object.assign(S, { screen: 'play', mode: 'math', pic: p, order: shuffle(pic.patches.map((_, i) => i)), filled: 0, cur: null, used: new Set(), wrong: new Set(), locked: false, busy: false, done: false, stars: 0 });
+    $('cover').hidden = true; $('play').hidden = false;
+    S.svg = page(pic);
+    $('sheet').innerHTML = ''; $('sheet').appendChild(S.svg);
+    $('where').textContent = `Picture ${p + 1}`;
+    $('choices').innerHTML = '';
+    shuffle(pic.choices).forEach(([name, icon]) => {
+      const b = document.createElement('button');
+      b.className = 'choice'; b.dataset.name = name;
+      b.innerHTML = `<i>${icon}</i>${name}`;
+      b.onclick = () => guess(name);
+      $('choices').appendChild(b);
+    });
+    note('Tap the crayon with the answer.');
+    nextProblem();
+  }
+
+  const note = (t) => { $('note').textContent = t; };
+  const total = () => PICS[S.pic].patches.length;
+
+  function show() {
+    const math = S.mode === 'math' && !S.done, g = S.mode === 'guess' && !S.done;
+    $('math').hidden = !math || !S.cur; $('crayons').hidden = !math || !S.cur;
+    $('guess-btn').hidden = !math; $('guess-btn').disabled = S.locked || S.filled === 0;
+    $('guess').hidden = !g; $('keep').hidden = !g || !S.cur;
+    $('note').hidden = S.done; $('win').hidden = !S.done;
+    $('count').textContent = `${S.filled} of ${total()} colored`;
+    if (S.cur) $('problem').textContent = `${S.cur.a} ${S.cur.op} ${S.cur.b} = ${S.busy ? S.cur.ans : '?'}`;
+  }
+
+  function nextProblem() {
+    if (S.order.length) {
+      const i = S.order.shift();
+      S.cur = { i, ...fact(PICS[S.pic].patches[i][0], S.used) };
+    } else {                                   // nothing left to color: only the guess is left
+      S.cur = null; S.mode = 'guess'; S.locked = false;
+      note('All colored in! What is it?');
+    }
+    show();
+  }
+
+  async function answer(n, btn) {
+    if (S.busy || S.done || !S.cur || S.mode !== 'math') return;
+    if (n !== S.cur.ans) {
+      btn.classList.remove('no'); void btn.offsetWidth; btn.classList.add('no');
+      note('Not that one. Try again!');
+      return;
+    }
+    S.busy = true; S.filled++; S.locked = false;
+    btn.classList.add('yes');
+    colorIn(S.svg, S.cur.i, T.speed === 0);
+    note(S.filled === 1 ? 'Yes! Some ' + COLORS[n][0] + ' showed up. What could it be?' : pick(['Yes!', 'You got it!', 'Nice!', 'Right!']) + ' More ' + COLORS[n][0] + '.');
+    show();
+    await wait(1100);
+    btn.classList.remove('yes');
+    if (S.done || S.screen !== 'play') return;
+    S.busy = false;
+    nextProblem();
+  }
+
+  function guess(name) {
+    if (S.done || S.mode !== 'guess') return;
+    const pic = PICS[S.pic];
+    if (name === pic.name) return win();
+    S.wrong.add(name);
+    $('choices').querySelector(`[data-name="${name}"]`).disabled = true;
+    if (S.cur) { S.locked = true; S.mode = 'math'; note(`Not a ${name.toLowerCase()}. Color one more, then guess again.`); }
+    else note(`Not a ${name.toLowerCase()}. Look again!`);
+    show();
+  }
+
+  async function win() {
+    const pic = PICS[S.pic], t = total(), f = S.filled;
+    S.done = true; S.busy = false;
+    S.stars = f <= Math.ceil(t / 3) ? 3 : f <= Math.ceil(2 * t / 3) ? 2 : 1;
+    if (S.stars > (saved[pic.id] || 0)) { saved[pic.id] = S.stars; keep(); }
+    const an = /^[aeiou]/i.test(pic.name) ? 'an' : 'a';
+    $('wintext').textContent = `It's ${an} ${pic.name.toLowerCase()}!`;
+    $('winstars').innerHTML = starText(S.stars);
+    $('winnote').textContent = `You guessed it with ${f} of ${t} colored.`;
+    const more = PICS.findIndex((q) => !saved[q.id]);
+    $('next').hidden = more < 0; $('next').onclick = () => start(more);
+    show();
+    showLines(S.svg);
+    const svg = S.svg;
+    for (let i = 0; i < t; i++) {                // the rest colors itself in
+      if (svg.querySelector(`.patch[data-i="${i}"]`).classList.contains('on')) continue;
+      colorIn(svg, i, T.speed === 0);
+      await wait(160);
+    }
+  }
+
+  Object.entries(COLORS).forEach(([n, [name, hex]]) => {
+    const b = document.createElement('button');
+    b.className = 'crayon'; b.dataset.n = n; b.style.setProperty('--c', hex);
+    b.setAttribute('aria-label', `${n}, ${name}`);
+    b.innerHTML = `<b>${n}</b><small>${name}</small>`;
+    b.onclick = () => answer(+n, b);
+    $('crayons').appendChild(b);
+  });
+  $('guess-btn').onclick = () => { if (S.busy || S.locked || !S.filled) return; S.mode = 'guess'; note('What is it?'); show(); };
+  $('keep').onclick = () => { S.mode = 'math'; note('Tap the crayon with the answer.'); show(); };
+  $('home').onclick = cover;
+  $('all').onclick = cover;
+  addEventListener('keydown', (e) => {          // number keys answer: 3 to 9, and 0 for ten
+    if (S.screen !== 'play' || !/^[0-9]$/.test(e.key)) return;
+    const n = e.key === '0' ? 10 : +e.key, b = document.querySelector(`.crayon[data-n="${n}"]`);
+    if (b) answer(n, b);
+  });
+
+  cover();
+  window.__mp = { S, T, PICS, COLORS, fact, page, colorIn, saved: () => saved, ready: true };
+})();
+</script>
+<script src="/games/switcher.js" defer></script>
+</body>
+</html>
